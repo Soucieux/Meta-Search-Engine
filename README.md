@@ -10,7 +10,7 @@ Search Engine Filter.\
 Webpages Filter.\
 Customized second webpage to store a collection of saved webpages.\
 Saved webpages presented first when searching.\
-Convenient button to mark webpage as 'saved'.\
+Convenient button to mark webpage as 'saved'. \
 
 # Setup Guide for React App
 
