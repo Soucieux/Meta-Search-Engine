@@ -51,15 +51,16 @@ const resolveModule = (resolveFn, filePath) => {
 };
 
 // config after eject: we're in ./config/
-// 'public' replaced by 'main'
-// 'index' replaced by 'main'
 module.exports = {
   dotenv: resolveApp('.env'),
   appPath: resolveApp('.'),
   appBuild: resolveApp(buildPath),
-  appMain: resolveApp('main'),
+  // appPublic: resolveApp('public'),
+  appPublic: resolveApp('main'),
+  // appHtml: resolveApp('public/index.html'),
   appHtml: resolveApp('main/main.html'),
-  appMainJs: resolveModule(resolveApp, 'src/main'),
+  // appIndexJs: resolveModule(resolveApp, 'src/index'),
+  appIndexJs: resolveModule(resolveApp, 'src/main'),
   appPackageJson: resolveApp('package.json'),
   appSrc: resolveApp('src'),
   appTsConfig: resolveApp('tsconfig.json'),
