@@ -2,7 +2,7 @@
 
 **This project was created in winter term 2021**
 
-The web page is designed to gather search results from a varity number of popular search engines.\
+The web page is designed to gather search results from a varity number of popular search engines.
 
 ## Features
 
