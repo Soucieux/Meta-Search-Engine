@@ -1,8 +1,18 @@
-<h2>Honours Project: Meta Data Search Engine</h2>
-<h4>Created in 2020~2021</h4>
+#Honours Project: Meta Data Search Engine
 
+**This project was created in winter term 2021**
 
-# Getting Started with Create React App
+The web page is designed to gather search results from a varity number of popular search engines.\
+
+##Features
+
+Search Engine Filter.\
+Webpages Filter.\
+Customized second webpage to store a collection of saved webpages.\
+Saved webpages presented first when searching.\
+Convenient button to mark webpage as 'saved'.\
+
+# Setup Guide for React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
