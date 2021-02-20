@@ -1,0 +1,61 @@
+#search-input-field {
+  height: 40px;
+  width: 700px;
+  margin-left: 10px;
+  /* 输入框内文字缩进 */
+  text-indent: 10px;
+  /* 输入框边缘圆滑度 */
+  border-radius: 5px;
+  /* solid代表输入框有边框 */
+  border: solid 1.5px #d3d3d3;
+  /* 阴影持续时间 */
+  transition: 0.5s;
+}
+
+#search-input-field:hover {
+  /* 0 0代表输入框四周阴影*/
+  box-shadow: 0 0 5px 0.5px #d3d3d3;
+}
+
+#search-input-field:focus {
+  /* 0 0代表输入框四周阴影*/
+  box-shadow: 0 0 5px 2px #d3d3d3;
+  /* 输入框无边框*/
+  outline-width: 0px;
+}
+
+#search-button {
+  height: 40px;
+  width: 50px;
+  margin-left: 5px;
+  margin-right: 10px;
+  /* 阴影持续时间 */
+  transition: 0.5s;
+}
+
+#search-button:hover {
+  /* 0 0代表输入框四周阴影*/
+  box-shadow: 0 0 5px 2px #d3d3d3;
+}
+
+#search-input-and-button-div {
+  margin: auto;
+  margin-top: 10px;
+  max-width: 700px;
+  /* 输入框和按钮平行 */
+  display: flex;
+  position:relative;
+  top:330px;
+  /* 测试div大小 */
+  /* border: 3px solid #73ad21; */
+}
+
+#search-title {
+  margin: auto;
+  max-width: fit-content;
+  text-align: center;
+  position: relative;
+  top:330px;
+  /* 测试div大小 */
+  /* border: 3px solid #73ad21; */
+}
