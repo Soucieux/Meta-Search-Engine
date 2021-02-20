@@ -4,12 +4,49 @@ import "./main.css";
 import "bootstrap/dist/css/bootstrap.css";
 
 // 搜索框，搜索按钮
-class InputAndButtonAndTitle extends React.Component {
+class InputAndButton extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { value: "" };
+    this.handleSearchInputChange = this.handleSearchInputChange.bind(this);
+  }
+
+  // 实时监控和提取输入框内容并更新state.value
+  handleSearchInputChange(event) {
+    this.setState({ value: event.target.value });
+    if (event.target.value === "") {
+      document.getElementById("search-reset-button").style.visibility =
+        "hidden";
+    } else {
+      document.getElementById("search-reset-button").style.visibility =
+        "visible";
+    }
+  }
+
+  // 输入框清除按钮
+  handleResetButtonOnClick() {
+    this.setState({ value: "" });
+    document.getElementById("search-reset-button").style.visibility = "hidden";
+  }
+
   render() {
     return (
-      <div id="search-input-button-div">
-        <input type="text" id="search-input" />
-        <button type="submit" className="btn btn-danger" id="search-button">
+      <form id="search-input-button">
+        <input
+          type="text"
+          id="search-input"
+          value={this.state.value}
+          onChange={this.handleSearchInputChange}
+        />
+        <button
+          type="reset"
+          id="search-reset-button"
+          className="font-weight-light"
+          onClick={() => this.handleResetButtonOnClick()}
+        >
+          X
+        </button>
+        <button type="button" className="btn btn-danger" id="search-button">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"
@@ -21,7 +58,7 @@ class InputAndButtonAndTitle extends React.Component {
             <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
           </svg>
         </button>
-      </div>
+      </form>
     );
   }
 }
@@ -40,7 +77,7 @@ class Search extends React.Component {
       <React.Fragment>
         <div id="search-input-button-title-div">
           <Title />
-          <InputAndButtonAndTitle />
+          <InputAndButton />
         </div>
       </React.Fragment>
     );
