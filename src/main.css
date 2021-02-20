@@ -1,4 +1,4 @@
-#search-input-field {
+#search-input {
   height: 40px;
   width: 700px;
   margin-left: 10px;
@@ -12,12 +12,12 @@
   transition: 0.5s;
 }
 
-#search-input-field:hover {
+#search-input:hover {
   /* 0 0代表输入框四周阴影*/
   box-shadow: 0 0 5px 0.5px #d3d3d3;
 }
 
-#search-input-field:focus {
+#search-input:focus {
   /* 0 0代表输入框四周阴影*/
   box-shadow: 0 0 5px 2px #d3d3d3;
   /* 输入框无边框*/
@@ -25,7 +25,6 @@
 }
 
 #search-button {
-  height: 40px;
   width: 50px;
   margin-left: 5px;
   margin-right: 10px;
@@ -38,24 +37,32 @@
   box-shadow: 0 0 5px 2px #d3d3d3;
 }
 
-#search-input-and-button-div {
-  margin: auto;
+#search-input-button-div {
   margin-top: 10px;
-  max-width: 700px;
   /* 输入框和按钮平行 */
   display: flex;
-  position:relative;
-  top:330px;
-  /* 测试div大小 */
+  /* 测试 div大小 */
   /* border: 3px solid #73ad21; */
 }
 
 #search-title {
-  margin: auto;
-  max-width: fit-content;
   text-align: center;
-  position: relative;
-  top:330px;
-  /* 测试div大小 */
+  /* 测试 div大小 */
+  /* border: 3px solid #73ad21; */
+}
+
+#search-input-button-title-div {
+  /* 横向缩小浏览器仍然完全显示标题，输入框和按钮 */
+  width: 100%;
+  /* 横向扩展浏览器保持标题，输入框和按钮合适大小且仍然居中 */
+  max-width: fit-content;
+  /* 保持标题，输入框和按钮水平居中和垂直居中 */
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  -ms-transform: translateX(-50%) translateY(-50%);
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  /* 测试 div大小 */
   /* border: 3px solid #73ad21; */
 }
