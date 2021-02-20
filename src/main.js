@@ -4,11 +4,11 @@ import "./main.css";
 import "bootstrap/dist/css/bootstrap.css";
 
 // 搜索框，搜索按钮
-class InputAndButton extends React.Component {
+class InputAndButtonAndTitle extends React.Component {
   render() {
     return (
-      <div id="search-input-and-button-div">
-        <input type="text" id="search-input-field" />
+      <div id="search-input-button-div">
+        <input type="text" id="search-input" />
         <button type="submit" className="btn btn-danger" id="search-button">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -27,7 +27,7 @@ class InputAndButton extends React.Component {
 }
 
 // 搜索标题
-class SearchTitle extends React.Component {
+class Title extends React.Component {
   render() {
     return <h1 id="search-title">Custom Search</h1>;
   }
@@ -38,8 +38,10 @@ class Search extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <SearchTitle />
-        <InputAndButton />
+        <div id="search-input-button-title-div">
+          <Title />
+          <InputAndButtonAndTitle />
+        </div>
       </React.Fragment>
     );
   }
