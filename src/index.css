@@ -37,7 +37,8 @@
   box-shadow: 0 0 18px 3px #d3d3d3;
 }
 
-#search-input-button {
+.search-input-button {
+  position: relative;
   margin-top: 10px;
   /* 输入框和按钮平行 */
   display: flex;
@@ -48,7 +49,7 @@
 #search-reset-button {
   position: absolute;
   right: 68px;
-  top: 58px;
+  top: 0px;
   bottom: 0;
   height: 30px;
   margin: auto;
@@ -58,6 +59,8 @@
   color: rgb(0, 0, 0);
   font-size: 20px;
   visibility: hidden;
+  /* 测试 div大小 */
+  /* border: 3px solid #73ad21; */
 }
 
 #search-title {
@@ -69,9 +72,9 @@
 #search-input-button-title-div {
   /* 横向缩小浏览器仍然完全显示标题，输入框和按钮 */
   width: 100%;
-  /* 横向扩展浏览器保持标题，输入框和按钮合适大小才能做到居中 */
+  /* 横向扩展浏览器保持标题，输入框和按钮 fit-content 才能做到居中 */
   max-width: fit-content;
-  /* 保持标题，输入框和按钮水平居中和垂直居中 */
+  /* 保持标题，输入框和按钮水平居中和垂直居中，无论浏览器窗口大小*/
   position: fixed;
   top: 40%;
   left: 50%;
