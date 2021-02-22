@@ -24,7 +24,7 @@
   outline-width: 0px;
 }
 
-#search-button {
+#search-button-submit {
   width: 50px;
   margin-left: 5px;
   margin-right: 10px;
@@ -32,12 +32,12 @@
   transition: 0.5s;
 }
 
-#search-button:hover {
+#search-button-submit:hover {
   /* 0 0代表输入框四周阴影*/
   box-shadow: 0 0 18px 3px #d3d3d3;
 }
 
-.search-input-button {
+.search-input-button-submit-group {
   position: relative;
   margin-top: 10px;
   /* 输入框和按钮平行 */
@@ -46,7 +46,7 @@
   /* border: 3px solid #73ad21; */
 }
 
-#search-reset-button {
+#search-button-reset {
   position: absolute;
   right: 68px;
   top: 0px;
@@ -69,7 +69,7 @@
   /* border: 3px solid #73ad21; */
 }
 
-#search-input-button-title-div {
+#search-bar-group {
   /* 横向缩小浏览器仍然完全显示标题，输入框和按钮 */
   width: 100%;
   /* 横向扩展浏览器保持标题，输入框和按钮 fit-content 才能做到居中 */
@@ -83,4 +83,12 @@
   transform: translate(-50%, -50%);
   /* 测试 div大小 */
   /* border: 3px solid #73ad21; */
+}
+
+#search-title-revised {
+  width:100%;
+  max-width: fit-content;
+  position: sticky;
+  top: 0;
+  left: 33.33%;
 }
