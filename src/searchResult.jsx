@@ -1,5 +1,5 @@
 import React from "react";
-import "./search.css";
+import "./searchBar.css";
 import "bootstrap/dist/css/bootstrap.css";
 
 class SearchResult extends React.Component {
