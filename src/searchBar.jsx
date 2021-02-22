@@ -3,7 +3,7 @@ import "./searchBar.css";
 import "bootstrap/dist/css/bootstrap.css";
 
 // 搜索框，搜索按钮
-class InputAndButton extends React.Component {
+export class InputAndButton extends React.Component {
   constructor(props) {
     super(props);
     this.state = { value: "" };
@@ -15,7 +15,7 @@ class InputAndButton extends React.Component {
   // 实时监控和提取输入框内容并更新 state.value
   handleSearchInputChange(event) {
     this.setState({ value: event.target.value });
-    let visible = document.getElementById("search-reset-button").style;
+    let visible = document.getElementById("search-button-reset").style;
     if (event.target.value === "") {
       visible.visibility = "hidden";
     } else {
@@ -26,28 +26,22 @@ class InputAndButton extends React.Component {
   // 输入框清除按钮
   handleResetButtonOnClick() {
     this.setState({ value: "" });
-    document.getElementById("search-reset-button").style.visibility = "hidden";
+    document.getElementById("search-button-reset").style.visibility = "hidden";
   }
 
   // 输入框提交按钮
   handleSubmitButtonOnClick(event) {
     // 禁止默认情况下按钮自动刷新整个页面
     event.preventDefault();
-    if (this.state.value !== "") {
-      this.props.history.push("/result");
+    if (this.state.value !== "" && this.props.match !== undefined) {
+      if (this.props.match.path === "/") {
+        this.props.history.push("/result");
+      } 
+    } else {
+      console.log(
+        "Error occured at searchBar.jsx where this.props.match is undefined."
+      );
     }
-    // if (this.state.value !== "") {
-    //   // 调整输入框，按钮和标题至窗口正上方
-    //   let searchStyle = document.getElementById("search-input-button-title-div")
-    //     .style;
-    //   searchStyle.position = "relative";
-    //   searchStyle.transform = "translate(-50%, 0%)";
-
-    //   // 校准标题位置使之与输入框和按钮齐平
-    //   let titleStyle = document.getElementById("search-title").style;
-    //   titleStyle.position = "relative";
-    //   titleStyle.top = "5px";
-    // }
   }
 
   // 回车键快捷搜索
@@ -59,7 +53,7 @@ class InputAndButton extends React.Component {
 
   render() {
     return (
-      <form id="1" className="search-input-button">
+      <form className="search-input-button-submit-group">
         <input
           type="text"
           id="search-input"
@@ -70,7 +64,7 @@ class InputAndButton extends React.Component {
         />
         <button
           type="reset"
-          id="search-reset-button"
+          id="search-button-reset"
           className="font-weight-light"
           onClick={() => this.handleResetButtonOnClick()}
         >
@@ -79,7 +73,7 @@ class InputAndButton extends React.Component {
         <button
           type="submit"
           className="btn btn-danger"
-          id="search-button"
+          id="search-button-submit"
           onClick={this.handleSubmitButtonOnClick}
         >
           <svg
@@ -99,7 +93,7 @@ class InputAndButton extends React.Component {
 }
 
 // 搜索标题
-class Title extends React.Component {
+export class Title extends React.Component {
   render() {
     return <h1 id="search-title">Custom Search</h1>;
   }
@@ -109,7 +103,7 @@ class Title extends React.Component {
 class SearchBar extends React.Component {
   render() {
     return (
-      <div id="search-input-button-title-div">
+      <div id="search-bar-group">
         <Title />
         <InputAndButton {...this.props} />
       </div>
