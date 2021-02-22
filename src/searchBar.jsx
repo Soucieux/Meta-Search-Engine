@@ -3,7 +3,7 @@ import "./searchBar.css";
 import "bootstrap/dist/css/bootstrap.css";
 
 // 搜索框，搜索按钮
-export class InputAndButton extends React.Component {
+class InputAndButton extends React.Component {
   constructor(props) {
     super(props);
     this.state = { value: "" };
@@ -31,15 +31,13 @@ export class InputAndButton extends React.Component {
 
   // 输入框提交按钮
   handleSubmitButtonOnClick(event) {
-    // 禁止默认情况下按钮自动刷新整个页面
+    // 禁止按钮默认自动刷新整个页面
     event.preventDefault();
-    if (this.state.value !== "" && this.props.match !== undefined) {
-      if (this.props.match.path === "/") {
-        this.props.history.push("/result");
-      } 
+    if (this.state.value !== "") {
+      this.props.history.push("/result");
     } else {
       console.log(
-        "Error occured at searchBar.jsx where this.props.match is undefined."
+        "Error occured at searchBar.jsx where this.props.match is undefined (line 36)."
       );
     }
   }
@@ -93,7 +91,7 @@ export class InputAndButton extends React.Component {
 }
 
 // 搜索标题
-export class Title extends React.Component {
+class Title extends React.Component {
   render() {
     return <h1 id="search-title">Custom Search</h1>;
   }
@@ -103,7 +101,12 @@ export class Title extends React.Component {
 class SearchBar extends React.Component {
   render() {
     return (
-      <div id="search-bar-group">
+      <div
+        id={
+          "search-bar-" +
+          (this.props.match.url === "/result" ? "revised" : "group")
+        }
+      >
         <Title />
         <InputAndButton {...this.props} />
       </div>
