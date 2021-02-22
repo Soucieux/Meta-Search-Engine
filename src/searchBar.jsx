@@ -6,15 +6,15 @@ import "bootstrap/dist/css/bootstrap.css";
 class InputAndButton extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { value: "" };
+    this.state = { input: "" };
     this.handleSearchInputChange = this.handleSearchInputChange.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleSubmitButtonOnClick = this.handleSubmitButtonOnClick.bind(this);
   }
 
-  // 实时监控和提取输入框内容并更新 state.value
+  // 实时监控和提取输入框内容并更新 state.input
   handleSearchInputChange(event) {
-    this.setState({ value: event.target.value });
+    this.setState({ input: event.target.value });
     let visible = document.getElementById("search-button-reset").style;
     if (event.target.value === "") {
       visible.visibility = "hidden";
@@ -25,7 +25,7 @@ class InputAndButton extends React.Component {
 
   // 输入框清除按钮
   handleResetButtonOnClick() {
-    this.setState({ value: "" });
+    this.setState({ input: "" });
     document.getElementById("search-button-reset").style.visibility = "hidden";
   }
 
@@ -33,13 +33,23 @@ class InputAndButton extends React.Component {
   handleSubmitButtonOnClick(event) {
     // 禁止按钮默认自动刷新整个页面
     event.preventDefault();
-    if (this.state.value !== "") {
-      this.props.history.push("/result");
-    } else {
-      console.log(
-        "Error occured at searchBar.jsx where this.props.match is undefined (line 36)."
-      );
+    if (this.state.input !== "") {
+      // 转至搜索结果页
+      if (this.props.match !== undefined && this.props.match.url === "/") {
+        this.props.history.push("/result");
+      } else {
+        console.log(
+          "Error occured at searchBar.jsx where this.props.match is undefined (line 36)."
+        );
+      }
+      // 提取搜索结果
+      this.retrieveSearchResult(this.state.input);
     }
+  }
+
+  // 提取搜索结果
+  retrieveSearchResult() {
+    return;
   }
 
   // 回车键快捷搜索
@@ -56,7 +66,7 @@ class InputAndButton extends React.Component {
           type="text"
           id="search-input"
           // 实时同步输入框内容确保在无内容时 reset button 隐藏
-          value={this.state.value}
+          value={this.state.input}
           onChange={this.handleSearchInputChange}
           onKeyPress={this.handleKeyPress}
         />
