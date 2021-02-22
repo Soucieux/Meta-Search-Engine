@@ -1,17 +1,13 @@
 import React from "react";
+import SearchRestuls from "./searchResults";
 import "./searchBar.css";
 import "bootstrap/dist/css/bootstrap.css";
 
-// 搜索框，搜索按钮
-class InputAndButton extends React.Component {
+// 搜索框，搜索按钮，搜索清除按钮
+class SearchInputAndButton extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      input: "",
-      data: [],
-      isSearchSubmitted: false,
-      searchResultError: null,
-    };
+    this.state = { input: "" };
     this.handleSearchInputChange = this.handleSearchInputChange.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleSubmitButtonOnClick = this.handleSubmitButtonOnClick.bind(this);
@@ -44,56 +40,30 @@ class InputAndButton extends React.Component {
         throw new Error("this.props.match is undefined!");
       } else if (this.props.match.url === "/") {
         // 转至搜索结果页面
-        this.props.history.push("/result");
-        console.log("============================");
-        console.log("Switch to search result page");
-        console.log("============================");
-      } else if (this.props.match.url === "/result") {
+        this.props.history.push("/results");
+        console.log("Switch to search results page\n\n");
+      } else if (this.props.match.url === "/results") {
         // 已在搜索结果页面
-        console.log("=============================");
-        console.log("Already on search result page");
-        console.log("=============================");
+        console.log("Already on search results page\n\n");
       } else {
         throw new Error(
-          "Cannot find the correct url to show result.\nThis should never happen."
+          "Cannot find the correct url to show results.\nThis should never happen."
         );
       }
-      // 提取搜索结果
-      this.setState({ isSearchSubmitted: true });
-      // this.componentDidMount();
+
+      console.log("Passing data to SearchResults.jsx...\n\n");
+
+      // 重新渲染并传递输入框内容
+      this.componentDidMount(true);
     }
   }
 
-  // 提取搜索结果
-  componentDidMount() {
-    if (this.state.isSearchSubmitted === true) {
-      console.log("==============================");
-      console.log("Data retrieval in progress...");
-      console.log("==============================");
-      fetch(
-        "https://api.valueserp.com/search?api_key=REDACTED&q=" +
-          this.state.input +
-          "&google_domain=google.ca&location=Ottawa,Ontario,Canada&gl=ca&hl=en"
-      )
-        .then((res) => res.json())
-        .then(
-          (result) => {
-            console.log(result);
-            console.log(result["request_info"]);
-            console.log(result["request_info"]);
-            console.log(result.request_info);
-            this.setState({
-              data: result.organic_results,
-            });
-          },
-          (searchResultError) => {
-            this.setState({ searchResultError });
-          }
-        );
+  componentDidMount(isSubmitButtonClicked) {
+    if (isSubmitButtonClicked) {
+      // 传递输入框内容至 this.props.location
+      this.props.history.push({ input: this.state.input });
     } else {
-      console.log("=========================================");
-      console.log("Search submit button is NOT being cliked");
-      console.log("=========================================");
+      console.log("Search button NOT cliked. No results retrieved.\n\n");
     }
   }
 
@@ -105,52 +75,54 @@ class InputAndButton extends React.Component {
   }
 
   render() {
-    const { searchResultError } = this.state;
+    const { searchResultError, organic_results } = this.state;
     if (searchResultError) {
       throw new Error(searchResultError.message);
     }
     return (
-      <form className="search-input-button-submit-group">
-        <input
-          type="text"
-          id="search-input"
-          // 实时同步输入框内容确保在无内容时 reset button 隐藏
-          value={this.state.input}
-          onChange={this.handleSearchInputChange}
-          onKeyPress={this.handleKeyPress}
-        />
-        <button
-          type="reset"
-          id="search-button-reset"
-          className="font-weight-light"
-          onClick={() => this.handleResetButtonOnClick()}
-        >
-          X
-        </button>
-        <button
-          type="submit"
-          className="btn btn-danger"
-          id="search-button-submit"
-          onClick={this.handleSubmitButtonOnClick}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="currentColor"
-            className="bi bi-search"
-            viewBox="0 0 16 16"
+      <React.Fragment>
+        <form className="search-input-button-submit-group">
+          <input
+            type="text"
+            id="search-input"
+            // 实时同步输入框内容确保在无内容时 reset button 隐藏
+            value={this.state.input}
+            onChange={this.handleSearchInputChange}
+            onKeyPress={this.handleKeyPress}
+          />
+          <button
+            type="reset"
+            id="search-button-reset"
+            className="font-weight-light"
+            onClick={() => this.handleResetButtonOnClick()}
           >
-            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-          </svg>
-        </button>
-      </form>
+            X
+          </button>
+          <button
+            type="submit"
+            className="btn btn-danger"
+            id="search-button-submit"
+            onClick={this.handleSubmitButtonOnClick}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              className="bi bi-search"
+              viewBox="0 0 16 16"
+            >
+              <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+            </svg>
+          </button>
+        </form>
+      </React.Fragment>
     );
   }
 }
 
 // 搜索标题
-class Title extends React.Component {
+class SearchTitle extends React.Component {
   render() {
     return <h1 id="search-title">Custom Search</h1>;
   }
@@ -160,15 +132,22 @@ class Title extends React.Component {
 class SearchBar extends React.Component {
   render() {
     return (
-      <div
-        id={
-          "search-bar-" +
-          (this.props.match.url === "/result" ? "revised" : "group")
-        }
-      >
-        <Title />
-        <InputAndButton {...this.props} />
-      </div>
+      <React.Fragment>
+        <div
+          id={
+            "search-bar-" +
+            (this.props.match.url === "/results" ? "revised" : "group")
+          }
+        >
+          <SearchTitle />
+          <SearchInputAndButton {...this.props} />
+        </div>
+        {this.props.history.location.input == null ? (
+          <React.Fragment></React.Fragment>
+        ) : (
+          <SearchRestuls {...this.props} />
+        )}
+      </React.Fragment>
     );
   }
 }
