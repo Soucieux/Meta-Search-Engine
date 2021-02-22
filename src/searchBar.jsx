@@ -6,7 +6,12 @@ import "bootstrap/dist/css/bootstrap.css";
 class InputAndButton extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { input: "" };
+    this.state = {
+      input: "",
+      data: [],
+      isSearchSubmitted: false,
+      searchResultError: null,
+    };
     this.handleSearchInputChange = this.handleSearchInputChange.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleSubmitButtonOnClick = this.handleSubmitButtonOnClick.bind(this);
@@ -34,22 +39,62 @@ class InputAndButton extends React.Component {
     // 禁止按钮默认自动刷新整个页面
     event.preventDefault();
     if (this.state.input !== "") {
-      // 转至搜索结果页
-      if (this.props.match !== undefined && this.props.match.url === "/") {
+      if (this.props.match == undefined) {
+        // 检测 this.props 是否有值
+        throw new Error("this.props.match is undefined!");
+      } else if (this.props.match.url === "/") {
+        // 转至搜索结果页面
         this.props.history.push("/result");
+        console.log("============================");
+        console.log("Switch to search result page");
+        console.log("============================");
+      } else if (this.props.match.url === "/result") {
+        // 已在搜索结果页面
+        console.log("=============================");
+        console.log("Already on search result page");
+        console.log("=============================");
       } else {
-        console.log(
-          "Error occured at searchBar.jsx where this.props.match is undefined (line 36)."
+        throw new Error(
+          "Cannot find the correct url to show result.\nThis should never happen."
         );
       }
       // 提取搜索结果
-      this.retrieveSearchResult(this.state.input);
+      this.setState({ isSearchSubmitted: true });
+      // this.componentDidMount();
     }
   }
 
   // 提取搜索结果
-  retrieveSearchResult() {
-    return;
+  componentDidMount() {
+    if (this.state.isSearchSubmitted === true) {
+      console.log("==============================");
+      console.log("Data retrieval in progress...");
+      console.log("==============================");
+      fetch(
+        "https://api.valueserp.com/search?api_key=REDACTED&q=" +
+          this.state.input +
+          "&google_domain=google.ca&location=Ottawa,Ontario,Canada&gl=ca&hl=en"
+      )
+        .then((res) => res.json())
+        .then(
+          (result) => {
+            console.log(result);
+            console.log(result["request_info"]);
+            console.log(result["request_info"]);
+            console.log(result.request_info);
+            this.setState({
+              data: result.organic_results,
+            });
+          },
+          (searchResultError) => {
+            this.setState({ searchResultError });
+          }
+        );
+    } else {
+      console.log("=========================================");
+      console.log("Search submit button is NOT being cliked");
+      console.log("=========================================");
+    }
   }
 
   // 回车键快捷搜索
@@ -60,6 +105,10 @@ class InputAndButton extends React.Component {
   }
 
   render() {
+    const { searchResultError } = this.state;
+    if (searchResultError) {
+      throw new Error(searchResultError.message);
+    }
     return (
       <form className="search-input-button-submit-group">
         <input

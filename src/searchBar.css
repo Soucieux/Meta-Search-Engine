@@ -26,7 +26,7 @@
 
 #search-button-submit {
   width: 50px;
-  margin-left: 5px;
+  margin-left: -15px;
   margin-right: 10px;
   /* 阴影持续时间 */
   transition: 0.5s;
@@ -47,8 +47,8 @@
 }
 
 #search-button-reset {
-  position: absolute;
-  right: 68px;
+  position: relative;
+  right: 26px;
   top: 0px;
   bottom: 0;
   height: 30px;
