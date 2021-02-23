@@ -87,10 +87,9 @@
 
 #search-bar-revised {
   margin-top: 20px;
-  width: 60%;
   max-width: fit-content;
   position: relative;
   left: 33.33%;
-    /* 测试 div大小 */
+  /* 测试 div大小 */
   /* border: 3px solid #73ad21; */
 }

@@ -15,7 +15,7 @@
 #search-result-individual:hover {
   border-radius: 20px;
   /* 从左至右：增加立体感，边框厚度 */
-  border: solid 1.5px #d3d3d3;
+  border: solid 1px #d3d3d3;
   /* 渐变时间 */
   transition: 0.5s;
   /* 从左至右：阴影垂直位置，阴影水平位置，阴影模糊度，阴影大小 */
