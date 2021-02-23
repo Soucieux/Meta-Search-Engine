@@ -1,9 +1,8 @@
 #search-results {
   margin-top: 50px;
-  width: 100%;
-  max-width: max-content;
   position: relative;
-  left: 25%;
+  width: 60%;
+  left: 20%;
   /* 测试 div大小 */
   /* border: 3px solid #73ad21; */
 }
@@ -13,15 +12,13 @@
   color: rgb(243, 13, 109);
 }
 
-#search-result-link:hover {
-  text-decoration: none;
-  font-size: 23px;
-  border-radius: 5px;
-  /* 从左至右：增加立体感，边框厚度*/
+#search-result-individual:hover {
+  border-radius: 20px;
+  /* 从左至右：增加立体感，边框厚度 */
   border: solid 1.5px #d3d3d3;
   /* 渐变时间 */
   transition: 0.5s;
-  /* 从左至右：阴影垂直位置，阴影水平位置，阴影模糊度，阴影大小*/
+  /* 从左至右：阴影垂直位置，阴影水平位置，阴影模糊度，阴影大小 */
   box-shadow: 0 0 5px 2px #413c3c;
 }
 
@@ -29,8 +26,8 @@
   color: rgb(0, 4, 248);
 }
 
-#search-result-display-link{
-    margin-top: -3px;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    font-size: 15px;
+#search-result-display-link {
+  margin-top: -3px;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  font-size: 15px;
 }
