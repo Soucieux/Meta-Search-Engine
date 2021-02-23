@@ -51,7 +51,7 @@ class SearchInputAndButton extends React.Component {
         );
       }
 
-      console.log("Passing data to SearchResults.jsx...\n\n");
+      console.log("Passing input\n\n");
 
       // 重新渲染并传递输入框内容
       this.componentDidMount(true);
@@ -62,6 +62,7 @@ class SearchInputAndButton extends React.Component {
     if (isSubmitButtonClicked) {
       // 传递输入框内容至 this.props.location
       this.props.history.push({ input: this.state.input });
+      console.log("Input passed\n\n");
     } else {
       console.log("Search button NOT cliked. No results retrieved.\n\n");
     }
@@ -142,11 +143,7 @@ class SearchBar extends React.Component {
           <SearchTitle />
           <SearchInputAndButton {...this.props} />
         </div>
-        {this.props.history.location.input == null ? (
-          <React.Fragment></React.Fragment>
-        ) : (
-          <SearchRestuls {...this.props} />
-        )}
+        <SearchRestuls {...this.props} />
       </React.Fragment>
     );
   }
