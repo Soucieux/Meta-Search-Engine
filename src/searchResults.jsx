@@ -1,6 +1,7 @@
 import React from "react";
-import { Link, Redirect } from "react-router-dom";
+import { Link} from "react-router-dom";
 import "./searchResults.css";
+import "bootstrap/dist/css/bootstrap.css";
 
 class Results extends React.Component {
   constructor(props) {
@@ -112,6 +113,7 @@ class Results extends React.Component {
             <ul key={organic_result.position}>
               <Link
                 target="_blank"
+                id="search-result-link"
                 to={
                   "//" +
                   (organic_result.link[4] === "s"
@@ -123,8 +125,8 @@ class Results extends React.Component {
               >
                 {organic_result.title}
               </Link>
-              <div>{organic_result.displayed_link}</div>
-              <div>{organic_result.snippet}</div>
+              <div id="search-result-display-link" className="text-secondary">{organic_result.displayed_link}</div>
+              <div className="text-muted">{organic_result.snippet}</div>
             </ul>
           ))}
         </div>

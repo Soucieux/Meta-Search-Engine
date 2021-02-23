@@ -6,19 +6,19 @@
   text-indent: 10px;
   /* 输入框边缘圆滑度 */
   border-radius: 5px;
-  /* solid代表输入框有边框 */
+  /* 从左至右：增加立体感，边框厚度 */
   border: solid 1.5px #d3d3d3;
-  /* 阴影持续时间 */
+  /* 渐变时间 */
   transition: 0.5s;
 }
 
 #search-input:hover {
-  /* 0 0代表输入框四周阴影*/
+  /* 从左至右：阴影垂直位置，阴影水平位置，阴影模糊度，阴影大小*/
   box-shadow: 0 0 5px 0.5px #d3d3d3;
 }
 
 #search-input:focus {
-  /* 0 0代表输入框四周阴影*/
+  /* 从左至右：阴影垂直位置，阴影水平位置，阴影模糊度，阴影大小*/
   box-shadow: 0 0 8px 3px #d3d3d3;
   /* 输入框无边框*/
   outline-width: 0px;
@@ -28,12 +28,12 @@
   width: 50px;
   margin-left: -15px;
   margin-right: 10px;
-  /* 阴影持续时间 */
+  /* 持续时间 */
   transition: 0.5s;
 }
 
 #search-button-submit:hover {
-  /* 0 0代表输入框四周阴影*/
+  /* 从左至右：阴影垂直位置，阴影水平位置，阴影模糊度，阴影大小*/
   box-shadow: 0 0 18px 3px #d3d3d3;
 }
 
