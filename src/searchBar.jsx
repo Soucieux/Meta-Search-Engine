@@ -94,10 +94,11 @@ class SearchInputAndButton extends React.Component {
           <button
             type="reset"
             id="search-button-reset"
-            className="font-weight-light"
+            className="close"
+            aria-label="Close"
             onClick={() => this.handleResetButtonOnClick()}
           >
-            X
+            <span aria-hidden="true">&times;</span>
           </button>
           <button
             type="submit"

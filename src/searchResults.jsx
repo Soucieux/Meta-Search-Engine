@@ -115,10 +115,10 @@ class Results extends React.Component {
                 to={
                   "//" +
                   (organic_result.link[4] === "s"
-                    // https
-                    ? organic_result.link.slice(8, organic_result.link.length)
-                    // http
-                    : organic_result.link.slice(7, organic_result.link.length))
+                    ? // https
+                      organic_result.link.slice(8, organic_result.link.length)
+                    : // http
+                      organic_result.link.slice(7, organic_result.link.length))
                 }
               >
                 {organic_result.title}
