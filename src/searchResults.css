@@ -1,0 +1,9 @@
+#search-results {
+  margin-top: 50px;
+  width: 100%;
+  max-width: max-content;
+  position: relative;
+  left: 25%;
+  /* 测试 div大小 */
+  border: 3px solid #73ad21;
+}
