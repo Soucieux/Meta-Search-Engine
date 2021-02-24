@@ -4,9 +4,10 @@
 
 ## Features
 
-## Search Engine Filter.
-### In progress. Contains only Google.
-## Webpages Filter.
-## Customized second webpage to store a collection of saved webpages.
-## Saved webpages presented first when searching.
-## Convenient button to mark webpage as 'saved'.
+## Search Engine Filter [Google]
+## Webpages Filter
+## Convenient button to mark webpage as 'saved'
+## Saved webpages presented first when searching
+## Customized second webpage to store a collection of saved webpages
+
+
