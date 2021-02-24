@@ -2,7 +2,7 @@
 
 **This project was created in winter term 2021**
 
-## Features:
+## Features :
 
 ## Search Engine Filter [Google]
 ## Webpages Filter
