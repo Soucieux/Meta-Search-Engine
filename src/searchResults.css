@@ -31,3 +31,47 @@
   font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
   font-size: 15px;
 }
+
+#search-engine-filter {
+  width: 15%;
+  position: fixed;
+  top: 200px;
+  margin-left: 30px;
+}
+
+input[type="checkbox"] {
+  margin-right: 50px;
+  /* 更改勾选框大小 */
+  transform: scale(1.5);
+  /* 视觉提醒可以点击（鼠标指针变为手指） */
+  cursor: pointer;
+  /* 隐藏勾选框 */
+  /* opacity: 0; */
+  /* 设置勾选框大小为 0 使其不再占用空间*/
+  /* height: 0; */
+  /* width: 0; */
+}
+
+#engine-filter-individual {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+#no-results {
+  position: relative;
+  left: 45%;
+  top: 200px;
+  font-size: 60px;
+}
+
+#search-results-websites-filter {
+  width: 15%;
+  position: fixed;
+  top: 500px;
+  margin-left: 30px;
+}
+
+#website-filter-individual {
+  font-size: 15px;
+  font-weight: bold;
+}
