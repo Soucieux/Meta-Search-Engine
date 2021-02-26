@@ -1,10 +1,10 @@
 #search-results {
   margin-top: 50px;
   position: relative;
-  width: 60%;
-  left: 20%;
+  left: 21%;
+  max-width: fit-content;
   /* 测试 div大小 */
-  /* border: 3px solid #73ad21; */
+  border: 3px solid #73ad21;
 }
 
 #search-result-link {
