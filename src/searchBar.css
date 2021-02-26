@@ -72,24 +72,22 @@
 #search-bar-group {
   /* 横向缩小浏览器仍然完全显示标题，输入框和按钮 */
   width: 100%;
-  /* 横向扩展浏览器保持标题，输入框和按钮 fit-content 才能做到居中 */
+  /* 保持此 element 只占用它们实际大小的空间 而不是水平一直扩展*/
   max-width: fit-content;
   /* 保持标题，输入框和按钮水平居中和垂直居中，无论浏览器窗口大小*/
   position: fixed;
   top: 40%;
   left: 50%;
-  -ms-transform: translateX(-50%) translateY(-50%);
-  -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
   /* 测试 div大小 */
   /* border: 3px solid #73ad21; */
 }
 
 #search-bar-revised {
-  margin-top: 20px;
-  max-width: fit-content;
-  position: relative;
-  left: 33.33%;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   /* 测试 div大小 */
   /* border: 3px solid #73ad21; */
 }
