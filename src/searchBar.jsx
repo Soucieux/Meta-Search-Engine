@@ -86,6 +86,7 @@ class SearchInputAndButton extends React.Component {
           <input
             type="text"
             id="search-input"
+            autoComplete="off"
             // 实时同步输入框内容确保在无内容时 reset button 隐藏
             value={this.state.input}
             onChange={this.handleSearchInputChange}
@@ -134,7 +135,7 @@ class SearchTitle extends React.Component {
 class SearchBar extends React.Component {
   render() {
     return (
-      <React.Fragment>
+      <main className="test">
         <div
           id={
             "search-bar-" +
@@ -145,7 +146,7 @@ class SearchBar extends React.Component {
           <SearchInputAndButton {...this.props} />
         </div>
         <SearchRestuls {...this.props} />
-      </React.Fragment>
+      </main>
     );
   }
 }
