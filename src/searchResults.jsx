@@ -30,6 +30,7 @@ class SearchEngineFilter extends React.Component {
       <ul className="list-group list-group-flush" id="search-engine-filter">
         <button
           id="engine-filter-individual"
+          className="button-default"
           onClick={() => this.firefilterGoogleResultsRequest()}
         >
           <input
@@ -40,7 +41,7 @@ class SearchEngineFilter extends React.Component {
           />
         </button>
 
-        <button  id="engine-filter-individual">
+        <button id="engine-filter-individual" className="button-default">
           <input type="image" alt="Bing" src="bingIcon.ico" id="bing-icon" />
         </button>
       </ul>
@@ -61,22 +62,20 @@ class SearchResultsWebsitesFilter extends React.Component {
     searchResults.map((results) => websites.push(results.domain));
     websites = Array.from(new Set(websites));
     return (
-      <ul className="list-group list-group-flush" id="websites-filter">
+      <div className="list-group list-group-flush" id="websites-filter">
         {websites.map((website) => (
-          <li
+          <button
             className="list-group-item"
             id="website-filter-individual"
             key={website}
           >
             <input
-              type="checkbox"
-              defaultChecked="checked"
               onChange={() => this.fireWebsitesFilterRequest(website)}
             ></input>
             {website}
-          </li>
+          </button>
         ))}
-      </ul>
+      </div>
     );
   }
 }
