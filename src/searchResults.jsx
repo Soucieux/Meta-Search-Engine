@@ -29,7 +29,6 @@ class SearchEngineFilter extends React.Component {
     return (
       <ul className="list-group list-group-flush" id="search-engine-filter">
         <button
-          className="btn"
           id="engine-filter-individual"
           onClick={() => this.firefilterGoogleResultsRequest()}
         >
@@ -41,7 +40,7 @@ class SearchEngineFilter extends React.Component {
           />
         </button>
 
-        <button className="btn" id="engine-filter-individual">
+        <button  id="engine-filter-individual">
           <input type="image" alt="Bing" src="bingIcon.ico" id="bing-icon" />
         </button>
       </ul>
