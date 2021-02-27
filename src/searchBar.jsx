@@ -136,20 +136,71 @@ class SearchTitle extends React.Component {
   }
 }
 
+var googleColorCount = 1;
+
+// 搜索引擎筛选
+class SearchEngineFilter extends React.Component {
+  // 发送显示或隐藏 Google 搜索结果请求
+  firefilterGoogleResultsRequest() {
+    this.props.fireGoogleResultsFilterRequest();
+    this.changeButtonColor();
+  }
+
+  // 改变按钮颜色
+  changeButtonColor() {
+    let style = document.getElementById("engine-filter-individual").style;
+    if (googleColorCount === 0) {
+      style.backgroundColor = "rgb(216, 224, 210)";
+      googleColorCount = 1;
+    } else {
+      style.backgroundColor = "rgb(255, 255, 255)";
+      googleColorCount = 0;
+    }
+  }
+
+  render() {
+    return (
+      <div
+        className="list-group list-group-flush"
+        id="search-engine-filter-group"
+      >
+        <button
+          id="engine-filter-individual"
+          className="button-default"
+          onClick={() => this.firefilterGoogleResultsRequest()}
+        >
+          <input
+            type="image"
+            alt="Google"
+            src="googleIcon.ico"
+            id="google-icon"
+          />
+        </button>
+
+        <button id="engine-filter-individual" className="button-default">
+          <input type="image" alt="Bing" src="bingIcon.ico" id="bing-icon" />
+        </button>
+      </div>
+    );
+  }
+}
+
 // 搜索页面
 class SearchBar extends React.Component {
   render() {
     return (
-      <main className="test">
+      <main>
         <div
           id={
             "search-bar-" +
             (this.props.match.url === "/results" ? "revised" : "group")
           }
         >
-          <SearchTitle />
+          <SearchEngineFilter {...this.props} />
           <SearchInputAndButton {...this.props} />
+          <SearchTitle />
         </div>
+
         <SearchRestuls {...this.props} />
       </main>
     );

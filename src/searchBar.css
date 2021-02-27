@@ -1,3 +1,4 @@
+/* 搜索输入框 */
 #search-input {
   height: 40px;
   width: 700px;
@@ -12,11 +13,13 @@
   transition: 0.5s;
 }
 
+/* 搜索输入框：鼠标悬停 */
 #search-input:hover {
   /* 从左至右：阴影垂直位置，阴影水平位置，阴影模糊度，阴影大小*/
   box-shadow: 0 0 5px 0.5px #d3d3d3;
 }
 
+/* 搜索输入框：聚焦 */
 #search-input:focus {
   /* 从左至右：阴影垂直位置，阴影水平位置，阴影模糊度，阴影大小*/
   box-shadow: 0 0 8px 3px #d3d3d3;
@@ -24,6 +27,7 @@
   outline-width: 0px;
 }
 
+/* 搜索输入框提交按钮 */
 #search-button-submit {
   width: 50px;
   margin-left: -8px;
@@ -32,11 +36,13 @@
   transition: 0.5s;
 }
 
+/* 搜索输入框提交按钮：鼠标悬停 */
 #search-button-submit:hover {
   /* 从左至右：阴影垂直位置，阴影水平位置，阴影模糊度，阴影大小*/
   box-shadow: 0 0 18px 3px #d3d3d3;
 }
 
+/* 搜索输入框，提交按钮 */
 .search-input-button-submit-group {
   position: relative;
   margin-top: 10px;
@@ -46,6 +52,7 @@
   /* border: 3px solid #73ad21; */
 }
 
+/* 搜索输入框清空按钮 */
 #search-button-reset {
   position: relative;
   right: 26px;
@@ -63,16 +70,32 @@
   /* border: 3px solid #73ad21; */
 }
 
+/* 搜索标题（分为两部分） */
 #search-title {
   padding: 5px;
   /* 测试 div大小 */
   /* border: 3px solid #73ad21; */
 }
 
+/* 搜索标题组 */
 #search-title-group {
   display: flex;
+  width: 700px;
+  /* align-items && justify-content
+    只在 display:flex 的情况下可以触发
+    默认情况下,
+      align-items 调整垂直方向
+      justify-content 调整水平方向
+    如果 display-direction 更改了方向
+    那么以上两个的方向也随之逆转*/
+  justify-content: center;
+  /* 跟随上一个 div 保持此宽度和其相同*/
+  width: 100%;
+  /* 测试 div大小 */
+  /* border: 3px solid #73ad21; */
 }
 
+/* 搜索输入框，标题，两个按钮 */
 #search-bar-group {
   /* 横向缩小浏览器仍然完全显示标题，输入框和按钮 */
   width: 100%;
@@ -84,21 +107,73 @@
   left: 50%;
   transform: translate(-50%, -50%);
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: column-reverse;
   /* 测试 div大小 */
   /* border: 3px solid #73ad21; */
 }
 
+/* 进入/results页面后，自动更改输入框，标题，两个按钮位置 */
 #search-bar-revised {
   margin-top: 20px;
   display: flex;
   align-items: flex-start;
-  flex-direction: row;
+  flex-direction: row-reverse;
   column-gap: 10px;
-  position: relative;
+  position: absolute;
   left: 100px;
   max-width: fit-content;
   /* 测试 div大小 */
   /* border: 3px solid #73ad21; */
+}
+
+/* 搜索引擎筛选 */
+#search-engine-filter-group {
+  margin-top: 15px;
+  flex-direction: row;
+  column-gap: 25px;
+  justify-content: center;
+  /* 测试 div大小 */
+  /* border: 3px solid #73ad21; */
+}
+
+/* 进入/results页面后，自动更改搜索引擎筛选位置 */
+#search-engine-filter-revised {
+  flex-direction: row;
+  column-gap: 25px;
+  position: absolute;
+  left: 1200px;
+  top: 2.9%;
+  /* 测试 div大小 */
+  /* border: 3px solid #73ad21; */
+}
+
+/* 搜索引擎筛选（单独） */
+#engine-filter-individual {
+  font-size: 20px;
+  font-weight: bold;
+  width: 75px;
+  height: 40px;
+  border-radius: 25px;
+  background-color: rgb(216, 224, 210);
+  border: 2px solid rgb(167, 173, 162);
+}
+
+/* 搜索引擎： 鼠标悬停*/
+#engine-filter-individual:hover {
+  background-color: rgb(167, 173, 162) !important;
+}
+
+#google-icon {
+  height: 40px;
+  outline: none;
+  position: relative;
+  top: -3px;
+}
+
+#bing-icon {
+  height: 30px;
+  outline: none;
+  position: relative;
+  top: 2px;
+  left: 3px;
 }
