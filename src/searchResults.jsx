@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import "./searchResults.css";
 import "bootstrap/dist/css/bootstrap.css";
 
+var googleColorCount = 1;
+
 // 搜索引擎筛选
 class SearchEngineFilter extends React.Component {
   // 发送显示或隐藏 Google 搜索结果请求
@@ -12,26 +14,35 @@ class SearchEngineFilter extends React.Component {
   }
 
   // 改变按钮颜色
-  changeButtonColor(){
-    
+  changeButtonColor() {
+    let style = document.getElementById("engine-filter-individual").style;
+    if (googleColorCount === 0) {
+      style.backgroundColor = "rgb(216, 224, 210)";
+      googleColorCount = 1;
+    } else {
+      style.backgroundColor = "rgb(255, 255, 255)";
+      googleColorCount = 0;
+    }
   }
 
   render() {
     return (
       <ul className="list-group list-group-flush" id="search-engine-filter">
         <button
+          className="btn"
           id="engine-filter-individual"
           onClick={() => this.firefilterGoogleResultsRequest()}
         >
-          Google
+          <input
+            type="image"
+            alt="Google"
+            src="googleIcon.ico"
+            id="google-icon"
+          />
         </button>
 
-        <button type="checkbox" id="engine-filter-individual">
-          Bing
-        </button>
-
-        <button type="checkbox" id="engine-filter-individual">
-          Yahoo
+        <button className="btn" id="engine-filter-individual">
+          <input type="image" alt="Bing" src="bingIcon.ico" id="bing-icon" />
         </button>
       </ul>
     );
