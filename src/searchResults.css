@@ -1,17 +1,14 @@
+/* 搜索结果列表 */
 #search-results {
-  margin-top: 40px;
-  position: relative;
+  margin-top: 20px;
+  position: absolute;
   left: 380px;
-  max-width: fit-content;
+  width: 900px;
   /* 测试 div大小 */
   /* border: 3px solid #73ad21; */
 }
 
-#search-result-link {
-  font-size: 22px;
-  color: rgb(243, 13, 109);
-}
-
+/* 搜索结果（单独）：鼠标悬停 */
 #search-result-individual:hover {
   border-radius: 20px;
   /* 从左至右：增加立体感，边框厚度 */
@@ -22,45 +19,43 @@
   box-shadow: 0 0 5px 2px #413c3c;
 }
 
+/* 搜索结果链接 */
+#search-result-link {
+  font-size: 22px;
+  color: rgb(243, 13, 109);
+}
+
+/* 搜索结果链接：已访问过 */
 #search-result-link:visited {
   color: rgb(0, 4, 248);
 }
 
+/* 搜索结果显示连接 */
 #search-result-display-link {
   margin-top: -3px;
   font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
   font-size: 15px;
 }
 
-input[type="checkbox"] {
-  margin-right: 15px;
-  /* 更改勾选框大小 */
-  transform: scale(1.5);
-  /* 视觉提醒可以点击（鼠标指针变为手指） */
-  cursor: pointer;
-  /* 隐藏勾选框 */
-  /* opacity: 0; */
-  /* 设置勾选框大小为 0 使其不再占用空间*/
-  /* height: 0; */
-  /* width: 0; */
-}
-
-#search-engine-filter {
-  flex-direction: row;
-  column-gap: 25px;
-  position: fixed;
-  left: 1200px;
-  top: 2.9%;
-  /* 测试 div大小 */
-  /* border: 3px solid #73ad21; */
-}
-
+/* 按钮默认设置 */
 .button-default {
   /* 颜色渐变时间（下面的只有background-color有用，其他的仅作展示） */
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
     border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
+/* 搜索引擎筛选 */
+#search-engine-filter {
+  flex-direction: row;
+  column-gap: 25px;
+  position: absolute;
+  left: 1200px;
+  top: 2.9%;
+  /* 测试 div大小 */
+  /* border: 3px solid #73ad21; */
+}
+
+/* 搜索引擎筛选（单独） */
 #engine-filter-individual {
   font-size: 20px;
   font-weight: bold;
@@ -71,29 +66,45 @@ input[type="checkbox"] {
   border: 2px solid rgb(167, 173, 162);
 }
 
+/* 搜索引擎： 鼠标悬停*/
 #engine-filter-individual:hover {
   background-color: rgb(167, 173, 162) !important;
 }
 
 #no-results {
-  position: relative;
-  left: 45%;
-  top: 200px;
-  font-size: 60px;
+  position: absolute;
+  left:520px;
+  top: 300px;
+  font-size: 30px;
   /* 测试 div大小 */
   /* border: 3px solid #73ad21; */
 }
 
+/* 网站筛选 */
 #websites-filter {
-  width: 15%;
-  position: fixed;
-  top: 200px;
-  margin-left: 30px;
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  left: 100px;
+  margin-top: 50px;
+  /* 测试 div大小 */
+  /* border: 2px solid black; */
 }
 
+/* 网站筛选（单独） */
 #website-filter-individual {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: bold;
+  /* 测试 div大小 */
+  /* border: 2px solid black; */
+  border-radius: 10px;
+  border: none;
+}
+
+/* 网站筛选：鼠标悬停 */
+#website-filter-individual:hover {
+  background-color: rgb(167, 173, 162);
 }
 
 #google-icon {
