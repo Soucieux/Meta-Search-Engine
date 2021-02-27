@@ -32,6 +32,8 @@ class SearchResultsWebsitesFilter extends React.Component {
   }
 }
 
+var show_google_results = null;
+
 // 搜索结果
 class Results extends React.Component {
   constructor(props) {
@@ -43,7 +45,7 @@ class Results extends React.Component {
           title: "McDonald's Canada: Your Favourite Burgers, Fries & More",
           link: "http://www.mcdonalds.com/ca/en-ca.html",
           displayed_link: "www.mcdonalds.com › en-ca",
-          domain:"www.mcdonalds.com",
+          domain: "www.mcdonalds.com",
           snippet:
             "*Round Up available at participating McDonald's restaurants in Canada. The Spicy McChicken® Challenge is back!",
         },
@@ -52,7 +54,7 @@ class Results extends React.Component {
           title: "tieltieltileiteteiletlitllitteillietilteiltelliliet2",
           link: "https://www.mcdonalds.com/ca/en-ca/full-menu.html",
           displayed_link: "www.mcdonalds.com › en-ca › full-menu",
-          domain:"www.mcdonalds.com",
+          domain: "www.mcdonalds.com",
           snippet:
             "For delicious food, visit McDonald's today! View our wide selection of meals, snacks, drinks, and more.",
         },
@@ -61,7 +63,7 @@ class Results extends React.Component {
           title: "McDonald's - Wikipedia",
           link: "https://en.wikipedia.org/wiki/McDonald%27s",
           displayed_link: "en.wikipedia.org › wiki › McDonald's",
-          domain:"en.wikipeida.org",
+          domain: "en.wikipeida.org",
           snippet:
             "McDonald's Corporation is an American fast food company, founded in 1940 as a restaurant operated by Richard and Maurice McDonald, in San Bernardino, ...",
         },
@@ -70,7 +72,7 @@ class Results extends React.Component {
           title: "Coupons | McDonald's Canada",
           link: "https://www4.mcdonalds.ca/coupons/",
           displayed_link: "www4.mcdonalds.ca › coupons",
-          domain:"en.wikipeida.org",
+          domain: "en.wikipeida.org",
           snippet:
             "When you order ahead on the McDonald's app with a coupon that has fries, you're automatically collecting a Reward from the fries included in the coupon.",
         },
@@ -79,7 +81,7 @@ class Results extends React.Component {
           title: "McDonalds Jobs in Ottawa, ON (with Salaries) - Indeed",
           link: "https://ca.indeed.com/McDonalds-jobs-in-Ottawa,-ON",
           displayed_link: "ca.indeed.com › McDonalds-jobs-in-Ottawa,-ON",
-          domain:"www.facebook.com",
+          domain: "www.facebook.com",
           snippet:
             "Search 53 McDonalds jobs now available in Ottawa, ON on Indeed.com, the world's largest job site.",
         },
@@ -89,15 +91,13 @@ class Results extends React.Component {
             "McDonald's Canada - Home - Ottawa, Ontario - Menu, Prices ...",
           link: "https://www.facebook.com/McDonalds594MontrealRdOttawaON/",
           displayed_link: "www.facebook.com › ... › Sandwich Shop",
-          domain:"www.youtube.com",
+          domain: "www.youtube.com",
           snippet:
             "McDonald's Canada, Ottawa. 29 likes · 1 talking about this · 524 were here. Fast Food Restaurant.",
         },
-        
       ],
-      show_google_results: true,
       searchResultError: null,
-      currentInput: "",
+      currentInput: "123",
       exclude_websites: [],
     };
   }
@@ -117,7 +117,6 @@ class Results extends React.Component {
   //         this.setState({
   //           google_results: result.organic_results,
   //           currentInput: input,
-  //           show_google_results: true,
   //         });
   //       },
   //       (searchResultError) => {
@@ -125,15 +124,6 @@ class Results extends React.Component {
   //       }
   //     );
   // }
-
-  // 显示或隐藏 Google 搜索结果
-  filterGoogleResults = () => {
-    if (this.state.show_google_results === true) {
-      this.setState({ show_google_results: false });
-    } else {
-      this.setState({ show_google_results: true });
-    }
-  };
 
   // 初始化显示或隐藏特定网页
   initializeWebsiteFilter = (website) => {
@@ -166,26 +156,26 @@ class Results extends React.Component {
     if (searchResultError) {
       return <div>Error: {searchResultError.message}</div>;
     }
+    // 确保收到输入值
     let { history } = this.props;
     if (!history) {
       throw new Error("Data NOT received!");
     }
-    let { input } = history.location;
+    // 实时更新网站筛选
     let { google_results } = this.state;
     if (this.state.exclude_websites !== false) {
       google_results = this.websiteFilter();
     }
-    if (!input) {
-      // 不存在输入值
-      return <React.Fragment />;
-    } else if (input !== this.state.currentInput) {
+    // 提取输入值
+    let { input, show_google_results } = history.location;
+    if (input !== this.state.currentInput) {
       // 存在新的输入值，存储新值并进行数据提取
-      console.log("New input received and stored\n\n");
-    //   this.retrieveSearchResults(input);
-    //   return <React.Fragment />;
-    // } else {
-      // 数据提取完成，渲染页面
+      console.log("New input identified and stored\n\n");
+      // this.retrieveSearchResults(input);
+      return <React.Fragment />;
+    } else {
       console.log("Search result retrieved\n\n");
+      // 渲染页面
       console.log("Re-rendering search results\n\n");
       return (
         <React.Fragment>
@@ -195,7 +185,7 @@ class Results extends React.Component {
               fireWebsitesFilterRequest={this.initializeWebsiteFilter}
             />
           </React.Fragment>
-          {this.state.show_google_results === true ? (
+          {show_google_results === true ? (
             <React.Fragment>
               {/* 显示搜索结果 */}
               <div id="search-results">
@@ -241,7 +231,7 @@ class Results extends React.Component {
           ) : (
             <React.Fragment></React.Fragment>
           )}
-          {this.state.show_google_results === false ? (
+          {show_google_results === false ? (
             <span id="no-results">
               No results left for the selected filters
             </span>
