@@ -46,21 +46,24 @@ input[type="checkbox"] {
 }
 
 #search-engine-filter {
-  display: flex;
-  width: 15%;
+  flex-direction: row;
+  column-gap: 25px;
   position: fixed;
-  top: 200px;
-  margin-left: 30px;
+  left: 1200px;
+  top: 3%;
+  /* 测试 div大小 */
+  /* border: 3px solid #73ad21; */
 }
 
 #engine-filter-individual {
   font-size: 20px;
   font-weight: bold;
+  width: 75px;
+  height: 40px;
+  border-radius: 25px;
+  background-color: rgb(216, 224, 210);
+  border: 2px solid orangered;
 }
-/* 
-background: chartreuse;
-
-  background: red; */
 
 #no-results {
   position: relative;
@@ -74,11 +77,30 @@ background: chartreuse;
 #websites-filter {
   width: 15%;
   position: fixed;
-  top: 350px;
+  top: 200px;
   margin-left: 30px;
 }
 
 #website-filter-individual {
   font-size: 20px;
   font-weight: bold;
+}
+
+#google-icon {
+  height: 40px;
+  outline: none;
+  position: relative;
+  top: -7px;
+}
+
+#bing-icon {
+  height: 30px;
+  outline: none;
+  position: relative;
+  top: -2px;
+  left: 3px;
+}
+
+#engine-filter-individual:hover {
+  background-color: white;
 }
