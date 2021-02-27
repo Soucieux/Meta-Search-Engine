@@ -93,10 +93,8 @@
 #search-bar-revised {
   margin-top: 20px;
   display: flex;
-  /* 垂直方向 */
   align-items: flex-start;
-  /* 水平方向 */
-  /* justify-content: center; */
+  flex-direction: row;
   column-gap: 10px;
   position: relative;
   left: 100px;
