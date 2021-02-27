@@ -127,7 +127,12 @@ class SearchInputAndButton extends React.Component {
 // 搜索标题
 class SearchTitle extends React.Component {
   render() {
-    return <h1 id="search-title">Custom Search</h1>;
+    return (
+      <div id="search-title-group">
+        <h1 id="search-title">Custom</h1>
+        <h1 id="search-title">Search</h1>
+      </div>
+    );
   }
 }
 
