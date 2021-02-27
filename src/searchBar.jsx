@@ -2,6 +2,9 @@ import React from "react";
 import SearchRestuls from "./searchResults";
 import "./searchBar.css";
 import "bootstrap/dist/css/bootstrap.css";
+import SearchResults from "./searchResults";
+
+var show_google_results = true;
 
 // 搜索框，搜索按钮，搜索清除按钮
 class SearchInputAndButton extends React.Component {
@@ -53,15 +56,19 @@ class SearchInputAndButton extends React.Component {
 
       console.log("Passing input\n\n");
 
-      // 重新渲染并传递输入框内容
+      // 传递输入框内容和搜索引擎设置
       this.componentDidMount(true);
     }
   }
 
+  // 传递输入框内容和搜索引擎设置
   componentDidMount(isSubmitButtonClicked) {
     if (isSubmitButtonClicked) {
       // 传递输入框内容至 this.props.location
-      this.props.history.push({ input: this.state.input });
+      this.props.history.push({
+        input: this.state.input,
+        show_google_results: show_google_results,
+      });
       console.log("Input passed\n\n");
     } else {
       console.log("Search button NOT cliked. No results retrieved.\n\n");
@@ -141,8 +148,17 @@ var googleColorCount = 1;
 // 搜索引擎筛选
 class SearchEngineFilter extends React.Component {
   // 发送显示或隐藏 Google 搜索结果请求
-  firefilterGoogleResultsRequest() {
-    this.props.fireGoogleResultsFilterRequest();
+  prepareFilterGoogleSearchResults() {
+    let { input } = this.props.history.location;
+    if (show_google_results === true) {
+      show_google_results = false;
+      this.props.history.push({ input: input, show_google_results: false });
+      console.log("Google saerch results disabled\n\n");
+    } else {
+      this.props.history.push({ input: input, show_google_results: true });
+      show_google_results = true;
+      console.log("Google saerch results enabled\n\n");
+    }
     this.changeButtonColor();
   }
 
@@ -150,7 +166,7 @@ class SearchEngineFilter extends React.Component {
   changeButtonColor() {
     let style = document.getElementById("engine-filter-individual").style;
     if (googleColorCount === 0) {
-      style.backgroundColor = "rgb(216, 224, 210)";
+      style.backgroundColor = "rgb(155, 163, 149)";
       googleColorCount = 1;
     } else {
       style.backgroundColor = "rgb(255, 255, 255)";
@@ -160,26 +176,31 @@ class SearchEngineFilter extends React.Component {
 
   render() {
     return (
-      <div
-        className="list-group list-group-flush"
-        id="search-engine-filter-group"
-      >
-        <button
-          id="engine-filter-individual"
-          className="button-default"
-          onClick={() => this.firefilterGoogleResultsRequest()}
+      <div>
+        <div
+          className="list-group list-group-flush"
+          id="search-engine-filter-group"
         >
-          <input
-            type="image"
-            alt="Google"
-            src="googleIcon.ico"
-            id="google-icon"
-          />
-        </button>
+          <button
+            id="engine-filter-individual"
+            className="button-default"
+            onClick={() => this.prepareFilterGoogleSearchResults()}
+          >
+            <input
+              type="image"
+              alt="Google"
+              src="googleIcon.ico"
+              id="google-icon"
+            />
+          </button>
 
-        <button id="engine-filter-individual" className="button-default">
-          <input type="image" alt="Bing" src="bingIcon.ico" id="bing-icon" />
-        </button>
+          <button id="engine-filter-individual" className="button-default">
+            <input type="image" alt="Bing" src="bingIcon.ico" id="bing-icon" />
+          </button>
+        </div>
+        {this.props.match.url === "/results" && (
+          <SearchResults {...this.props} />
+        )}
       </div>
     );
   }
@@ -200,8 +221,6 @@ class SearchBar extends React.Component {
           <SearchInputAndButton {...this.props} />
           <SearchTitle />
         </div>
-
-        <SearchRestuls {...this.props} />
       </main>
     );
   }
