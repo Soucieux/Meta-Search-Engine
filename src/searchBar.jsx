@@ -143,7 +143,8 @@ class SearchTitle extends React.Component {
   }
 }
 
-var googleColorCount = 1;
+// 原始图标颜色
+var googleIconColor = "rgb(155, 163, 149)";
 
 // 搜索引擎筛选
 class SearchEngineFilter extends React.Component {
@@ -164,14 +165,13 @@ class SearchEngineFilter extends React.Component {
 
   // 改变按钮颜色
   changeButtonColor() {
-    let style = document.getElementById("engine-filter-individual").style;
-    if (googleColorCount === 0) {
-      style.backgroundColor = "rgb(155, 163, 149)";
-      googleColorCount = 1;
+    let { style } = document.getElementById("engine-filter-individual");
+    if (googleIconColor === "rgb(155, 163, 149)") {
+      googleIconColor = "rgb(255, 255, 255)";
     } else {
-      style.backgroundColor = "rgb(255, 255, 255)";
-      googleColorCount = 0;
+      googleIconColor = "rgb(155, 163, 149)";
     }
+    style.backgroundColor = googleIconColor;
   }
 
   render() {
