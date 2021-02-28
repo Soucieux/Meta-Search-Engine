@@ -22,45 +22,66 @@ class SearchResultsWebsitesFilter extends React.Component {
       searchResults.map((results) => this.websites.push(results.domain));
       this.websites = Array.from(new Set(this.websites));
       for (let i = 0; i < this.websites.length; i++) {
+        // 网站URL，网站position，按钮颜色，勾选框状态
         this.websites[i] = [this.websites[i], i, "rgb(155, 163, 149)"];
       }
       isWebsiteFiltersColorLoaded = true;
     }
   }
 
-  // 改变按钮颜色
-  changeWebsiteFiltersColor(position) {
+  // 改变按钮颜色和勾选框状态
+  changeWebsiteFiltersColor(position, checkboxClicked) {
     let websitesDiv = document.getElementById("websites-filter");
     let websiteFilterColorGroup = websitesDiv.getElementsByClassName(
       "list-group-item"
     );
-    for (let i = 0; i < this.websites.length; i++) {
-      if (this.websites[i][1] === position) {
-        if (this.websites[i][2] === "rgb(155, 163, 149)") {
-          this.websites[i][2] = "rgb(255, 255, 255)";
-        } else {
-          this.websites[i][2] = "rgb(155, 163, 149)";
-        }
-        websiteFilterColorGroup[position].style.backgroundColor = this.websites[
-          i
-        ][2];
+    let websiteFilterButton = websitesDiv.getElementsByClassName("checkbox");
+
+    if (this.websites[position][2] === "rgb(155, 163, 149)") {
+      this.websites[position][2] = "rgb(255, 255, 255)";
+    } else {
+      this.websites[position][2] = "rgb(155, 163, 149)";
+    }
+
+    if (checkboxClicked === undefined) {
+      if (websiteFilterButton[position].checked) {
+        websiteFilterButton[position].checked = false;
+      } else {
+        websiteFilterButton[position].checked = true;
       }
     }
+    websiteFilterColorGroup[position].style.backgroundColor = this.websites[
+      position
+    ][2];
+  }
+
+  // 勾选框触发筛选网站
+  websitesFilterCheckboxClicked(website) {
+    this.changeWebsiteFiltersColor(website[1], true);
+    this.props.fireWebsitesFilterRequest(website[0]);
   }
 
   render() {
     this.loadWebsite();
     return (
       <div id="websites-filter">
+        <span id="websites-filter-title">Websites Filter</span>
         {this.websites.map((website) => (
-          <button
-            className="list-group-item button-default"
-            id="website-filter-individual"
-            key={website[0]}
-            onClick={() => this.fireWebsitesFilterRequest(website)}
-          >
-            <span id="website-filter-individual-display">{website[0]}</span>
-          </button>
+          <React.Fragment key={website[0]}>
+            <input
+              type="checkbox"
+              defaultChecked="checked"
+              className="checkbox"
+              onClick={() => this.websitesFilterCheckboxClicked(website)}
+            />
+            <button
+              className="list-group-item button-default"
+              id="website-filter-individual"
+              onClick={() => this.fireWebsitesFilterRequest(website)}
+            >
+              <span id="website-filter-individual-display">{website[0]}</span>
+            </button>
+          </React.Fragment>
         ))}
       </div>
     );
@@ -163,7 +184,21 @@ class Results extends React.Component {
   // 初始化显示或隐藏特定网页
   initializeWebsiteFilter = (websiteUrl) => {
     let { exclude_websites } = this.state;
-    this.setState({ exclude_websites: exclude_websites.concat(websiteUrl) });
+    // 查找网站是否已经存在。若存在，则移除。若不存在，则加入。
+    let duplicateUrl = false;
+    for (let i = 0; i < exclude_websites.length; i++) {
+      if (exclude_websites[i] === websiteUrl) {
+        duplicateUrl = true;
+        break;
+      }
+    }
+    if (duplicateUrl) {
+      const index = exclude_websites.indexOf(websiteUrl);
+      exclude_websites.splice(index, 1);
+      this.setState({ exclude_websites: exclude_websites });
+    } else {
+      this.setState({ exclude_websites: exclude_websites.concat(websiteUrl) });
+    }
   };
 
   // 开始为特定网页检索搜索结果
