@@ -53,14 +53,23 @@
   /* border: 3px solid #73ad21; */
 }
 
+/* 网站筛选标题 */
+#websites-filter-title {
+  position: absolute;
+  left: 40px;
+  top: -40px;
+  font-size: 25px;
+  font-weight: bold;
+}
+
 /* 网站筛选 */
 #websites-filter {
   width: 250px;
   display: flex;
   flex-direction: column;
   position: absolute;
-  left: 10px;
-  margin-top: 50px;
+  left: 0px;
+  margin-top: 100px;
   /* 测试 div大小 */
   /* border: 2px solid#73ad21; */
 }
@@ -71,7 +80,6 @@
   font-weight: bold;
   border-radius: 10px;
   border: none;
-  margin-top: 5px;
   background-color: rgb(155, 163, 149);
   /* 测试 div大小 */
   /* border: 2px solid #73ad21; */
@@ -87,8 +95,22 @@
   background-color: rgb(167, 173, 162);
 }
 
+/* 网站筛选：文字分行 */
 #website-filter-individual-display {
   word-wrap: break-word;
   /* 测试 div大小 */
   /* border: 2px solid #73ad21; */
+}
+
+/* 网站筛选勾选框 */
+input[type="checkbox"] {
+  position: relative;
+  top: 33px;
+  left: 9px;
+  z-index: 1;
+  margin-right: 15px;
+  /* 更改勾选框大小 */
+  transform: scale(1.5);
+  /* 视觉提醒可以点击（鼠标指针变为手指） */
+  cursor: pointer;
 }
