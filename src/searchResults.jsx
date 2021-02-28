@@ -3,28 +3,63 @@ import { Link } from "react-router-dom";
 import "./searchResults.css";
 import "bootstrap/dist/css/bootstrap.css";
 
+// 加载网站筛选按钮数据（每次有新输入值会重置未 false）
+var isWebsiteFiltersColorLoaded = false;
+
 // 搜索结果网站筛选
 class SearchResultsWebsitesFilter extends React.Component {
+  websites = [];
   // 发送显示或隐藏特定网页请求
   fireWebsitesFilterRequest(website) {
-    this.props.fireWebsitesFilterRequest(website);
+    this.changeWebsiteFiltersColor(website[1]);
+    this.props.fireWebsitesFilterRequest(website[0]);
+  }
+
+  // 添加网站筛选（单独）
+  loadWebsite() {
+    if (isWebsiteFiltersColorLoaded === false) {
+      let { searchResults } = this.props;
+      searchResults.map((results) => this.websites.push(results.domain));
+      this.websites = Array.from(new Set(this.websites));
+      for (let i = 0; i < this.websites.length; i++) {
+        this.websites[i] = [this.websites[i], i, "rgb(155, 163, 149)"];
+      }
+      isWebsiteFiltersColorLoaded = true;
+    }
+  }
+
+  // 改变按钮颜色
+  changeWebsiteFiltersColor(position) {
+    let websitesDiv = document.getElementById("websites-filter");
+    let websiteFilterColorGroup = websitesDiv.getElementsByClassName(
+      "list-group-item"
+    );
+    for (let i = 0; i < this.websites.length; i++) {
+      if (this.websites[i][1] === position) {
+        if (this.websites[i][2] === "rgb(155, 163, 149)") {
+          this.websites[i][2] = "rgb(255, 255, 255)";
+        } else {
+          this.websites[i][2] = "rgb(155, 163, 149)";
+        }
+        websiteFilterColorGroup[position].style.backgroundColor = this.websites[
+          i
+        ][2];
+      }
+    }
   }
 
   render() {
-    let { searchResults } = this.props;
-    let websites = [];
-    searchResults.map((results) => websites.push(results.domain));
-    websites = Array.from(new Set(websites));
+    this.loadWebsite();
     return (
       <div id="websites-filter">
-        {websites.map((website) => (
+        {this.websites.map((website) => (
           <button
             className="list-group-item button-default"
             id="website-filter-individual"
-            key={website}
+            key={website[0]}
             onClick={() => this.fireWebsitesFilterRequest(website)}
           >
-            <span>{website}</span>
+            <span id="website-filter-individual-display">{website[0]}</span>
           </button>
         ))}
       </div>
@@ -126,9 +161,9 @@ class Results extends React.Component {
   // }
 
   // 初始化显示或隐藏特定网页
-  initializeWebsiteFilter = (website) => {
+  initializeWebsiteFilter = (websiteUrl) => {
     let { exclude_websites } = this.state;
-    this.setState({ exclude_websites: exclude_websites.concat(website) });
+    this.setState({ exclude_websites: exclude_websites.concat(websiteUrl) });
   };
 
   // 开始为特定网页检索搜索结果
@@ -161,20 +196,23 @@ class Results extends React.Component {
     if (!history) {
       throw new Error("Data NOT received!");
     }
-    // 实时更新网站筛选
-    let { google_results } = this.state;
-    if (this.state.exclude_websites !== false) {
-      google_results = this.websiteFilter();
-    }
     // 提取输入值
     let { input, show_google_results } = history.location;
     if (input !== this.state.currentInput) {
       // 存在新的输入值，存储新值并进行数据提取
       console.log("New input identified and stored\n\n");
+      isWebsiteFiltersColorLoaded = false;
       // this.retrieveSearchResults(input);
       return <React.Fragment />;
     } else {
-      console.log("Search result retrieved\n\n");
+      // 实时更新网站筛选
+      let { google_results } = this.state;
+      if (this.state.exclude_websites !== false) {
+        google_results = this.websiteFilter();
+        console.log("Search result filtered\n\n");
+      } else {
+        console.log("Search result fully displayed\n\n");
+      }
       // 渲染页面
       console.log("Re-rendering search results\n\n");
       return (
@@ -185,7 +223,7 @@ class Results extends React.Component {
               fireWebsitesFilterRequest={this.initializeWebsiteFilter}
             />
           </React.Fragment>
-          {show_google_results === true ? (
+          {show_google_results === true && (
             <React.Fragment>
               {/* 显示搜索结果 */}
               <div id="search-results">
@@ -228,15 +266,10 @@ class Results extends React.Component {
                 ))}
               </div>
             </React.Fragment>
-          ) : (
-            <React.Fragment></React.Fragment>
           )}
-          {show_google_results === false ? (
-            <span id="no-results">
-              No results left for the selected filters
-            </span>
-          ) : (
-            <React.Fragment></React.Fragment>
+          {(google_results[0] === undefined ||
+            show_google_results === false) && (
+            <span id="no-results">No results for the selected filters</span>
           )}
         </React.Fragment>
       );

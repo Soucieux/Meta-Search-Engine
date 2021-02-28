@@ -59,23 +59,36 @@
   display: flex;
   flex-direction: column;
   position: absolute;
-  left: 50px;
+  left: 10px;
   margin-top: 50px;
   /* 测试 div大小 */
-  /* border: 2px solid black; */
+  /* border: 2px solid#73ad21; */
 }
 
 /* 网站筛选（单独） */
 #website-filter-individual {
   font-size: 18px;
   font-weight: bold;
-  /* 测试 div大小 */
-  /* border: 2px solid black; */
   border-radius: 10px;
   border: none;
+  margin-top: 5px;
+  background-color: rgb(155, 163, 149);
+  /* 测试 div大小 */
+  /* border: 2px solid #73ad21; */
+}
+
+/* 网站筛选： 鼠标悬停*/
+#website-filter-individual:hover {
+  background-color: rgb(119, 124, 115) !important;
 }
 
 /* 网站筛选：鼠标悬停 */
 #website-filter-individual:hover {
   background-color: rgb(167, 173, 162);
+}
+
+#website-filter-individual-display {
+  word-wrap: break-word;
+  /* 测试 div大小 */
+  /* border: 2px solid #73ad21; */
 }

@@ -152,7 +152,7 @@
   background-color: rgb(119, 124, 115) !important;
 }
 
-/* 搜索引擎： 鼠标悬停*/
+/* 搜索引擎： 鼠标点击*/
 #engine-filter-individual:active {
   background-color: rgb(34, 28, 28) !important;
 }
