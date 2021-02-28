@@ -8,16 +8,19 @@ var isWebsiteFiltersColorLoaded = false;
 
 // 搜索结果网站筛选
 class SearchResultsWebsitesFilter extends React.Component {
+  // 所有搜索结果网站
   websites = [];
   // 发送显示或隐藏特定网页请求
   fireWebsitesFilterRequest(website) {
     this.changeWebsiteFiltersColor(website[1]);
+    // 来自于 Results.initializeWebsiteFilter()
     this.props.fireWebsitesFilterRequest(website[0]);
   }
 
   // 添加网站筛选（单独）
   loadWebsite() {
     if (isWebsiteFiltersColorLoaded === false) {
+      // 来自于 Results.state.google_results
       let { searchResults } = this.props;
       searchResults.map((results) => this.websites.push(results.domain));
       this.websites = Array.from(new Set(this.websites));
@@ -66,120 +69,68 @@ class SearchResultsWebsitesFilter extends React.Component {
     return (
       <div id="websites-filter">
         <span id="websites-filter-title">Websites Filter</span>
-        {this.websites.map((website) => (
-          <React.Fragment key={website[0]}>
-            <input
-              type="checkbox"
-              defaultChecked="checked"
-              className="checkbox"
-              onClick={() => this.websitesFilterCheckboxClicked(website)}
-            />
-            <button
-              className="list-group-item button-default"
-              id="website-filter-individual"
-              onClick={() => this.fireWebsitesFilterRequest(website)}
-            >
-              <span id="website-filter-individual-display">{website[0]}</span>
-            </button>
-          </React.Fragment>
-        ))}
+        {this.websites[0] === undefined ? (
+          <span id="websites-filter-secondary-title">No websites</span>
+        ) : (
+          this.websites.map((website) => (
+            <React.Fragment key={website[1]}>
+              <input
+                type="checkbox"
+                defaultChecked="checked"
+                className="checkbox"
+                onClick={() => this.websitesFilterCheckboxClicked(website)}
+              />
+              <button
+                className="list-group-item button-default"
+                id="website-filter-individual"
+                onClick={() => this.fireWebsitesFilterRequest(website)}
+              >
+                <span id="website-filter-individual-display">{website[0]}</span>
+              </button>
+            </React.Fragment>
+          ))
+        )}
       </div>
     );
   }
 }
 
-var show_google_results = null;
-
 // 搜索结果
 class Results extends React.Component {
+  // 所搜搜索引擎结果
+  all_results = [];
   constructor(props) {
     super(props);
     this.state = {
-      google_results: [
-        {
-          position: "1",
-          title: "McDonald's Canada: Your Favourite Burgers, Fries & More",
-          link: "http://www.mcdonalds.com/ca/en-ca.html",
-          displayed_link: "www.mcdonalds.com › en-ca",
-          domain: "www.mcdonalds.com",
-          snippet:
-            "*Round Up available at participating McDonald's restaurants in Canada. The Spicy McChicken® Challenge is back!",
-        },
-        {
-          position: "2",
-          title: "tieltieltileiteteiletlitllitteillietilteiltelliliet2",
-          link: "https://www.mcdonalds.com/ca/en-ca/full-menu.html",
-          displayed_link: "www.mcdonalds.com › en-ca › full-menu",
-          domain: "www.mcdonalds.com",
-          snippet:
-            "For delicious food, visit McDonald's today! View our wide selection of meals, snacks, drinks, and more.",
-        },
-        {
-          position: "3",
-          title: "McDonald's - Wikipedia",
-          link: "https://en.wikipedia.org/wiki/McDonald%27s",
-          displayed_link: "en.wikipedia.org › wiki › McDonald's",
-          domain: "en.wikipeida.org",
-          snippet:
-            "McDonald's Corporation is an American fast food company, founded in 1940 as a restaurant operated by Richard and Maurice McDonald, in San Bernardino, ...",
-        },
-        {
-          position: "4",
-          title: "Coupons | McDonald's Canada",
-          link: "https://www4.mcdonalds.ca/coupons/",
-          displayed_link: "www4.mcdonalds.ca › coupons",
-          domain: "en.wikipeida.org",
-          snippet:
-            "When you order ahead on the McDonald's app with a coupon that has fries, you're automatically collecting a Reward from the fries included in the coupon.",
-        },
-        {
-          position: "5",
-          title: "McDonalds Jobs in Ottawa, ON (with Salaries) - Indeed",
-          link: "https://ca.indeed.com/McDonalds-jobs-in-Ottawa,-ON",
-          displayed_link: "ca.indeed.com › McDonalds-jobs-in-Ottawa,-ON",
-          domain: "www.facebook.com",
-          snippet:
-            "Search 53 McDonalds jobs now available in Ottawa, ON on Indeed.com, the world's largest job site.",
-        },
-        {
-          position: "6",
-          title:
-            "McDonald's Canada - Home - Ottawa, Ontario - Menu, Prices ...",
-          link: "https://www.facebook.com/McDonalds594MontrealRdOttawaON/",
-          displayed_link: "www.facebook.com › ... › Sandwich Shop",
-          domain: "www.youtube.com",
-          snippet:
-            "McDonald's Canada, Ottawa. 29 likes · 1 talking about this · 524 were here. Fast Food Restaurant.",
-        },
-      ],
+      google_results: [],
       searchResultError: null,
-      currentInput: "123",
+      currentInput: "",
       exclude_websites: [],
     };
   }
 
   // 提取搜索结果
-  // retrieveSearchResults(input) {
-  //   console.log("Start to retrieve search results\n\n");
-  //   fetch(
-  //     "https://api.valueserp.com/search?api_key=REDACTED&q=" +
-  //       input +
-  //       "&google_domain=google.ca&location=Ottawa,Ontario,Canada&gl=ca&hl=en"
-  //   )
-  //     .then((res) => res.json())
-  //     .then(
-  //       (result) => {
-  //         console.log(result);
-  //         this.setState({
-  //           google_results: result.organic_results,
-  //           currentInput: input,
-  //         });
-  //       },
-  //       (searchResultError) => {
-  //         this.setState({ searchResultError });
-  //       }
-  //     );
-  // }
+  retrieveSearchResults(input) {
+    console.log("Start to retrieve search results\n\n");
+    fetch(
+      "https://api.valueserp.com/search?api_key=REDACTED&q=" +
+        input +
+        "&google_domain=google.ca&location=Ottawa,Ontario,Canada&gl=ca&hl=en"
+    )
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          this.all_results = this.all_results.concat(result.organic_results);
+          this.setState({
+            google_results: result.organic_results,
+            currentInput: input,
+          });
+        },
+        (searchResultError) => {
+          this.setState({ searchResultError });
+        }
+      );
+  }
 
   // 初始化显示或隐藏特定网页
   initializeWebsiteFilter = (websiteUrl) => {
@@ -201,20 +152,20 @@ class Results extends React.Component {
     }
   };
 
-  // 开始为特定网页检索搜索结果
-  websiteFilter = () => {
-    let { google_results, exclude_websites } = this.state;
+  // 显示或隐藏特定网站搜索结果
+  websiteFilter = (websites) => {
+    let { exclude_websites } = this.state;
     var filtered_results = [];
-    for (let i = 0; i < google_results.length; i++) {
+    for (let i = 0; i < websites.length; i++) {
       var matchedwebsite = false;
       for (let j = 0; j < exclude_websites.length; j++) {
-        if (google_results[i].domain === exclude_websites[j]) {
+        if (websites[i].domain === exclude_websites[j]) {
           matchedwebsite = true;
           break;
         }
       }
       if (matchedwebsite === false) {
-        filtered_results = filtered_results.concat([google_results[i]]);
+        filtered_results = filtered_results.concat([websites[i]]);
       }
     }
     return filtered_results;
@@ -224,7 +175,7 @@ class Results extends React.Component {
     // 检测数据提取是否存在错误
     let { searchResultError } = this.state;
     if (searchResultError) {
-      return <div>Error: {searchResultError.message}</div>;
+      throw new Error("Failed to fatch!");
     }
     // 确保收到输入值
     let { history } = this.props;
@@ -233,19 +184,25 @@ class Results extends React.Component {
     }
     // 提取输入值
     let { input, show_google_results } = history.location;
-    if (input !== this.state.currentInput) {
+    if (!input) {
+      // 不存在输入值
+      return <React.Fragment />;
+    } else if (input !== this.state.currentInput) {
       // 存在新的输入值，存储新值并进行数据提取
       console.log("New input identified and stored\n\n");
       isWebsiteFiltersColorLoaded = false;
-      // this.retrieveSearchResults(input);
+      this.all_results = [];
+      this.retrieveSearchResults(input);
       return <React.Fragment />;
     } else {
+      let { exclude_websites } = this.state;
+      let all_results_final = [];
       // 实时更新网站筛选
-      let { google_results } = this.state;
-      if (this.state.exclude_websites !== false) {
-        google_results = this.websiteFilter();
+      if (exclude_websites[0] !== undefined) {
+        all_results_final = this.websiteFilter(this.all_results);
         console.log("Search result filtered\n\n");
       } else {
+        all_results_final = this.all_results;
         console.log("Search result fully displayed\n\n");
       }
       // 渲染页面
@@ -254,7 +211,7 @@ class Results extends React.Component {
         <React.Fragment>
           <React.Fragment>
             <SearchResultsWebsitesFilter
-              searchResults={this.state.google_results}
+              searchResults={all_results_final}
               fireWebsitesFilterRequest={this.initializeWebsiteFilter}
             />
           </React.Fragment>
@@ -262,39 +219,30 @@ class Results extends React.Component {
             <React.Fragment>
               {/* 显示搜索结果 */}
               <div id="search-results">
-                {google_results.map((google_result) => (
-                  <div
-                    id="search-result-individual"
-                    key={google_result.position}
-                  >
+                {all_results_final.map((all_result) => (
+                  <div id="search-result-individual" key={all_result.title}>
                     <h6 className="card-body">
                       <Link
                         id="search-result-link"
                         target="_blank"
                         to={
                           "//" +
-                          (google_result.link[4] === "s"
+                          (all_result.link[4] === "s"
                             ? // https
-                              google_result.link.slice(
-                                8,
-                                google_result.link.length
-                              )
+                              all_result.link.slice(8, all_result.link.length)
                             : // http
-                              google_result.link.slice(
-                                7,
-                                google_result.link.length
-                              ))
+                              all_result.link.slice(7, all_result.link.length))
                         }
                       >
-                        {google_result.title}
+                        {all_result.title}
                       </Link>
                       <div
                         id="search-result-display-link"
                         className="card-subtitle mb-2 text-muted"
                       >
-                        {google_result.displayed_link}
+                        {all_result.displayed_link}
                       </div>
-                      <div>{google_result.snippet}</div>
+                      <div>{all_result.snippet}</div>
                     </h6>
                     <hr />
                   </div>
@@ -302,7 +250,7 @@ class Results extends React.Component {
               </div>
             </React.Fragment>
           )}
-          {(google_results[0] === undefined ||
+          {(all_results_final[0] === undefined ||
             show_google_results === false) && (
             <span id="no-results">No results for the selected filters</span>
           )}
