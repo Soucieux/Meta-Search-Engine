@@ -3,87 +3,130 @@ import { Link } from "react-router-dom";
 import "./searchResults.css";
 import "bootstrap/dist/css/bootstrap.css";
 
-// 加载网站筛选按钮数据（每次有新输入值会重置未 false）
-var isWebsiteFiltersColorLoaded = false;
+// 初始渲染网站筛选按钮
+var loadWebsitesFilter = true;
+
+// 隐藏或显示搜索引擎结果
+var showGoogleResultsWebsitesFilter = true;
+
+// 储存上一次 Google 按钮状态
+var previousGoogleSearchStatus = true;
 
 // 搜索结果网站筛选
 class SearchResultsWebsitesFilter extends React.Component {
-  // 所有搜索结果网站
-  websites = [];
+  // 原始搜索结果网站
+  original_websites = [];
+  // 当前搜索结果网站
+  current_websites = [];
   // 发送显示或隐藏特定网页请求
   fireWebsitesFilterRequest(website) {
-    this.changeWebsiteFiltersColor(website[1]);
-    // 来自于 Results.initializeWebsiteFilter()
+    this.switchWebsitesButtonColor(website[1]);
+    // 来自于 Results.updateExcludeWebsitesList()
     this.props.fireWebsitesFilterRequest(website[0]);
   }
 
-  // 添加网站筛选（单独）
-  loadWebsite() {
-    if (isWebsiteFiltersColorLoaded === false) {
-      // 来自于 Results.state.google_results
-      let { searchResults } = this.props;
-      searchResults.map((results) => this.websites.push(results.domain));
-      this.websites = Array.from(new Set(this.websites));
-      for (let i = 0; i < this.websites.length; i++) {
-        // 网站URL，网站position，按钮颜色，勾选框状态
-        this.websites[i] = [this.websites[i], i, "rgb(155, 163, 149)"];
-      }
-      isWebsiteFiltersColorLoaded = true;
+  // 将搜索网站 URL 转换成 array
+  loadWebsitesFromResultsHelper(websites) {
+    let websites_final = [];
+    websites.map((results) => websites_final.push(results.domain));
+    websites_final = Array.from(new Set(websites_final));
+    for (let i = 0; i < websites_final.length; i++) {
+      // 网站URL，网站 position，按钮颜色，勾选框状态
+      websites_final[i] = [websites_final[i], i, "rgb(155, 163, 149)", true];
     }
+    return websites_final;
   }
 
+  // 添加网站筛选（单独）
+  loadWebsitesFromResults = () => {
+    // 把网站列表转换成网站筛选
+    // loadWebsitesFilter 代表首次生成网站筛选
+    // shwoGoogleResultsWebsitesFilter 代表每次点按 Google按钮时 重新生成新的网站筛选
+    if (loadWebsitesFilter || !showGoogleResultsWebsitesFilter) {
+      // 来自于 Results.state.google_results
+      let { searchResultsFiltered } = this.props;
+      this.current_websites = this.loadWebsitesFromResultsHelper(
+        searchResultsFiltered
+      );
+      // 显示 Google搜索结果时，保存一份原始的网站筛选用来显示或隐藏 Google所包含的网站
+      if (showGoogleResultsWebsitesFilter) {
+        this.original_websites = this.current_websites;
+      }
+      loadWebsitesFilter = false;
+    } else if (showGoogleResultsWebsitesFilter) {
+      // 显示 Google搜索结果时，将现有网站筛选替换成原始的包含 Google的网站筛选
+      this.current_websites = this.original_websites;
+    }
+  };
+
   // 改变按钮颜色和勾选框状态
-  changeWebsiteFiltersColor(position, checkboxClicked) {
+  switchWebsitesButtonColor = (position, checkboxClicked) => {
     let websitesDiv = document.getElementById("websites-filter");
-    let websiteFilterColorGroup = websitesDiv.getElementsByClassName(
+    let websitesFilterButtons = websitesDiv.getElementsByClassName(
       "list-group-item"
     );
-    let websiteFilterButton = websitesDiv.getElementsByClassName("checkbox");
+    let websiteFilterCheckboxes = websitesDiv.getElementsByClassName(
+      "checkbox"
+    );
 
-    if (this.websites[position][2] === "rgb(155, 163, 149)") {
-      this.websites[position][2] = "rgb(255, 255, 255)";
+    // 代表此网站相关的搜索结果已显示
+    let displayResult = "rgb(155, 163, 149)";
+    // 代表此网站相关的搜索结果未显示
+    let notDisplayResult = "rgb(255, 255, 255)";
+
+    if (this.current_websites[position][2] === displayResult) {
+      this.current_websites[position][2] = notDisplayResult;
     } else {
-      this.websites[position][2] = "rgb(155, 163, 149)";
+      this.current_websites[position][2] = displayResult;
+    }
+
+    if (this.current_websites[position][3]) {
+      this.current_websites[position][3] = false;
+    } else {
+      this.current_websites[position][3] = true;
     }
 
     if (checkboxClicked === undefined) {
-      if (websiteFilterButton[position].checked) {
-        websiteFilterButton[position].checked = false;
+      if (websiteFilterCheckboxes[position].checked) {
+        websiteFilterCheckboxes[position].checked = false;
       } else {
-        websiteFilterButton[position].checked = true;
+        websiteFilterCheckboxes[position].checked = true;
       }
     }
-    websiteFilterColorGroup[position].style.backgroundColor = this.websites[
+    websitesFilterButtons[
       position
-    ][2];
-  }
+    ].style.backgroundColor = this.current_websites[position][2];
+    this.original_websites = this.current_websites;
+  };
 
   // 勾选框触发筛选网站
   websitesFilterCheckboxClicked(website) {
-    this.changeWebsiteFiltersColor(website[1], true);
+    this.switchWebsitesButtonColor(website[1], true);
     this.props.fireWebsitesFilterRequest(website[0]);
   }
 
   render() {
-    this.loadWebsite();
+    this.loadWebsitesFromResults();
+    console.log("Re-rendering websites filter\n\n");
     return (
       <div id="websites-filter">
         <span id="websites-filter-title">Websites Filter</span>
-        {this.websites[0] === undefined ? (
+        {this.current_websites[0] === undefined ? (
           <span id="websites-filter-secondary-title">No websites</span>
         ) : (
-          this.websites.map((website) => (
+          this.current_websites.map((website) => (
             <React.Fragment key={website[1]}>
               <input
                 type="checkbox"
-                defaultChecked="checked"
                 className="checkbox"
-                onClick={() => this.websitesFilterCheckboxClicked(website)}
+                checked={website[3]}
+                onChange={() => this.websitesFilterCheckboxClicked(website)}
               />
               <button
                 className="list-group-item button-default"
                 id="website-filter-individual"
                 onClick={() => this.fireWebsitesFilterRequest(website)}
+                style={{ background: website[2] }}
               >
                 <span id="website-filter-individual-display">{website[0]}</span>
               </button>
@@ -97,43 +140,124 @@ class SearchResultsWebsitesFilter extends React.Component {
 
 // 搜索结果
 class Results extends React.Component {
-  // 所搜搜索引擎结果
-  all_results = [];
+  // 筛选前的所搜搜索结果，保存为初始结果
+  all_results_original = [];
+  // 筛选后的所有搜索结果
+  all_results_filtered = [];
+
   constructor(props) {
     super(props);
     this.state = {
-      google_results: [],
-      searchResultError: null,
-      currentInput: "",
+      google_results: [
+        {
+          engine: "Google",
+          position: "1",
+          title: "McDonald's Canada: Your Favourite Burgers, Fries & More",
+          link: "http://www.mcdonalds.com/ca/en-ca.html",
+          displayed_link: "www.mcdonalds.com › en-ca",
+          domain: "www.mcdonalds.com",
+          snippet:
+            "*Round Up available at participating McDonald's restaurants in Canada. The Spicy McChicken® Challenge is back!",
+        },
+        {
+          engine: "Google",
+          position: "2",
+          title: "tieltieltileiteteiletlitllitteillietilteiltelliliet2",
+          link: "https://www.mcdonalds.com/ca/en-ca/full-menu.html",
+          displayed_link: "www.mcdonalds.com › en-ca › full-menu",
+          domain: "www.mcdonalds.com",
+          snippet:
+            "For delicious food, visit McDonald's today! View our wide selection of meals, snacks, drinks, and more.",
+        },
+        {
+          engine: "Google",
+          position: "3",
+          title: "McDonald's - Wikipedia",
+          link: "https://en.wikipedia.org/wiki/McDonald%27s",
+          displayed_link: "en.wikipedia.org › wiki › McDonald's",
+          domain: "en.wikipeida.org",
+          snippet:
+            "McDonald's Corporation is an American fast food company, founded in 1940 as a restaurant operated by Richard and Maurice McDonald, in San Bernardino, ...",
+        },
+        {
+          engine: "Google",
+          position: "4",
+          title: "Coupons | McDonald's Canada",
+          link: "https://www4.mcdonalds.ca/coupons/",
+          displayed_link: "www4.mcdonalds.ca › coupons",
+          domain: "en.wikipeida.org",
+          snippet:
+            "When you order ahead on the McDonald's app with a coupon that has fries, you're automatically collecting a Reward from the fries included in the coupon.",
+        },
+        {
+          engine: "Google",
+          position: "5",
+          title: "McDonalds Jobs in Ottawa, ON (with Salaries) - Indeed",
+          link: "https://ca.indeed.com/McDonalds-jobs-in-Ottawa,-ON",
+          displayed_link: "ca.indeed.com › McDonalds-jobs-in-Ottawa,-ON",
+          domain: "www.facebook.com",
+          snippet:
+            "Search 53 McDonalds jobs now available in Ottawa, ON on Indeed.com, the world's largest job site.",
+        },
+        {
+          engine: "Google",
+          position: "6",
+          title:
+            "McDonald's Canada - Home - Ottawa, Ontario - Menu, Prices ...",
+          link: "https://www.facebook.com/McDonalds594MontrealRdOttawaON/",
+          displayed_link: "www.facebook.com › ... › Sandwich Shop",
+          domain: "www.youtube.com",
+          snippet:
+            "McDonald's Canada, Ottawa. 29 likes · 1 talking about this · 524 were here. Fast Food Restaurant.",
+        },
+      ],
+      searchResultsError: null,
+      currentInput: "123",
       exclude_websites: [],
     };
+    this.all_results_original = this.all_results_original.concat(
+      this.state.google_results
+    );
+    this.all_results_filtered = this.all_results_original;
+  }
+
+  // 增加搜索引擎标签
+  addGoogleTag(resultsWithoutTag) {
+    for (var i = 0; i < resultsWithoutTag.length; i++) {
+      resultsWithoutTag[i]["engine"] = "Google";
+      resultsWithoutTag[i]["position"] = i;
+    }
+    return resultsWithoutTag;
   }
 
   // 提取搜索结果
-  retrieveSearchResults(input) {
-    console.log("Start to retrieve search results\n\n");
-    fetch(
-      "https://api.valueserp.com/search?api_key=REDACTED&q=" +
-        input +
-        "&google_domain=google.ca&location=Ottawa,Ontario,Canada&gl=ca&hl=en"
-    )
-      .then((res) => res.json())
-      .then(
-        (result) => {
-          this.all_results = this.all_results.concat(result.organic_results);
-          this.setState({
-            google_results: result.organic_results,
-            currentInput: input,
-          });
-        },
-        (searchResultError) => {
-          this.setState({ searchResultError });
-        }
-      );
-  }
+  // retrieveSearchResults(input) {
+  //   console.log("Start to retrieve search results\n\n");
+  //   fetch(
+  //     "https://api.valueserp.com/search?api_key=REDACTED&q=" +
+  //       input +
+  //       "&google_domain=google.ca&location=Ottawa,Ontario,Canada&gl=ca&hl=en"
+  //   )
+  //     .then((res) => res.json())
+  //     .then(
+  //       (result) => {
+  //         console.log(result);
+  //         let resultsWithTag = this.addGoogleTag(result.organic_results);
+  //         this.all_results_original = this.all_results_original.concat(resultsWithTag);
+  //          this.all_results_filtered = this.all_results_original;
+  //         this.setState({
+  //           google_results: resultsWithTag,
+  //           currentInput: input,
+  //         });
+  //       },
+  //       (searchResultsError) => {
+  //         this.setState({ searchResultsError });
+  //       }
+  //     );
+  // }
 
-  // 初始化显示或隐藏特定网页
-  initializeWebsiteFilter = (websiteUrl) => {
+  // 更新 exclude_websites 列表
+  updateExcludeWebsitesList = (websiteUrl) => {
     let { exclude_websites } = this.state;
     // 查找网站是否已经存在。若存在，则移除。若不存在，则加入。
     let duplicateUrl = false;
@@ -153,74 +277,144 @@ class Results extends React.Component {
   };
 
   // 显示或隐藏特定网站搜索结果
-  websiteFilter = (websites) => {
+  // 此操作不会更改 all_results_original 和 all_results_filtered 的值
+  filterResultsByWesbites = () => {
     let { exclude_websites } = this.state;
-    var filtered_results = [];
-    for (let i = 0; i < websites.length; i++) {
+    var filtered_websites_results = [];
+    for (let i = 0; i < this.all_results_original.length; i++) {
       var matchedwebsite = false;
       for (let j = 0; j < exclude_websites.length; j++) {
-        if (websites[i].domain === exclude_websites[j]) {
+        if (this.all_results_original[i].domain === exclude_websites[j]) {
           matchedwebsite = true;
           break;
         }
       }
       if (matchedwebsite === false) {
-        filtered_results = filtered_results.concat([websites[i]]);
+        filtered_websites_results = filtered_websites_results.concat([
+          this.all_results_original[i],
+        ]);
       }
     }
-    return filtered_results;
+    return filtered_websites_results;
   };
 
-  render() {
-    // 检测数据提取是否存在错误
-    let { searchResultError } = this.state;
-    if (searchResultError) {
+  // 显示或隐藏特定搜索引擎搜索结果
+  // 此操作会不会更改 all_results_original 的值，但会更改 all_results_filtered 的值
+  filterResultsBySearchEngine(results, google) {
+    let show_results = [];
+    if (google === false) {
+      for (let i = 0; i < results.length; i++) {
+        if (results[i]["engine"] !== "Google") {
+          show_results.push(results[i]);
+        }
+      }
+      previousGoogleSearchStatus = false;
+    } else if (google === true) {
+      for (let i = 0; i < this.all_results_original.length; i++) {
+        if (this.all_results_original[i]["engine"] === "Google") {
+          show_results.push(this.all_results_original[i]);
+        }
+      }
+      previousGoogleSearchStatus = true;
+    }
+    return show_results;
+  }
+
+  // 获取网站筛选后的搜索结果
+  retrieveResultsByWebsites = () => {
+    let { exclude_websites } = this.state;
+    if (exclude_websites[0] !== undefined) {
+      console.log("Search results filtered based on websites\n\n");
+    } else {
+      console.log("Search results fully displayed without websites filter\n\n");
+    }
+    return this.filterResultsByWesbites();
+  };
+
+  // 提取搜索结果错误
+  retrieveResultsError = () => {
+    let { searchResultsError } = this.state;
+    if (searchResultsError) {
       throw new Error("Failed to fatch!");
     }
-    // 确保收到输入值
+  };
+
+  // 检测是否收到 searchBar 传递的输入值
+  isDataReceived = () => {
     let { history } = this.props;
     if (!history) {
       throw new Error("Data NOT received!");
     }
+  };
+
+  // 显示或隐藏 Google搜索结果
+  filterGoogleResults = (show_google_results) => {
+    if (
+      (previousGoogleSearchStatus === true && show_google_results === false) ||
+      (previousGoogleSearchStatus === false && show_google_results === true)
+    ) {
+      this.all_results_filtered = this.filterResultsBySearchEngine(
+        this.all_results_filtered,
+        show_google_results
+      );
+      if (showGoogleResultsWebsitesFilter) {
+        showGoogleResultsWebsitesFilter = false;
+      } else {
+        showGoogleResultsWebsitesFilter = true;
+      }
+    }
+  };
+
+  render() {
+    // 检测数据提取是否存在错误
+    this.retrieveResultsError();
+    // 检测是否收到 searchBar 传递的输入值
+    this.isDataReceived();
+    // 显示或隐藏 Google搜索结果
+    let { show_google_results } = this.props.location;
+    this.filterGoogleResults(show_google_results);
     // 提取输入值
-    let { input, show_google_results } = history.location;
+    let { input } = this.props.location;
     if (!input) {
       // 不存在输入值
       return <React.Fragment />;
     } else if (input !== this.state.currentInput) {
       // 存在新的输入值，存储新值并进行数据提取
       console.log("New input identified and stored\n\n");
-      isWebsiteFiltersColorLoaded = false;
-      this.all_results = [];
-      this.retrieveSearchResults(input);
+      loadWebsitesFilter = true;
+      // 初始化搜索结果 array
+      this.all_results_original = [];
+      this.all_results_filtered = [];
+      // this.retrieveSearchResults(input);
       return <React.Fragment />;
     } else {
-      let { exclude_websites } = this.state;
-      let all_results_final = [];
-      // 实时更新网站筛选
-      if (exclude_websites[0] !== undefined) {
-        all_results_final = this.websiteFilter(this.all_results);
-        console.log("Search result filtered\n\n");
-      } else {
-        all_results_final = this.all_results;
-        console.log("Search result fully displayed\n\n");
+      // 实时更新网站筛选_filtered);
+      if (show_google_results) {
+        this.all_results_filtered = this.retrieveResultsByWebsites();
       }
+      // log
+      console.log("Data in original\n");
+      console.log(this.all_results_original);
+      console.log("");
+      console.log("Data in filtered\n");
+      console.log(this.all_results_filtered);
+      console.log("");
+      console.log("Re-rendering search results based on filtered\n\n");
       // 渲染页面
-      console.log("Re-rendering search results\n\n");
       return (
         <React.Fragment>
           <React.Fragment>
             <SearchResultsWebsitesFilter
-              searchResults={all_results_final}
-              fireWebsitesFilterRequest={this.initializeWebsiteFilter}
+              searchResultsFiltered={this.all_results_filtered}
+              fireWebsitesFilterRequest={this.updateExcludeWebsitesList}
             />
           </React.Fragment>
-          {show_google_results === true && (
+          {this.all_results_filtered[0] !== undefined && (
             <React.Fragment>
               {/* 显示搜索结果 */}
               <div id="search-results">
-                {all_results_final.map((all_result) => (
-                  <div id="search-result-individual" key={all_result.title}>
+                {this.all_results_filtered.map((all_result) => (
+                  <div id="search-result-individual" key={all_result.position}>
                     <h6 className="card-body">
                       <Link
                         id="search-result-link"
@@ -250,8 +444,7 @@ class Results extends React.Component {
               </div>
             </React.Fragment>
           )}
-          {(all_results_final[0] === undefined ||
-            show_google_results === false) && (
+          {this.all_results_filtered[0] === undefined && (
             <span id="no-results">No results for the selected filters</span>
           )}
         </React.Fragment>
