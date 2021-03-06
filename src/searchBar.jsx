@@ -1,8 +1,7 @@
 import React from "react";
-import SearchRestuls from "./searchResults";
+import SearchResults from "./searchResults";
 import "./searchBar.css";
 import "bootstrap/dist/css/bootstrap.css";
-import SearchResults from "./searchResults";
 
 var show_google_results = true;
 
@@ -14,6 +13,7 @@ class SearchInputAndButton extends React.Component {
     this.handleSearchInputChange = this.handleSearchInputChange.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleSubmitButtonOnClick = this.handleSubmitButtonOnClick.bind(this);
+    this.handleResetButtonOnClick = this.handleResetButtonOnClick.bind(this);
   }
 
   // 实时监控和提取输入框内容并更新 state.input
@@ -83,10 +83,6 @@ class SearchInputAndButton extends React.Component {
   }
 
   render() {
-    const { searchResultError, organic_results } = this.state;
-    if (searchResultError) {
-      throw new Error(searchResultError.message);
-    }
     return (
       <React.Fragment>
         <form className="search-input-button-submit-group">
@@ -104,7 +100,7 @@ class SearchInputAndButton extends React.Component {
             id="search-button-reset"
             className="close"
             aria-label="Close"
-            onClick={() => this.handleResetButtonOnClick()}
+            onClick={this.handleResetButtonOnClick}
           >
             <span aria-hidden="true">&times;</span>
           </button>
@@ -143,9 +139,6 @@ class SearchTitle extends React.Component {
   }
 }
 
-// 原始图标颜色
-var googleIconColor = "rgb(155, 163, 149)";
-
 // 搜索引擎筛选
 class SearchEngineFilter extends React.Component {
   // 发送显示或隐藏 Google 搜索结果请求
@@ -162,16 +155,18 @@ class SearchEngineFilter extends React.Component {
     }
     this.changeButtonColor();
   }
+  // 原始图标颜色
+  googleIconColor = "rgb(155, 163, 149)";
 
   // 改变按钮颜色
   changeButtonColor() {
     let { style } = document.getElementById("engine-filter-individual");
-    if (googleIconColor === "rgb(155, 163, 149)") {
-      googleIconColor = "rgb(255, 255, 255)";
+    if (this.googleIconColor === "rgb(155, 163, 149)") {
+      this.googleIconColor = "rgb(255, 255, 255)";
     } else {
-      googleIconColor = "rgb(155, 163, 149)";
+      this.googleIconColor = "rgb(155, 163, 149)";
     }
-    style.backgroundColor = googleIconColor;
+    style.backgroundColor = this.googleIconColor;
   }
 
   render() {
