@@ -13,6 +13,7 @@ class SearchRouter extends React.Component {
         <Switch>
           <Route path="/results" component={SearchBar} />
           <Route path="/" exact component={SearchBar} />
+          <Route path="/personal" />
         </Switch>
       </div>
     );
