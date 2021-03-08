@@ -212,8 +212,8 @@ class SearchBar extends React.Component {
                 xmlns="http://www.w3.org/2000/svg"
                 width="26"
                 height="26"
-                fill="currentColor"
-                class="bi bi-info-circle"
+                fill="white"
+                className="bi bi-info-circle"
                 viewBox="0 0 16 16"
               >
                 <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
@@ -221,7 +221,6 @@ class SearchBar extends React.Component {
               </svg>
             </div>
             <div id="copyright">Porvided by Bing</div>
-            <div id="blur-background"> </div>
           </div>
         )}
         <div
