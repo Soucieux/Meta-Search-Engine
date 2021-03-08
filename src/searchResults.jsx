@@ -44,13 +44,15 @@ class SearchResultsWebsitesFilter extends React.Component {
     // shwoGoogleResultsWebsitesFilter 代表每次点按 Google按钮时 重新生成新的网站筛选
     if (loadWebsitesFilter || !showGoogleResultsWebsitesFilter) {
       // 来自于 Results.state.google_results
-      let { searchResultsFiltered } = this.props;
+      let { searchResultsFiltered, searchResultsOriginal } = this.props;
       this.current_websites = this.loadWebsitesFromResultsHelper(
         searchResultsFiltered
       );
-      // 显示 Google搜索结果时，保存一份原始的网站筛选用来显示或隐藏 Google所包含的网站
-      if (showGoogleResultsWebsitesFilter) {
-        this.original_websites = this.current_websites;
+      //有新输入值时，保存一份原始的网站筛选用来显示或隐藏 Google所包含的网站
+      if (loadWebsitesFilter) {
+        this.original_websites = this.loadWebsitesFromResultsHelper(
+          searchResultsOriginal
+        );
       }
       loadWebsitesFilter = false;
     } else if (showGoogleResultsWebsitesFilter) {
@@ -406,6 +408,7 @@ class Results extends React.Component {
           <React.Fragment>
             <SearchResultsWebsitesFilter
               searchResultsFiltered={this.all_results_filtered}
+              searchResultsOriginal={this.all_results_original}
               fireWebsitesFilterRequest={this.updateExcludeWebsitesList}
             />
           </React.Fragment>
