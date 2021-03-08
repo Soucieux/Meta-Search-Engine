@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useDebugValue } from "react";
 import SearchResults from "./searchResults";
 import "./searchBar.css";
 import "bootstrap/dist/css/bootstrap.css";
@@ -132,8 +132,7 @@ class SearchTitle extends React.Component {
   render() {
     return (
       <div id="search-title-group">
-        <h1 id="search-title">Custom</h1>
-        <h1 id="search-title">Search</h1>
+        <h1 id="search-title">Custom Search</h1>
       </div>
     );
   }
@@ -206,6 +205,25 @@ class SearchBar extends React.Component {
   render() {
     return (
       <main>
+        {this.props.match.url !== "/results" && (
+          <div id="main-image">
+            <div id="image-info-button">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="26"
+                height="26"
+                fill="currentColor"
+                class="bi bi-info-circle"
+                viewBox="0 0 16 16"
+              >
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                <path d="M8.93 6.588l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+              </svg>
+            </div>
+            <div id="copyright">Porvided by Bing</div>
+            <div id="blur-background"> </div>
+          </div>
+        )}
         <div
           id={
             "search-bar-" +
