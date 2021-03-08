@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "./searchResults.css";
 import "bootstrap/dist/css/bootstrap.css";
+import { Redirect, Switch } from "react-router";
 
 // 初始渲染网站筛选按钮
 var loadWebsitesFilter = true;
@@ -379,7 +380,8 @@ class Results extends React.Component {
     let { input } = this.props.location;
     if (!input) {
       // 不存在输入值
-      return <React.Fragment />;
+      console.log("No input. Switch back to main page\n\n")
+      return <Redirect from="/results" to="/"></Redirect>;
     } else if (input !== this.state.currentInput) {
       // 存在新的输入值，存储新值并进行数据提取
       console.log("New input identified and stored\n\n");

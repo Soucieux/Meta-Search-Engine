@@ -1,4 +1,4 @@
-import React, { useDebugValue } from "react";
+import React from "react";
 import SearchResults from "./searchResults";
 import "./searchBar.css";
 import "bootstrap/dist/css/bootstrap.css";
@@ -37,42 +37,33 @@ class SearchInputAndButton extends React.Component {
   handleSubmitButtonOnClick(event) {
     // 禁止按钮默认自动刷新整个页面
     event.preventDefault();
-    if (this.state.input !== "") {
-      if (this.props.match == undefined) {
-        // 检测 this.props 是否有值
-        throw new Error("this.props.match is undefined!");
-      } else if (this.props.match.url === "/") {
-        // 转至搜索结果页面
-        this.props.history.push("/results");
-        console.log("Switch to search results page\n\n");
-      } else if (this.props.match.url === "/results") {
-        // 已在搜索结果页面
-        console.log("Already on search results page\n\n");
-      } else {
-        throw new Error(
-          "Cannot find the correct url to show results.\nThis should never happen."
-        );
-      }
-
-      console.log("Passing input\n\n");
-
-      // 传递输入框内容和搜索引擎设置
-      this.componentDidMount(true);
+    if (this.props.match == undefined) {
+      // 检测 this.props 是否有值
+      throw new Error("this.props.match is undefined!");
+    } else if (this.props.match.url === "/") {
+      // 转至搜索结果页面
+      this.props.history.push("/results");
+      console.log("Switch to search results page\n\n");
+    } else if (this.props.match.url === "/results") {
+      // 已在搜索结果页面
+      console.log("Already on search results page\n\n");
+    } else {
+      throw new Error(
+        "Cannot find the correct url to show results.\nThis should never happen."
+      );
     }
+    // 传递输入框内容和搜索引擎设置
+    this.componentDidMount();
   }
 
   // 传递输入框内容和搜索引擎设置
-  componentDidMount(isSubmitButtonClicked) {
-    if (isSubmitButtonClicked) {
-      // 传递输入框内容至 this.props.location
-      this.props.history.push({
-        input: this.state.input,
-        show_google_results: show_google_results,
-      });
-      console.log("Input passed\n\n");
-    } else {
-      console.log("Search button NOT cliked. No results retrieved.\n\n");
-    }
+  componentDidMount() {
+    // 传递输入框内容至 this.props.location
+    this.props.history.push({
+      input: this.state.input,
+      show_google_results: show_google_results,
+    });
+    console.log("Input is: " + this.state.input + " \n\n");
   }
 
   // 回车键快捷搜索
@@ -220,7 +211,7 @@ class SearchBar extends React.Component {
                 <path d="M8.93 6.588l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
               </svg>
             </div>
-            <div id="copyright">Porvided by Bing</div>
+            <div id="copyright">Provided by Bing</div>
           </div>
         )}
         <div
