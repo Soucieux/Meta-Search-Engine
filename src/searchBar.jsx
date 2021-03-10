@@ -123,7 +123,8 @@ class SearchTitle extends React.Component {
   render() {
     return (
       <div id="search-title-group">
-        <h1 id="search-title">Custom Search</h1>
+        <h1 id="search-title">Custom</h1>
+        <h1 id="search-title">Search</h1>
       </div>
     );
   }
@@ -136,10 +137,16 @@ class SearchEngineFilter extends React.Component {
     let { input } = this.props.history.location;
     if (show_google_results === true) {
       show_google_results = false;
-      this.props.history.push({ input: input, show_google_results: false });
+      this.props.history.push({
+        input: input,
+        show_google_results: false,
+      });
       console.log("Google saerch results disabled\n\n");
     } else {
-      this.props.history.push({ input: input, show_google_results: true });
+      this.props.history.push({
+        input: input,
+        show_google_results: true,
+      });
       show_google_results = true;
       console.log("Google saerch results enabled\n\n");
     }
@@ -178,11 +185,29 @@ class SearchEngineFilter extends React.Component {
               id="google-icon"
             />
           </button>
-
           <button id="engine-filter-individual" className="button-default">
             <input type="image" alt="Bing" src="bingIcon.ico" id="bing-icon" />
           </button>
         </div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="50"
+          height="50"
+          fill="currentColor"
+          className="bi bi-person-circle button-default"
+          id={
+            "favourite-pages-icon-" +
+            (this.props.match.url === "/" ? "before" : "after")
+          }
+          viewBox="0 0 16 16"
+          onClick={() => this.props.history.push("/favourite")}
+        >
+          <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+          <path
+            fillRule="evenodd"
+            d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"
+          />
+        </svg>
         {this.props.match.url === "/results" && (
           <SearchResults {...this.props} />
         )}
@@ -211,7 +236,7 @@ class SearchBar extends React.Component {
                 <path d="M8.93 6.588l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
               </svg>
             </div>
-            <div id="copyright">Provided by Bing</div>
+            <div id="copyright">Image provided by Bing</div>
           </div>
         )}
         <div
