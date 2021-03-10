@@ -428,12 +428,6 @@ class Results extends React.Component {
     }
   };
 
-  // ///////////////////////////////////////////////////////////////////////////////////////
-  test() {
-    return <h1>SUCCESS!</h1>;
-  }
-  // ///////////////////////////////////////////////////////////////////////////////////////
-
   render() {
     // 检测数据提取是否存在错误
     this.retrieveResultsError();
@@ -469,6 +463,9 @@ class Results extends React.Component {
       console.log("");
       console.log("Data in filtered\n");
       console.log(this.all_results_filtered);
+      console.log("");
+      console.log("Data in favourite\n");
+      console.log(this.state.favourite_websites);
       console.log("");
       console.log("Re-rendering search results based on filtered\n\n");
       // 渲染页面
