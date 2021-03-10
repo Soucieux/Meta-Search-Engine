@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "./searchResults.css";
 import "bootstrap/dist/css/bootstrap.css";
-import { Redirect, Switch } from "react-router";
+import FavouritePages from "./favourite";
 
 // 初始渲染网站筛选按钮
 var loadWebsitesFilter = true;
@@ -33,7 +33,7 @@ class SearchResultsWebsitesFilter extends React.Component {
     websites_final = Array.from(new Set(websites_final));
     for (let i = 0; i < websites_final.length; i++) {
       // 网站URL，网站 position，按钮颜色，勾选框状态
-      websites_final[i] = [websites_final[i], i, "rgb(155, 163, 149)", true];
+      websites_final[i] = [websites_final[i], i, "#f1f4f7", true];
     }
     return websites_final;
   }
@@ -73,7 +73,7 @@ class SearchResultsWebsitesFilter extends React.Component {
     );
 
     // 代表此网站相关的搜索结果已显示
-    let displayResult = "rgb(155, 163, 149)";
+    let displayResult = "#f1f4f7";
     // 代表此网站相关的搜索结果未显示
     let notDisplayResult = "rgb(255, 255, 255)";
 
@@ -217,6 +217,7 @@ class Results extends React.Component {
       searchResultsError: null,
       currentInput: "123",
       exclude_websites: [],
+      favourite_websites: [],
     };
     this.all_results_original = this.all_results_original.concat(
       this.state.google_results
@@ -368,6 +369,71 @@ class Results extends React.Component {
     }
   };
 
+  // 从收藏的网页中移除所选
+  removeFavouriteWebsite(favourite_websites, result_individual) {
+    let updated_favourite_websites = [];
+    for (let i = 0; i < favourite_websites.length; i++) {
+      if (favourite_websites[i]["position"] !== result_individual["position"]) {
+        updated_favourite_websites = updated_favourite_websites.concat(
+          favourite_websites[i]
+        );
+      } else {
+        if (
+          favourite_websites[i]["engine"] !== result_individual["engine"] &&
+          favourite_websites[i]["title"] !== result_individual["title"] &&
+          favourite_websites[i]["link"] !== result_individual["link"] &&
+          favourite_websites[i]["display_link"] !==
+            result_individual["display_link"] &&
+          favourite_websites[i]["domain"] !== result_individual["domain"] &&
+          favourite_websites[i]["snippet"] !== result_individual["snippet"]
+        ) {
+          updated_favourite_websites = updated_favourite_websites.concat(
+            favourite_websites[i]
+          );
+        }
+      }
+    }
+    return updated_favourite_websites;
+  }
+
+  // 改变收藏网页按钮显示标签
+  changeFavouriteWebpagesButtonStatus = (result_individual) => {
+    if (result_individual === undefined) {
+      return "Favourite";
+    } else {
+      let position = result_individual.position - 1;
+      let searchResultsDiv = document.getElementById("search-results");
+      let searchResultsButton = searchResultsDiv.getElementsByClassName(
+        "add-favourite-webpages"
+      );
+      let { favourite_websites } = this.state;
+      if (searchResultsButton[position]["innerText"] === "Favourite") {
+        this.setState({
+          favourite_websites: favourite_websites.concat(result_individual),
+        });
+        searchResultsButton[position]["innerText"] = "Remove";
+        searchResultsButton[position].style.backgroundColor = "#dc3545";
+        console.log("Favourite website added\n\n");
+      } else {
+        searchResultsButton[position]["innerText"] = "Favourite";
+        searchResultsButton[position].style.backgroundColor = "#f1f4f7";
+        this.setState({
+          favourite_websites: this.removeFavouriteWebsite(
+            favourite_websites,
+            result_individual
+          ),
+        });
+        console.log("Favourite website removed\n\n");
+      }
+    }
+  };
+
+  // ///////////////////////////////////////////////////////////////////////////////////////
+  test() {
+    return <h1>SUCCESS!</h1>;
+  }
+  // ///////////////////////////////////////////////////////////////////////////////////////
+
   render() {
     // 检测数据提取是否存在错误
     this.retrieveResultsError();
@@ -380,8 +446,9 @@ class Results extends React.Component {
     let { input } = this.props.location;
     if (!input) {
       // 不存在输入值
-      console.log("No input. Switch back to main page\n\n")
-      return <Redirect from="/results" to="/"></Redirect>;
+      console.log("No input. Switch back to main page\n\n");
+      // return <Redirect from="/results" to="/"></Redirect>;
+      return <React.Fragment />;
     } else if (input !== this.state.currentInput) {
       // 存在新的输入值，存储新值并进行数据提取
       console.log("New input identified and stored\n\n");
@@ -413,36 +480,58 @@ class Results extends React.Component {
               searchResultsOriginal={this.all_results_original}
               fireWebsitesFilterRequest={this.updateExcludeWebsitesList}
             />
+            {this.props.match.url === "/favourite" && (
+              <FavouritePages {...this.props} />
+            )}
           </React.Fragment>
           {this.all_results_filtered[0] !== undefined && (
             <React.Fragment>
               {/* 显示搜索结果 */}
               <div id="search-results">
-                {this.all_results_filtered.map((all_result) => (
-                  <div id="search-result-individual" key={all_result.position}>
+                {this.all_results_filtered.map((result_individual) => (
+                  <div
+                    id="search-result-individual"
+                    key={result_individual.position}
+                  >
                     <h6 className="card-body">
                       <Link
                         id="search-result-link"
                         target="_blank"
                         to={
                           "//" +
-                          (all_result.link[4] === "s"
+                          (result_individual.link[4] === "s"
                             ? // https
-                              all_result.link.slice(8, all_result.link.length)
+                              result_individual.link.slice(
+                                8,
+                                result_individual.link.length
+                              )
                             : // http
-                              all_result.link.slice(7, all_result.link.length))
+                              result_individual.link.slice(
+                                7,
+                                result_individual.link.length
+                              ))
                         }
                       >
-                        {all_result.title}
+                        {result_individual.title}
                       </Link>
                       <div
                         id="search-result-display-link"
                         className="card-subtitle mb-2 text-muted"
                       >
-                        {all_result.displayed_link}
+                        {result_individual.displayed_link}
                       </div>
-                      <div>{all_result.snippet}</div>
+                      <div>{result_individual.snippet}</div>
                     </h6>
+                    <button
+                      className="add-favourite-webpages"
+                      onClick={() =>
+                        this.changeFavouriteWebpagesButtonStatus(
+                          result_individual
+                        )
+                      }
+                    >
+                      {this.changeFavouriteWebpagesButtonStatus()}
+                    </button>
                     <hr />
                   </div>
                 ))}
