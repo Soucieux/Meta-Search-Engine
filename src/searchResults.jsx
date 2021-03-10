@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "./searchResults.css";
 import "bootstrap/dist/css/bootstrap.css";
-import FavouritePages from "./favourite";
+import Favourite from "./favourite";
 
 // 初始渲染网站筛选按钮
 var loadWebsitesFilter = true;
@@ -343,7 +343,7 @@ class Results extends React.Component {
     }
   };
 
-  // 检测是否收到 searchBar 传递的输入值
+  // 检测是否收到 search 传递的输入值
   isDataReceived = () => {
     let { history } = this.props;
     if (!history) {
@@ -437,7 +437,7 @@ class Results extends React.Component {
   render() {
     // 检测数据提取是否存在错误
     this.retrieveResultsError();
-    // 检测是否收到 searchBar 传递的输入值
+    // 检测是否收到 search 传递的输入值
     this.isDataReceived();
     // 显示或隐藏 Google搜索结果
     let { show_google_results } = this.props.location;
@@ -480,9 +480,6 @@ class Results extends React.Component {
               searchResultsOriginal={this.all_results_original}
               fireWebsitesFilterRequest={this.updateExcludeWebsitesList}
             />
-            {this.props.match.url === "/favourite" && (
-              <FavouritePages {...this.props} />
-            )}
           </React.Fragment>
           {this.all_results_filtered[0] !== undefined && (
             <React.Fragment>
@@ -536,6 +533,7 @@ class Results extends React.Component {
                   </div>
                 ))}
               </div>
+              <Favourite favourite_websites={this.state.favourite_websites} />
             </React.Fragment>
           )}
           {this.all_results_filtered[0] === undefined && (

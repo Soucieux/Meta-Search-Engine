@@ -1,6 +1,6 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
-import SearchBar from "./searchBar";
+import Search from "./search";
 import Favourite from "./favourite";
 
 class SearchRouter extends React.Component {
@@ -12,8 +12,8 @@ class SearchRouter extends React.Component {
     return (
       <div>
         <Switch>
-          <Route path="/results" component={SearchBar} />
-          <Route path="/" exact component={SearchBar} />
+          <Route path="/results" component={Search} />
+          <Route path="/" exact component={Search} />
           <Route path="/favourite" component={Favourite} />
         </Switch>
       </div>
