@@ -1,6 +1,6 @@
 import React from "react";
 import SearchResults from "./searchResults";
-import "./searchBar.css";
+import "./search.css";
 import "bootstrap/dist/css/bootstrap.css";
 
 var show_google_results = true;
@@ -217,7 +217,7 @@ class SearchEngineFilter extends React.Component {
 }
 
 // 搜索页面
-class SearchBar extends React.Component {
+class Search extends React.Component {
   render() {
     return (
       <main>
@@ -254,4 +254,4 @@ class SearchBar extends React.Component {
   }
 }
 
-export default SearchBar;
+export default Search;

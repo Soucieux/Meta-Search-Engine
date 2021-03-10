@@ -2,19 +2,25 @@ import React from "react";
 
 class DisplayFavourite extends React.Component {
   render() {
-      console.log(this.props)
-    return <div></div>
+    return (
+      <div>
+        <h1>123123</h1>
+      </div>
+    );
   }
 }
 
-class FavouritePages extends React.Component {
+class Favourite extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <DisplayFavourite {...this.props}/>
+        {this.props.match !== undefined &&
+          this.props.match.url === "/favourite" && (
+            <DisplayFavourite {...this.props} />
+          )}
       </React.Fragment>
     );
   }
 }
 
-export default FavouritePages;
+export default Favourite;
