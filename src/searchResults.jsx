@@ -453,7 +453,7 @@ class Results extends React.Component {
       // this.retrieveSearchResults(input);
       return <React.Fragment />;
     } else {
-      // 实时更新网站筛选_filtered);
+      // 实时更新网站筛选
       if (show_google_results) {
         this.all_results_filtered = this.retrieveResultsByWebsites();
       }
