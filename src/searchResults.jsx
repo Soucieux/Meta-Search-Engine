@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import "./searchResults.css";
 import "bootstrap/dist/css/bootstrap.css";
 import Favourite from "./favourite";
@@ -154,7 +154,7 @@ class Results extends React.Component {
       google_results: [
         {
           engine: "Google",
-          position: "1",
+          position: "0",
           title: "McDonald's Canada: Your Favourite Burgers, Fries & More",
           link: "http://www.mcdonalds.com/ca/en-ca.html",
           displayed_link: "www.mcdonalds.com › en-ca",
@@ -164,7 +164,7 @@ class Results extends React.Component {
         },
         {
           engine: "Google",
-          position: "2",
+          position: "1",
           title: "tieltieltileiteteiletlitllitteillietilteiltelliliet2",
           link: "https://www.mcdonalds.com/ca/en-ca/full-menu.html",
           displayed_link: "www.mcdonalds.com › en-ca › full-menu",
@@ -174,7 +174,7 @@ class Results extends React.Component {
         },
         {
           engine: "Google",
-          position: "3",
+          position: "2",
           title: "McDonald's - Wikipedia",
           link: "https://en.wikipedia.org/wiki/McDonald%27s",
           displayed_link: "en.wikipedia.org › wiki › McDonald's",
@@ -184,7 +184,7 @@ class Results extends React.Component {
         },
         {
           engine: "Google",
-          position: "4",
+          position: "3",
           title: "Coupons | McDonald's Canada",
           link: "https://www4.mcdonalds.ca/coupons/",
           displayed_link: "www4.mcdonalds.ca › coupons",
@@ -194,7 +194,7 @@ class Results extends React.Component {
         },
         {
           engine: "Google",
-          position: "5",
+          position: "4",
           title: "McDonalds Jobs in Ottawa, ON (with Salaries) - Indeed",
           link: "https://ca.indeed.com/McDonalds-jobs-in-Ottawa,-ON",
           displayed_link: "ca.indeed.com › McDonalds-jobs-in-Ottawa,-ON",
@@ -204,7 +204,7 @@ class Results extends React.Component {
         },
         {
           engine: "Google",
-          position: "6",
+          position: "5",
           title:
             "McDonald's Canada - Home - Ottawa, Ontario - Menu, Prices ...",
           link: "https://www.facebook.com/McDonalds594MontrealRdOttawaON/",
@@ -401,7 +401,7 @@ class Results extends React.Component {
     if (result_individual === undefined) {
       return "Favourite";
     } else {
-      let position = result_individual.position - 1;
+      let position = result_individual.position;
       let searchResultsDiv = document.getElementById("search-results");
       let searchResultsButton = searchResultsDiv.getElementsByClassName(
         "add-favourite-webpages"
@@ -441,8 +441,8 @@ class Results extends React.Component {
     if (!input) {
       // 不存在输入值
       console.log("No input. Switch back to main page\n\n");
-      // return <Redirect from="/results" to="/"></Redirect>;
-      return <React.Fragment />;
+      return <Redirect from="/results" to="/"></Redirect>;
+      // return <React.Fragment />;
     } else if (input !== this.state.currentInput) {
       // 存在新的输入值，存储新值并进行数据提取
       console.log("New input identified and stored\n\n");

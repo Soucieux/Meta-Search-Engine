@@ -9,41 +9,47 @@ class DisplayFavourite extends React.Component {
   render() {
     console.log("Rendering favourite websites\n\n");
     return (
-      <div className="card-deck">
-        {favourite_websites_received[0] !== undefined && (
-          <React.Fragment>
-            {favourite_websites_received.map((favourite_individual) => (
-              <div className="card" key={favourite_individual.position}>
-                <h6 className="card-body">
-                  <Link
-                  className="card-title"
-                    target="_blank"
-                    to={
-                      "//" +
-                      (favourite_individual.link[4] === "s"
-                        ? // https
-                          favourite_individual.link.slice(
-                            8,
-                            favourite_individual.link.length
-                          )
-                        : // http
-                          favourite_individual.link.slice(
-                            7,
-                            favourite_individual.link.length
-                          ))
-                    }
-                  >
-                    {favourite_individual.title}
-                  </Link>
-                  <div className="card-subtitle mb-2 text-muted">
-                    {favourite_individual.domain}
-                  </div>
-                </h6>
-              </div>
-            ))}
-          </React.Fragment>
-        )}
-      </div>
+      <React.Fragment>
+        <h1>My Favourite Pages</h1>
+        <button onClick={() => this.props.history.push("/results")}>
+          Go back
+        </button>
+        <div className="card-deck">
+          {favourite_websites_received[0] !== undefined && (
+            <React.Fragment>
+              {favourite_websites_received.map((favourite_individual) => (
+                <div className="card" key={favourite_individual.position}>
+                  <h6 className="card-body">
+                    <Link
+                      className="card-title"
+                      target="_blank"
+                      to={
+                        "//" +
+                        (favourite_individual.link[4] === "s"
+                          ? // https
+                            favourite_individual.link.slice(
+                              8,
+                              favourite_individual.link.length
+                            )
+                          : // http
+                            favourite_individual.link.slice(
+                              7,
+                              favourite_individual.link.length
+                            ))
+                      }
+                    >
+                      {favourite_individual.title}
+                    </Link>
+                    <div className="card-subtitle mb-2 text-muted">
+                      {favourite_individual.domain}
+                    </div>
+                  </h6>
+                </div>
+              ))}
+            </React.Fragment>
+          )}
+        </div>
+      </React.Fragment>
     );
   }
 }
