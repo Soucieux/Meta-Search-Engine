@@ -1,4 +1,5 @@
 import React from "react";
+import ls from 'local-storage'
 import "bootstrap/dist/css/bootstrap.css";
 import { Link } from "react-router-dom";
 
@@ -58,8 +59,8 @@ class Favourite extends React.Component {
   render() {
     let { favourite_websites } = this.props;
     if (favourite_websites) {
-      favourite_websites_received = favourite_websites;
-      console.log("Favourite websites updated\n\n");
+      
+      console.log("Favourite websites stored in Local Storage\n\n");
     }
     return (
       <React.Fragment>
