@@ -103,8 +103,8 @@
   /* 保持此 element 只占用它们实际大小的空间 而不是水平一直扩展*/
   max-width: fit-content;
   /* 保持标题，输入框和按钮水平居中和垂直居中，无论浏览器窗口大小*/
-  position: fixed;
-  top: 40%;
+  position: relative;
+  top: 30rem;
   left: 50%;
   transform: translate(-50%, -50%);
   display: flex;
@@ -167,34 +167,34 @@
 }
 
 #main-image {
+  position: absolute;
   height: 100%;
   width: 100%;
   background: url(./main_page_image.jpg) no-repeat;
-  position: fixed;
   background-position: center;
   background-size: cover;
   z-index: -1;
 }
 
 /* 主页背景图片信息图标 */
-#image-info-button {
+#image-copyright-button {
   position: fixed;
-  top: 1010px;
-  left: 2070px;
+  bottom: 20px;
+  right: 80px;
   background-color: transparent;
   cursor: pointer;
   padding: 15px;
 }
 
 /* 版权漂浮文字 */
-#copyright {
+#image-copyright-text {
   color: white;
   font-size: 15px;
   font-weight: bold;
   visibility: hidden;
   position: fixed;
-  top: 960px;
-  left: 2000px;
+  bottom: 85px;
+  right: 10px;
   padding: 10px;
   width: fit-content;
   /* 清晰度 */
@@ -203,47 +203,49 @@
 }
 
 /* 鼠标悬停信息图标时，显示版权漂浮文字 */
-#image-info-button:hover + #copyright {
+#image-copyright-button:hover + #image-copyright-text {
   font-size: 15px;
   font-weight: bold;
   opacity: 1;
   position: fixed;
-  top: 960px;
-  left: 2000px;
+  right: 10px;
+  bottom: 80px;
   visibility: visible;
   transform: translate(0, 10px);
   transition: all 0.5s cubic-bezier(0.75, -0.02, 0.2, 0.97);
 }
 
-/* 进入保存网页图标 before */
+/* 跳转至已保存页面图标 before */
 #favourite-pages-icon-before {
   border-radius: 30px;
   background-color: transparent;
   border: 0px solid transparent;
   position: absolute;
-  top: -330px;
-  left: 1400px;
+  top: 20px;
+  right: 20px;
   color: #f1f3f1;
   cursor: pointer;
+  /* 测试 div大小 */
+  /* border: 3px solid #73ad21; */
 }
 
-/* 进入保存网页图标 before: 鼠标悬停 */
+/* 跳转至已保存页面图标 before: 鼠标悬停 */
 #favourite-pages-icon-before:hover {
   background-color: rgb(155, 163, 149);
 }
 
-/* 进入保存网页图标 after */
+/* 跳转至已保存页面图标 after */
 #favourite-pages-icon-after {
   position: absolute;
-  left: 2010px;
-  top: 2px;
+  left: 1870px;
+  top: 20px;
   border-radius: 30px;
   background-color: transparent;
   border: 0px solid transparent;
   cursor: pointer;
 }
 
-/* 进入保存网页图标 after 鼠标悬停 */
+/* 跳转至已保存页面图标 after 鼠标悬停 */
 #favourite-pages-icon-after:hover {
   background-color: rgb(167, 173, 162);
 }

@@ -190,25 +190,6 @@ class SearchEngineFilter extends React.Component {
             <input type="image" alt="Bing" src="bingIcon.ico" id="bing-icon" />
           </button>
         </div>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="50"
-          height="50"
-          fill="currentColor"
-          className="bi bi-person-circle button-default"
-          id={
-            "favourite-pages-icon-" +
-            (this.props.match.url === "/" ? "before" : "after")
-          }
-          viewBox="0 0 16 16"
-          onClick={() => this.props.history.push("/favourite")}
-        >
-          <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
-          <path
-            fillRule="evenodd"
-            d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"
-          />
-        </svg>
         {this.props.match.url === "/results" && (
           <SearchResults {...this.props} />
         )}
@@ -224,7 +205,7 @@ class Search extends React.Component {
       <main>
         {this.props.match.url !== "/results" && (
           <div id="main-image">
-            <div id="image-info-button">
+            <div id="image-copyright-button">
               <Link target="_blank" to="//peapix.com/bing/34161">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -239,18 +220,39 @@ class Search extends React.Component {
                 </svg>
               </Link>
             </div>
-            <div id="copyright">Image provided by Bing</div>
+            <div id="image-copyright-text">Image provided by Bing</div>
           </div>
         )}
-        <div
-          id={
-            "search-bar-" +
-            (this.props.match.url === "/results" ? "revised" : "group")
-          }
-        >
-          <SearchEngineFilter {...this.props} />
-          <SearchInputAndButton {...this.props} />
-          <SearchTitle />
+        <div>
+          <div
+            id={
+              "search-bar-" +
+              (this.props.match.url === "/results" ? "revised" : "group")
+            }
+          >
+            <SearchEngineFilter {...this.props} />
+            <SearchInputAndButton {...this.props} />
+            <SearchTitle />
+          </div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="50"
+            height="50"
+            fill="currentColor"
+            className="bi bi-person-circle button-default"
+            id={
+              "favourite-pages-icon-" +
+              (this.props.match.url === "/" ? "before" : "after")
+            }
+            viewBox="0 0 16 16"
+            onClick={() => this.props.history.push("/favourite")}
+          >
+            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+            <path
+              fillRule="evenodd"
+              d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"
+            />
+          </svg>
         </div>
       </main>
     );
