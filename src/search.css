@@ -115,7 +115,7 @@
 
 /* 进入/results页面后，自动更改输入框，标题，两个按钮位置 */
 #search-bar-revised {
-  margin-top: 20px;
+  margin-top: 30px;
   display: flex;
   align-items: flex-start;
   flex-direction: row-reverse;
