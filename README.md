@@ -1,11 +1,13 @@
 # Meta Search Engine
 
-**This project was created in winter term 2021**
+_This project was created in winter term 2021_
 
 ## Features
 
 ### Completed
 
+- Search Bar
+- Search Results
 - Webpages Filter
 - Save favourite pages
 - Search Engine Filter (Google)
@@ -13,17 +15,32 @@
 ### In progress
 
 - Search Engine Filter (Bing)
-- Show favourite webpages collection in another webpage
+- Show favourite webpages collection
 
 ### Not yet implemented
 
 - Pagination
-- Saved webpages presented first in search results
+- Saved webpages presented first
 
 ## Patch Notes
 
-### Version 1.0 ~ 1.10 Search Bar
+### Version 1.0 ~ 1.10
 
-### Version 2.0 ~ 2.22 Search Results
+_February 20, 2021 ~ February 22, 2021_
 
-### Version 3.0 ~ NOW Favourite Webpages
+- Search Bar
+
+### Version 2.0 ~ 2.22
+
+_February 22, 2021 ~ March 8, 2021_
+
+- Search Results
+- Webpages Filter
+- Search Engine Filter (Google)
+
+### Version 3.0 ~ Present
+
+_March 9, 2021 ~ Present_
+
+- Save favourite pages
+- Show favourite webpages collection
