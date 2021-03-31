@@ -1,8 +1,9 @@
 import React from "react";
-import { Link, Redirect } from "react-router-dom";
+import ls from "local-storage";
 import "./searchResults.css";
-import "bootstrap/dist/css/bootstrap.css";
 import Favourite from "./favourite";
+import "bootstrap/dist/css/bootstrap.css";
+import { Link, Redirect } from "react-router-dom";
 
 // 初始渲染网站筛选按钮
 var loadWebsitesFilter = true;
@@ -217,7 +218,6 @@ class Results extends React.Component {
       searchResultsError: null,
       currentInput: "123",
       exclude_websites: [],
-      favourite_websites: [],
     };
     this.all_results_original = this.all_results_original.concat(
       this.state.google_results
@@ -369,35 +369,37 @@ class Results extends React.Component {
     }
   };
 
-  // 从收藏的网页中移除所选
-  removeFavouriteWebsite(favourite_websites, resultToBeRemoved) {
-    let updated_favourite_websites = [];
-    for (let i = 0; i < favourite_websites.length; i++) {
-      if (favourite_websites[i]["position"] !== resultToBeRemoved["position"]) {
-        updated_favourite_websites = updated_favourite_websites.concat(
-          favourite_websites[i]
-        );
+  // 更新已收藏网页
+  updateFavouriteWebsites(resultToBeChecked, add_result) {
+    let updated_favourite = [];
+    let current_favourite = ls.get("favourite_websites");
+    if (add_result) {
+      if (current_favourite === null) {
+        updated_favourite = updated_favourite.concat(resultToBeChecked);
       } else {
+        current_favourite = current_favourite.concat(resultToBeChecked);
+        updated_favourite = current_favourite;
+      }
+    } else {
+      for (let i = 0; i < current_favourite.length; i++) {
         if (
-          favourite_websites[i]["engine"] !== resultToBeRemoved["engine"] &&
-          favourite_websites[i]["title"] !== resultToBeRemoved["title"] &&
-          favourite_websites[i]["link"] !== resultToBeRemoved["link"] &&
-          favourite_websites[i]["display_link"] !==
-            resultToBeRemoved["display_link"] &&
-          favourite_websites[i]["domain"] !== resultToBeRemoved["domain"] &&
-          favourite_websites[i]["snippet"] !== resultToBeRemoved["snippet"]
+          current_favourite[i]["engine"] !== resultToBeChecked["engine"] &&
+          current_favourite[i]["title"] !== resultToBeChecked["title"] &&
+          current_favourite[i]["link"] !== resultToBeChecked["link"] &&
+          current_favourite[i]["display_link"] !==
+            resultToBeChecked["display_link"] &&
+          current_favourite[i]["domain"] !== resultToBeChecked["domain"] &&
+          current_favourite[i]["snippet"] !== resultToBeChecked["snippet"]
         ) {
-          updated_favourite_websites = updated_favourite_websites.concat(
-            favourite_websites[i]
-          );
+          updated_favourite = updated_favourite.concat(current_favourite[i]);
         }
       }
     }
-    return updated_favourite_websites;
+    ls.set("favourite_websites", updated_favourite);
   }
 
-  // 改变网页收藏按钮显示标签
-  changeFavouriteWebpagesButtonStatus = (resultToBeChanged) => {
+  // 改变网页收藏按钮显示文字
+  changeFavouriteButtonStatus = (resultToBeChanged) => {
     if (resultToBeChanged === undefined) {
       return "Favourite";
     } else {
@@ -406,23 +408,15 @@ class Results extends React.Component {
       let searchResultsButton = searchResultsDiv.getElementsByClassName(
         "add-favourite-webpages"
       );
-      let { favourite_websites } = this.state;
       if (searchResultsButton[position]["innerText"] === "Favourite") {
-        this.setState({
-          favourite_websites: favourite_websites.concat(resultToBeChanged),
-        });
         searchResultsButton[position]["innerText"] = "Remove";
         searchResultsButton[position].style.backgroundColor = "#dc3545";
+        this.updateFavouriteWebsites(resultToBeChanged, true);
         console.log("Favourite website added\n\n");
       } else {
         searchResultsButton[position]["innerText"] = "Favourite";
         searchResultsButton[position].style.backgroundColor = "#f1f4f7";
-        this.setState({
-          favourite_websites: this.removeFavouriteWebsite(
-            favourite_websites,
-            resultToBeChanged
-          ),
-        });
+        this.updateFavouriteWebsites(resultToBeChanged, false);
         console.log("Favourite website removed\n\n");
       }
     }
@@ -465,7 +459,7 @@ class Results extends React.Component {
       console.log(this.all_results_filtered);
       console.log("");
       console.log("Data in favourite\n");
-      console.log(this.state.favourite_websites);
+      console.log(ls.get("favourite_websites"));
       console.log("");
       console.log("Re-rendering search results based on filtered\n\n");
       // 渲染页面
@@ -519,18 +513,16 @@ class Results extends React.Component {
                     <button
                       className="add-favourite-webpages"
                       onClick={() =>
-                        this.changeFavouriteWebpagesButtonStatus(
-                          result_individual
-                        )
+                        this.changeFavouriteButtonStatus(result_individual)
                       }
                     >
-                      {this.changeFavouriteWebpagesButtonStatus()}
+                      {this.changeFavouriteButtonStatus()}
                     </button>
                     <hr />
                   </div>
                 ))}
               </div>
-              <Favourite favourite_websites={this.state.favourite_websites} previous_url={this.props.location} />
+              <Favourite />
             </React.Fragment>
           )}
           {this.all_results_filtered[0] === undefined && (
