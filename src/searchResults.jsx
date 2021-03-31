@@ -383,12 +383,10 @@ class Results extends React.Component {
     } else {
       for (let i = 0; i < current_favourite.length; i++) {
         if (
-          current_favourite[i]["engine"] !== resultToBeChecked["engine"] &&
           current_favourite[i]["title"] !== resultToBeChecked["title"] &&
           current_favourite[i]["link"] !== resultToBeChecked["link"] &&
-          current_favourite[i]["display_link"] !==
-            resultToBeChecked["display_link"] &&
-          current_favourite[i]["domain"] !== resultToBeChecked["domain"] &&
+          current_favourite[i]["displayed_link"] !==
+            resultToBeChecked["displayed_link"] &&
           current_favourite[i]["snippet"] !== resultToBeChecked["snippet"]
         ) {
           updated_favourite = updated_favourite.concat(current_favourite[i]);
@@ -419,6 +417,9 @@ class Results extends React.Component {
         this.updateFavouriteWebsites(resultToBeChanged, false);
         console.log("Favourite website removed\n\n");
       }
+      console.log("Data in favourite\n");
+      console.log(ls.get("favourite_websites"));
+      console.log("");
     }
   };
 
@@ -431,7 +432,7 @@ class Results extends React.Component {
     let { show_google_results } = this.props.location;
     this.filterGoogleResults(show_google_results);
     // 提取输入值
-    let { input } = this.props.location;
+    let input = ls.get("input");
     if (!input) {
       // 不存在输入值
       console.log("No input. Switch back to main page\n\n");
