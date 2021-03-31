@@ -4,6 +4,13 @@
   margin-left: 30px;
 }
 
+#go-back-to-search-results {
+  position: absolute;
+  left: 170px;
+  top: 20px;
+}
+
+/* 喜爱列表 */
 #favourite-websites-list {
   position: relative;
   margin-top: 20px;
@@ -11,16 +18,12 @@
   margin-right: 20px;
 }
 
-#go-back-to-search-results {
-  position: absolute;
-  left: 170px;
-  top: 20px;
-}
-
+/* 喜爱列表 */
 .card-columns {
   column-count: 3;
 }
 
+/* 喜爱列表（单独） */
 .card {
   height: 80px;
   text-align: center;
@@ -30,6 +33,7 @@
   /* border: 3px solid #73ad21; */
 }
 
+/* 喜爱列表（单独）：鼠标悬停 */
 .card:hover {
   /* 从左至右：增加立体感，边框厚度 */
   border: solid 3px #000000;

@@ -1,5 +1,6 @@
-import React from "react";
 import "./search.css";
+import React from "react";
+import ls from "local-storage";
 import SearchResults from "./searchResults";
 import "bootstrap/dist/css/bootstrap.css";
 import { Link } from "react-router-dom";
@@ -10,16 +11,15 @@ var show_google_results = true;
 class SearchInputAndButton extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { input: "" };
     this.handleSearchInputChange = this.handleSearchInputChange.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleSubmitButtonOnClick = this.handleSubmitButtonOnClick.bind(this);
     this.handleResetButtonOnClick = this.handleResetButtonOnClick.bind(this);
   }
 
-  // 实时监控和提取输入框内容并更新 state.input
+  // 实时监控和提取输入框内容并储存至 local storage
   handleSearchInputChange(event) {
-    this.setState({ input: event.target.value });
+    ls.set("input", event.target.value);
     let visible = document.getElementById("search-button-reset").style;
     if (event.target.value === "") {
       visible.visibility = "hidden";
@@ -30,7 +30,7 @@ class SearchInputAndButton extends React.Component {
 
   // 输入框清除按钮
   handleResetButtonOnClick() {
-    this.setState({ input: "" });
+    ls.set("input", "");
     document.getElementById("search-button-reset").style.visibility = "hidden";
   }
 
@@ -61,10 +61,9 @@ class SearchInputAndButton extends React.Component {
   componentDidMount() {
     // 传递输入框内容至 this.props.location
     this.props.history.push({
-      input: this.state.input,
       show_google_results: show_google_results,
     });
-    console.log("Input is: " + this.state.input + " \n\n");
+    console.log("Input is: " + ls.get("input") + " \n\n");
   }
 
   // 回车键快捷搜索
@@ -82,8 +81,6 @@ class SearchInputAndButton extends React.Component {
             type="text"
             id="search-input"
             autoComplete="off"
-            // 实时同步输入框内容确保在无内容时 reset button 隐藏
-            value={this.state.input}
             onChange={this.handleSearchInputChange}
             onKeyPress={this.handleKeyPress}
           />
@@ -135,17 +132,14 @@ class SearchTitle extends React.Component {
 class SearchEngineFilter extends React.Component {
   // 发送显示或隐藏 Google 搜索结果请求
   prepareFilterGoogleSearchResults() {
-    let { input } = this.props.history.location;
     if (show_google_results === true) {
       show_google_results = false;
       this.props.history.push({
-        input: input,
         show_google_results: false,
       });
       console.log("Google saerch results disabled\n\n");
     } else {
       this.props.history.push({
-        input: input,
         show_google_results: true,
       });
       show_google_results = true;
