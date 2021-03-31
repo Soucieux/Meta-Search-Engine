@@ -38,7 +38,7 @@ class SearchInputAndButton extends React.Component {
   handleSubmitButtonOnClick(event) {
     // 禁止按钮默认自动刷新整个页面
     event.preventDefault();
-    if (this.props.match == undefined) {
+    if (this.props.match === undefined) {
       // 检测 this.props 是否有值
       throw new Error("this.props.match is undefined!");
     } else if (this.props.match.url === "/") {
@@ -53,12 +53,6 @@ class SearchInputAndButton extends React.Component {
         "Cannot find the correct url to show results.\nThis should never happen."
       );
     }
-    // 传递输入框内容和搜索引擎设置
-    this.componentDidMount();
-  }
-
-  // 传递输入框内容和搜索引擎设置
-  componentDidMount() {
     // 传递输入框内容至 this.props.location
     this.props.history.push({
       show_google_results: show_google_results,
@@ -74,6 +68,12 @@ class SearchInputAndButton extends React.Component {
   }
 
   render() {
+    let { url } = this.props.match;
+    // 每次进入 main page 时，清除已保存的输入值
+    if (url === "/") {
+      ls.remove("input");
+      ls.set("load_websites_filter", true);
+    }
     return (
       <React.Fragment>
         <form className="search-input-button-submit-group">
@@ -82,9 +82,7 @@ class SearchInputAndButton extends React.Component {
             id="search-input"
             autoComplete="off"
             // 确保返回或刷新页面时，输入值仍显示
-            defaultValue={
-              this.props.match.url === "/results" ? ls.get("input") : ""
-            }
+            defaultValue={url === "/results" ? ls.get("input") : ""}
             onChange={this.handleSearchInputChange}
             onKeyPress={this.handleKeyPress}
           />
