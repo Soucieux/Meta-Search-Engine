@@ -1,9 +1,38 @@
-#favourite-websites-title {
+#favourite-websites-page-main-title {
   position: relative;
-  top: 0px;
+  margin-top: 10px;
+  margin-left: 30px;
 }
 
 #favourite-websites-list {
   position: relative;
-  top: 0px;
+  margin-top: 20px;
+  margin-left: 300px;
+  margin-right: 20px;
+}
+
+#go-back-to-search-results {
+  position: absolute;
+  left: 170px;
+  top: 20px;
+}
+
+.card-columns {
+  column-count: 3;
+}
+
+.card {
+  height: 80px;
+  text-align: center;
+  /* 从左至右：增加立体感，边框厚度 */
+  border: solid 1px #000000;
+  /* 测试 div大小 */
+  /* border: 3px solid #73ad21; */
+}
+
+.card:hover {
+  /* 从左至右：增加立体感，边框厚度 */
+  border: solid 3px #000000;
+  /* 渐变时间 */
+  transition: 0.5s;
 }
