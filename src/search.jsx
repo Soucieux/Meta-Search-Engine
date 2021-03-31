@@ -81,6 +81,10 @@ class SearchInputAndButton extends React.Component {
             type="text"
             id="search-input"
             autoComplete="off"
+            // 确保返回或刷新页面时，输入值仍显示
+            defaultValue={
+              this.props.match.url === "/results" ? ls.get("input") : ""
+            }
             onChange={this.handleSearchInputChange}
             onKeyPress={this.handleKeyPress}
           />
