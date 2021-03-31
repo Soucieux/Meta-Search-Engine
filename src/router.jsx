@@ -3,7 +3,7 @@ import { Route, Switch } from "react-router-dom";
 import Search from "./search";
 import Favourite from "./favourite";
 
-class SearchRouter extends React.Component {
+class Router extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -21,4 +21,4 @@ class SearchRouter extends React.Component {
   }
 }
 
-export default SearchRouter;
+export default Router;
