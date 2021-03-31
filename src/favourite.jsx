@@ -1,5 +1,5 @@
 import React from "react";
-import "./favourite.css"
+import "./favourite.css";
 import ls from "local-storage";
 import "bootstrap/dist/css/bootstrap.css";
 import { Link } from "react-router-dom";
@@ -10,11 +10,15 @@ class DisplayFavourite extends React.Component {
     console.log("Favourite websites retrieved from Local Storage\n\n");
     return (
       <React.Fragment>
-        <h1 id="favourite-websites-title">My Favourite Pages</h1>
-        <button onClick={() => this.props.history.push("/results")}>
-          Go back
+        <h2 id="favourite-websites-page-main-title">My Pages</h2>
+        <button
+          className="btn btn-link"
+          id="go-back-to-search-results"
+          onClick={() => this.props.history.push("/results")}
+        >
+          &lt;Go back
         </button>
-        <div className="card-deck" id="favourite-websites-list">
+        <div className="card-columns" id="favourite-websites-list">
           {favourite_websites_stored[0] !== undefined && (
             <React.Fragment>
               {favourite_websites_stored.map((favourite_individual) => (
@@ -40,9 +44,6 @@ class DisplayFavourite extends React.Component {
                     >
                       {favourite_individual.title}
                     </Link>
-                    <div className="card-subtitle mb-2 text-muted">
-                      {favourite_individual.domain}
-                    </div>
                   </h6>
                 </div>
               ))}
