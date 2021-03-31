@@ -1,10 +1,10 @@
 import ReactDOM from "react-dom";
-import SearchRouter from "./searchRouter";
+import Router from "./router";
 import { BrowserRouter } from "react-router-dom";
 
 ReactDOM.render(
   <BrowserRouter>
-    <SearchRouter />
+    <Router />
   </BrowserRouter>,
   document.getElementById("body")
 );
