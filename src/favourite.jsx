@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 class DisplayFavourite extends React.Component {
   render() {
     var favourite_stored = ls.get("favourite_websites");
-    console.log(favourite_stored[0])
+    console.log(favourite_stored[0]);
     console.log("Favourite websites retrieved from Local Storage\n\n");
     return (
       <React.Fragment>
@@ -15,7 +15,9 @@ class DisplayFavourite extends React.Component {
         <button
           className="btn btn-link"
           id="go-back-to-search-results"
-          onClick={() => this.props.history.push("/results")}
+          onClick={() => {
+            this.props.history.push("/results");
+          }}
         >
           &lt;Go back
         </button>
