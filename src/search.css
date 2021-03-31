@@ -170,7 +170,7 @@
   position: absolute;
   height: 100%;
   width: 100%;
-  background: url(./main_page_image.jpg) no-repeat;
+  background: no-repeat;
   background-position: center;
   background-size: cover;
   z-index: -1;
@@ -222,7 +222,7 @@
   border: 0px solid transparent;
   position: absolute;
   top: 20px;
-  right: 20px;
+  right: 80px;
   color: #f1f3f1;
   cursor: pointer;
   /* 测试 div大小 */
@@ -237,7 +237,7 @@
 /* 跳转至已保存页面图标 after */
 #favourite-pages-icon-after {
   position: absolute;
-  left: 1870px;
+  left: 1810px;
   top: 20px;
   border-radius: 30px;
   background-color: transparent;

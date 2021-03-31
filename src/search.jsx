@@ -204,7 +204,8 @@ class Search extends React.Component {
     return (
       <main>
         {this.props.match.url !== "/results" && (
-          <div id="main-image">
+          <div>
+            <img src="main.jpg" id="main-image" />
             <div id="image-copyright-button">
               <Link target="_blank" to="//peapix.com/bing/34161">
                 <svg
