@@ -6,7 +6,8 @@ import { Link } from "react-router-dom";
 
 class DisplayFavourite extends React.Component {
   render() {
-    var favourite_websites_stored = ls.get("favourite_websites");
+    var favourite_stored = ls.get("favourite_websites");
+    console.log(favourite_stored[0])
     console.log("Favourite websites retrieved from Local Storage\n\n");
     return (
       <React.Fragment>
@@ -19,10 +20,10 @@ class DisplayFavourite extends React.Component {
           &lt;Go back
         </button>
         <div className="card-columns" id="favourite-websites-list">
-          {favourite_websites_stored[0] !== undefined && (
+          {favourite_stored[0] !== undefined && (
             <React.Fragment>
-              {favourite_websites_stored.map((favourite_individual) => (
-                <div className="card" key={favourite_individual.position}>
+              {favourite_stored.map((favourite_individual) => (
+                <div className="card" key={favourite_individual.title}>
                   <h6 className="card-body">
                     <Link
                       className="card-title"
@@ -57,12 +58,6 @@ class DisplayFavourite extends React.Component {
 
 class Favourite extends React.Component {
   render() {
-    let { favourite_websites } = this.props;
-    if (favourite_websites && favourite_websites[0] != undefined) {
-      console.log("are you here");
-      ls.set("favourite_websites", favourite_websites);
-      console.log("Favourite websites stored in Local Storage\n\n");
-    }
     return (
       <React.Fragment>
         {this.props.match !== undefined &&
