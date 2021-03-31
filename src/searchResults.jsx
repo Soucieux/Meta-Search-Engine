@@ -5,9 +5,6 @@ import Favourite from "./favourite";
 import "bootstrap/dist/css/bootstrap.css";
 import { Link, Redirect } from "react-router-dom";
 
-// 初始渲染网站筛选按钮
-var loadWebsitesFilter = true;
-
 // 隐藏或显示搜索引擎结果
 var showGoogleResultsWebsitesFilter = true;
 
@@ -44,6 +41,7 @@ class SearchResultsWebsitesFilter extends React.Component {
     // 把网站列表转换成网站筛选
     // loadWebsitesFilter 代表首次生成网站筛选
     // shwoGoogleResultsWebsitesFilter 代表每次点按 Google按钮时 重新生成新的网站筛选
+    let loadWebsitesFilter = ls.get("load_websites_filter");
     if (loadWebsitesFilter || !showGoogleResultsWebsitesFilter) {
       // 来自于 Results.state.google_results
       let { searchResultsFiltered, searchResultsOriginal } = this.props;
@@ -56,7 +54,7 @@ class SearchResultsWebsitesFilter extends React.Component {
           searchResultsOriginal
         );
       }
-      loadWebsitesFilter = false;
+      ls.set("load_websites_filter", false);
     } else if (showGoogleResultsWebsitesFilter) {
       // 显示 Google搜索结果时，将现有网站筛选替换成原始的包含 Google的网站筛选
       this.current_websites = this.original_websites;
@@ -343,14 +341,6 @@ class Results extends React.Component {
     }
   };
 
-  // 检测是否收到 search 传递的输入值
-  isDataReceived = () => {
-    let { history } = this.props;
-    if (!history) {
-      throw new Error("Data NOT received!");
-    }
-  };
-
   // 显示或隐藏 Google搜索结果
   filterGoogleResults = (show_google_results) => {
     if (
@@ -426,8 +416,6 @@ class Results extends React.Component {
   render() {
     // 检测数据提取是否存在错误
     this.retrieveResultsError();
-    // 检测是否收到 search 传递的输入值
-    this.isDataReceived();
     // 显示或隐藏 Google搜索结果
     let { show_google_results } = this.props.location;
     this.filterGoogleResults(show_google_results);
@@ -441,7 +429,7 @@ class Results extends React.Component {
     } else if (input !== this.state.currentInput) {
       // 存在新的输入值，存储新值并进行数据提取
       console.log("New input identified and stored\n\n");
-      loadWebsitesFilter = true;
+      ls.set("load_websites_filter", true);
       // 初始化搜索结果 array
       this.all_results_original = [];
       this.all_results_filtered = [];

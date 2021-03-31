@@ -6,8 +6,8 @@ import { Link } from "react-router-dom";
 
 class DisplayFavourite extends React.Component {
   render() {
+    ls.set("load_websites_filter", true);
     var favourite_stored = ls.get("favourite_websites");
-    console.log(favourite_stored[0]);
     console.log("Favourite websites retrieved from Local Storage\n\n");
     return (
       <React.Fragment>
