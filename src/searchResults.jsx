@@ -5,6 +5,9 @@ import Favourite from "./favourite";
 import "bootstrap/dist/css/bootstrap.css";
 import { Link, Redirect } from "react-router-dom";
 
+// 网站筛选按钮初始状态
+ls.set("load websites filter", true);
+
 // 隐藏或显示搜索引擎结果
 var showGoogleResultsWebsitesFilter = true;
 
@@ -41,7 +44,7 @@ class SearchResultsWebsitesFilter extends React.Component {
     // 把网站列表转换成网站筛选
     // loadWebsitesFilter 代表首次生成网站筛选
     // shwoGoogleResultsWebsitesFilter 代表每次点按 Google按钮时 重新生成新的网站筛选
-    let loadWebsitesFilter = ls.get("load_websites_filter");
+    let loadWebsitesFilter = ls.get("load websites filter");
     if (loadWebsitesFilter || !showGoogleResultsWebsitesFilter) {
       // 来自于 Results.state.google_results
       let { searchResultsFiltered, searchResultsOriginal } = this.props;
@@ -54,7 +57,7 @@ class SearchResultsWebsitesFilter extends React.Component {
           searchResultsOriginal
         );
       }
-      ls.set("load_websites_filter", false);
+      ls.set("load websites filter", false);
     } else if (showGoogleResultsWebsitesFilter) {
       // 显示 Google搜索结果时，将现有网站筛选替换成原始的包含 Google的网站筛选
       this.current_websites = this.original_websites;
@@ -342,14 +345,15 @@ class Results extends React.Component {
   };
 
   // 显示或隐藏 Google搜索结果
-  filterGoogleResults = (show_google_results) => {
+  filterGoogleResults = () => {
+    let google_status = ls.get("show Google results");
     if (
-      (previousGoogleSearchStatus === true && show_google_results === false) ||
-      (previousGoogleSearchStatus === false && show_google_results === true)
+      (previousGoogleSearchStatus === true && google_status === false) ||
+      (previousGoogleSearchStatus === false && google_status === true)
     ) {
       this.all_results_filtered = this.filterResultsBySearchEngine(
         this.all_results_filtered,
-        show_google_results
+        google_status
       );
       if (showGoogleResultsWebsitesFilter) {
         showGoogleResultsWebsitesFilter = false;
@@ -362,7 +366,7 @@ class Results extends React.Component {
   // 更新已收藏网页
   updateFavouriteWebsites(resultToBeChecked, add_result) {
     let updated_favourite = [];
-    let current_favourite = ls.get("favourite_websites");
+    let current_favourite = ls.get("favourite websites");
     if (add_result) {
       if (current_favourite === null) {
         updated_favourite = updated_favourite.concat(resultToBeChecked);
@@ -383,7 +387,7 @@ class Results extends React.Component {
         }
       }
     }
-    ls.set("favourite_websites", updated_favourite);
+    ls.set("favourite websites", updated_favourite);
   }
 
   // 改变网页收藏按钮显示文字
@@ -408,7 +412,7 @@ class Results extends React.Component {
         console.log("Favourite website removed\n\n");
       }
       console.log("Data in favourite\n");
-      console.log(ls.get("favourite_websites"));
+      console.log(ls.get("favourite websites"));
       console.log("");
     }
   };
@@ -417,8 +421,7 @@ class Results extends React.Component {
     // 检测数据提取是否存在错误
     this.retrieveResultsError();
     // 显示或隐藏 Google搜索结果
-    let { show_google_results } = this.props.location;
-    this.filterGoogleResults(show_google_results);
+    this.filterGoogleResults();
     // 提取输入值
     let input = ls.get("input");
     if (!input) {
@@ -429,7 +432,7 @@ class Results extends React.Component {
     } else if (input !== this.state.currentInput) {
       // 存在新的输入值，存储新值并进行数据提取
       console.log("New input identified and stored\n\n");
-      ls.set("load_websites_filter", true);
+      ls.set("load websites filter", true);
       // 初始化搜索结果 array
       this.all_results_original = [];
       this.all_results_filtered = [];
@@ -437,7 +440,7 @@ class Results extends React.Component {
       return <React.Fragment />;
     } else {
       // 实时更新网站筛选
-      if (show_google_results) {
+      if (ls.get("show Google results")) {
         this.all_results_filtered = this.retrieveResultsByWebsites();
       }
       // log
@@ -448,7 +451,7 @@ class Results extends React.Component {
       console.log(this.all_results_filtered);
       console.log("");
       console.log("Data in favourite\n");
-      console.log(ls.get("favourite_websites"));
+      console.log(ls.get("favourite websites"));
       console.log("");
       console.log("Re-rendering search results based on filtered\n\n");
       // 渲染页面
