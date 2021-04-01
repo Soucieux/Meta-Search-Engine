@@ -5,7 +5,7 @@ import SearchResults from "./searchResults";
 import "bootstrap/dist/css/bootstrap.css";
 import { Link } from "react-router-dom";
 
-var show_google_results = true;
+ls.set("show Google results", true);
 
 // 搜索框，搜索按钮，搜索清除按钮
 class SearchInputAndButton extends React.Component {
@@ -53,10 +53,6 @@ class SearchInputAndButton extends React.Component {
         "Cannot find the correct url to show results.\nThis should never happen."
       );
     }
-    // 传递输入框内容至 this.props.location
-    this.props.history.push({
-      show_google_results: show_google_results,
-    });
     console.log("Input is: " + ls.get("input") + " \n\n");
   }
 
@@ -72,7 +68,6 @@ class SearchInputAndButton extends React.Component {
     // 每次进入 main page 时，清除已保存的输入值
     if (url === "/") {
       ls.remove("input");
-      ls.set("load_websites_filter", true);
     }
     return (
       <React.Fragment>
@@ -134,17 +129,11 @@ class SearchTitle extends React.Component {
 class SearchEngineFilter extends React.Component {
   // 发送显示或隐藏 Google 搜索结果请求
   prepareFilterGoogleSearchResults() {
-    if (show_google_results === true) {
-      show_google_results = false;
-      this.props.history.push({
-        show_google_results: false,
-      });
+    if (ls.get("show Google results") === true) {
+      ls.set("show Google results", false);
       console.log("Google saerch results disabled\n\n");
     } else {
-      this.props.history.push({
-        show_google_results: true,
-      });
-      show_google_results = true;
+      ls.set("show Google results", true)
       console.log("Google saerch results enabled\n\n");
     }
     this.changeButtonColor();
