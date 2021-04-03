@@ -345,14 +345,15 @@ class Results extends React.Component {
   };
 
   // 显示或隐藏 Google搜索结果
-  filterGoogleResults = (showGoogleResults) => {
+  filterGoogleResults = () => {
+    let google_status = ls.get("show Google results");
     if (
-      (previousGoogleSearchStatus === true && showGoogleResults === false) ||
-      (previousGoogleSearchStatus === false && showGoogleResults === true)
+      (previousGoogleSearchStatus === true && google_status === false) ||
+      (previousGoogleSearchStatus === false && google_status === true)
     ) {
       this.all_results_filtered = this.filterResultsBySearchEngine(
         this.all_results_filtered,
-        showGoogleResults
+        google_status
       );
       if (showGoogleResultsWebsitesFilter) {
         showGoogleResultsWebsitesFilter = false;
@@ -420,8 +421,7 @@ class Results extends React.Component {
     // 检测数据提取是否存在错误
     this.retrieveResultsError();
     // 显示或隐藏 Google搜索结果
-    let { show_google_results } = this.props.location;
-    this.filterGoogleResults(show_google_results);
+    this.filterGoogleResults();
     // 提取输入值
     let input = ls.get("input");
     if (!input) {
@@ -440,7 +440,7 @@ class Results extends React.Component {
       return <React.Fragment />;
     } else {
       // 实时更新网站筛选
-      if (show_google_results) {
+      if (ls.get("show Google results")) {
         this.all_results_filtered = this.retrieveResultsByWebsites();
       }
       // log
