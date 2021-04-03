@@ -131,9 +131,11 @@ class SearchEngineFilter extends React.Component {
   prepareFilterGoogleSearchResults() {
     if (ls.get("show Google results") === true) {
       ls.set("show Google results", false);
+      this.props.history.push("/results");
       console.log("Google saerch results disabled\n\n");
     } else {
-      ls.set("show Google results", true)
+      ls.set("show Google results", true);
+      this.props.history.push("/results");
       console.log("Google saerch results enabled\n\n");
     }
     this.changeButtonColor();
