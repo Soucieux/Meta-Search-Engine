@@ -41,11 +41,11 @@ class SearchResultsWebsitesFilter extends React.Component {
 
   // 添加网站筛选（单独）
   loadWebsitesFromResults = () => {
-    // 把网站列表转换成网站筛选
-    // loadWebsitesFilter 代表首次生成网站筛选
-    // shwoGoogleResultsWebsitesFilter 代表每次点按 Google按钮时 重新生成新的网站筛选
+    // 此值为 true时，代表当前为首次生成网站筛选列表，此列表只会在网页最初加载时生成一次
     let loadWebsitesFilter = ls.get("load websites filter");
+    // shwoGoogleResultsWebsitesFilter 代表每次点按 Google按钮时 重新生成新的网站筛选
     if (loadWebsitesFilter || !showGoogleResultsWebsitesFilter) {
+      // 把网站列表转换成网站筛选
       // 来自于 Results.state.google_results
       let { searchResultsFiltered, searchResultsOriginal } = this.props;
       this.current_websites = this.loadWebsitesFromResultsHelper(
@@ -56,12 +56,18 @@ class SearchResultsWebsitesFilter extends React.Component {
         this.original_websites = this.loadWebsitesFromResultsHelper(
           searchResultsOriginal
         );
+        // 此值不为 null时，代表网页 url是从 /favourite转至 /results
+        let current_websites_retrieved = ls.get("current websites");
+        if (current_websites_retrieved !== null) {
+          this.current_websites = current_websites_retrieved;
+        }
       }
       ls.set("load websites filter", false);
     } else if (showGoogleResultsWebsitesFilter) {
       // 显示 Google搜索结果时，将现有网站筛选替换成原始的包含 Google的网站筛选
       this.current_websites = this.original_websites;
     }
+    ls.set("current websites", this.current_websites);
   };
 
   // 改变按钮颜色和勾选框状态
@@ -102,6 +108,7 @@ class SearchResultsWebsitesFilter extends React.Component {
       position
     ].style.backgroundColor = this.current_websites[position][2];
     this.original_websites = this.current_websites;
+    ls.set("current websites", this.current_websites);
   };
 
   // 勾选框触发筛选网站
