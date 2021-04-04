@@ -225,12 +225,12 @@ class Results extends React.Component {
       ],
       searchResultsError: null,
       currentInput: "123",
-      exclude_websites: [],
     };
     this.all_results_original = this.all_results_original.concat(
       this.state.google_results
     );
     this.all_results_filtered = this.all_results_original;
+    ls.get("exclude websites") === null && ls.set("exclude websites", []);
   }
 
   // 增加搜索引擎标签
@@ -270,7 +270,7 @@ class Results extends React.Component {
 
   // 更新 exclude_websites 列表
   updateExcludeWebsitesList = (websiteUrl) => {
-    let { exclude_websites } = this.state;
+    let exclude_websites = ls.get("exclude websites");
     // 查找网站是否已经存在。若存在，则移除。若不存在，则加入。
     let duplicateUrl = false;
     for (let i = 0; i < exclude_websites.length; i++) {
@@ -282,16 +282,18 @@ class Results extends React.Component {
     if (duplicateUrl) {
       const index = exclude_websites.indexOf(websiteUrl);
       exclude_websites.splice(index, 1);
-      this.setState({ exclude_websites: exclude_websites });
+      ls.set("exclude websites", exclude_websites);
     } else {
-      this.setState({ exclude_websites: exclude_websites.concat(websiteUrl) });
+      let updated_exclude_websites = exclude_websites.concat(websiteUrl);
+      ls.set("exclude websites", updated_exclude_websites);
     }
+    this.props.history.push("/results");
   };
 
   // 显示或隐藏特定网站搜索结果
   // 此操作不会更改 all_results_original 和 all_results_filtered 的值
   filterResultsByWesbites = () => {
-    let { exclude_websites } = this.state;
+    let exclude_websites = ls.get("exclude websites");
     var filtered_websites_results = [];
     for (let i = 0; i < this.all_results_original.length; i++) {
       var matchedwebsite = false;
@@ -334,7 +336,7 @@ class Results extends React.Component {
 
   // 获取网站筛选后的搜索结果
   retrieveResultsByWebsites = () => {
-    let { exclude_websites } = this.state;
+    let exclude_websites = ls.get("exclude websites");
     if (exclude_websites[0] !== undefined) {
       console.log("Search results filtered based on websites\n\n");
     } else {
