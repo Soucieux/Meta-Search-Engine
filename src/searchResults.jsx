@@ -53,13 +53,16 @@ class SearchResultsWebsitesFilter extends React.Component {
       );
       //有新输入值时，保存一份原始的网站筛选用来显示或隐藏 Google所包含的网站
       if (loadWebsitesFilter) {
-        this.original_websites = this.loadWebsitesFromResultsHelper(
-          searchResultsOriginal
-        );
         // 此值不为 null时，代表网页 url是从 /favourite转至 /results
         let current_websites_retrieved = ls.get("current websites");
-        if (current_websites_retrieved !== null) {
+        let original_websites_retrieved = ls.get("original websites");
+        if (original_websites_retrieved !== null) {
+          this.original_websites = original_websites_retrieved;
           this.current_websites = current_websites_retrieved;
+        } else {
+          this.original_websites = this.loadWebsitesFromResultsHelper(
+            searchResultsOriginal
+          );
         }
       }
       ls.set("load websites filter", false);
@@ -68,6 +71,7 @@ class SearchResultsWebsitesFilter extends React.Component {
       this.current_websites = this.original_websites;
     }
     ls.set("current websites", this.current_websites);
+    ls.set("original websites", this.original_websites);
   };
 
   // 改变按钮颜色和勾选框状态
@@ -109,6 +113,7 @@ class SearchResultsWebsitesFilter extends React.Component {
     ].style.backgroundColor = this.current_websites[position][2];
     this.original_websites = this.current_websites;
     ls.set("current websites", this.current_websites);
+    ls.set("original websites", this.original_websites);
   };
 
   // 勾选框触发筛选网站
