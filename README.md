@@ -6,27 +6,27 @@ _This project was created in winter term 2021_
 
 ### Completed
 
-- Search Bar
-- Search Results
-- Webpages Filter
-- Save favourite pages
-- Search Engine Filter (Google)
-- Favourite webpages collection
+- Search bar
+- Search results
+- Websites filter
+- Save favourite websites
+- Search engine filter (Google)
+- Saved websites collection
 
 ### In progress
 
 - Pagination
-- Search Engine Filter (Bing)
+- Search engine filter (Bing)
 
 ### Known bugs
 
 - Search bar reset button & input value
-- Favourite webpage button
+- Favourite page button
 
 ### Not yet implemented
 
-- Saved webpages presented first with colored background
-- Customized searching on google_domain,location,gl,hl
+- Saved websites presented first with colored background
+- Customized searching on google domain,location,gl,hl
 
 ## Patch Notes
 
@@ -34,19 +34,20 @@ _This project was created in winter term 2021_
 
 _February 20, 2021 ~ February 22, 2021_
 
-- Search Bar
+- Search bar
 
 ### Version 2.0 ~ 2.22
 
 _February 22, 2021 ~ March 8, 2021_
 
-- Search Results
-- Webpages Filter
-- Search Engine Filter (Google)
+- Search results
+- Websites filter
+- Search engine filter (Google)
 
 ### Version 3.0 ~ Present
 
 _March 9, 2021 ~ Present_
 
-- Save favourite pages
-- Show favourite webpages collection
+- Save favourite websites
+- Saved websites collection
+- Websites filter [improvements]
