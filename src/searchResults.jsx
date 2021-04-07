@@ -5,9 +5,6 @@ import Favourite from "./favourite";
 import "bootstrap/dist/css/bootstrap.css";
 import { Link, Redirect } from "react-router-dom";
 
-// 网站筛选按钮初始状态
-ls.set("load websites filter", true);
-
 // 隐藏或显示搜索引擎结果
 var showGoogleResultsWebsitesFilter = true;
 
@@ -41,37 +38,43 @@ class SearchResultsWebsitesFilter extends React.Component {
 
   // 添加网站筛选（单独）
   loadWebsitesFromResults = () => {
-    // 此值为 true时，代表当前为首次生成网站筛选列表，此列表只会在网页最初加载时生成一次
-    let loadWebsitesFilter = ls.get("load websites filter");
+    // 来自于 Results.state.google_results
+    let { searchResultsFiltered, searchResultsOriginal } = this.props;
     // shwoGoogleResultsWebsitesFilter 代表每次点按 Google按钮时 重新生成新的网站筛选
-    if (loadWebsitesFilter || !showGoogleResultsWebsitesFilter) {
+    if (showGoogleResultsWebsitesFilter) {
+      // 显示 Google搜索结果时，将现有网站筛选替换成原始的包含 Google的网站筛选
+      this.current_websites = this.original_websites;
+    } else {
       // 把网站列表转换成网站筛选
-      // 来自于 Results.state.google_results
-      let { searchResultsFiltered, searchResultsOriginal } = this.props;
       this.current_websites = this.loadWebsitesFromResultsHelper(
         searchResultsFiltered
       );
-      //有新输入值时，保存一份原始的网站筛选用来显示或隐藏 Google所包含的网站
-      if (loadWebsitesFilter) {
-        // 此值不为 null时，代表网页 url是从 /favourite转至 /results
-        let current_websites_retrieved = ls.get("current websites");
-        let original_websites_retrieved = ls.get("original websites");
-        if (original_websites_retrieved !== null) {
-          this.original_websites = original_websites_retrieved;
-          this.current_websites = current_websites_retrieved;
-        } else {
-          this.original_websites = this.loadWebsitesFromResultsHelper(
-            searchResultsOriginal
+    }
+    // 此值为 true时，代表当前为首次生成网站筛选列表，此列表只会在网页最初加载时生成一次
+    let loadWebsitesFilter = ls.get("load websites filter");
+    //有新输入值时，保存一份原始的网站筛选用来显示或隐藏 Google所包含的网站
+    if (loadWebsitesFilter) {
+      // 此值不为 null时，代表网页 url是从 /favourite转至 /results
+      let current_websites_retrieved = ls.get("current websites");
+      let original_websites_retrieved = ls.get("original websites");
+      if (original_websites_retrieved !== null) {
+        this.original_websites = original_websites_retrieved;
+        this.current_websites = current_websites_retrieved;
+      } else {
+        // 把网站列表转换成网站筛选
+        if (showGoogleResultsWebsitesFilter) {
+          this.current_websites = this.loadWebsitesFromResultsHelper(
+            searchResultsFiltered
           );
         }
+        this.original_websites = this.loadWebsitesFromResultsHelper(
+          searchResultsOriginal
+        );
+        ls.set("original websites", this.original_websites);
       }
-      ls.set("load websites filter", false);
-    } else if (showGoogleResultsWebsitesFilter) {
-      // 显示 Google搜索结果时，将现有网站筛选替换成原始的包含 Google的网站筛选
-      this.current_websites = this.original_websites;
     }
     ls.set("current websites", this.current_websites);
-    ls.set("original websites", this.original_websites);
+    ls.set("load websites filter", false);
   };
 
   // 改变按钮颜色和勾选框状态
@@ -235,7 +238,6 @@ class Results extends React.Component {
       this.state.google_results
     );
     this.all_results_filtered = this.all_results_original;
-    ls.get("exclude websites") === null && ls.set("exclude websites", []);
   }
 
   // 增加搜索引擎标签
@@ -442,7 +444,6 @@ class Results extends React.Component {
       // 不存在输入值
       console.log("No input. Switch back to main page\n\n");
       return <Redirect from="/results" to="/"></Redirect>;
-      // return <React.Fragment />;
     } else if (input !== this.state.currentInput) {
       // 存在新的输入值，存储新值并进行数据提取
       console.log("New input identified and stored\n\n");

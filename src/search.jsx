@@ -5,7 +5,9 @@ import SearchResults from "./searchResults";
 import "bootstrap/dist/css/bootstrap.css";
 import { Link } from "react-router-dom";
 
+// 初始化 local storage
 ls.set("show Google results", true);
+ls.set("load websites filter", true);
 
 // 搜索框，搜索按钮，搜索清除按钮
 class SearchInputAndButton extends React.Component {
@@ -47,6 +49,7 @@ class SearchInputAndButton extends React.Component {
       console.log("Switch to search results page\n\n");
     } else if (this.props.match.url === "/results") {
       // 已在搜索结果页面
+      this.props.history.push("/results")
       console.log("Already on search results page\n\n");
     } else {
       throw new Error(
@@ -188,6 +191,11 @@ class SearchEngineFilter extends React.Component {
 // 搜索页面
 class Search extends React.Component {
   render() {
+    if (this.props.match.url === "/") {
+      ls.set("current websites", null);
+      ls.set("original websites", null);
+      ls.set("exclude websites", []);
+    }
     return (
       <main>
         {this.props.match.url !== "/results" && (

@@ -11,15 +11,15 @@ _This project was created in winter term 2021_
 - Webpages Filter
 - Save favourite pages
 - Search Engine Filter (Google)
+- Favourite webpages collection
 
 ### In progress
 
+- Pagination
 - Search Engine Filter (Bing)
-- Show favourite webpages collection
 
 ### Not yet implemented
 
-- Pagination
 - Saved webpages presented first
 
 ## Patch Notes
