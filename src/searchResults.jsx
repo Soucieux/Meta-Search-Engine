@@ -11,6 +11,71 @@ var showGoogleResultsWebsitesFilter = true;
 // 储存上一次 Google 按钮状态
 var previousGoogleSearchStatus = true;
 
+var google_results = [
+  {
+    engine: "Google",
+    position: "0",
+    title: "McDonald's Canada: Your Favourite Burgers, Fries & More",
+    link: "http://www.mcdonalds.com/ca/en-ca.html",
+    displayed_link: "www.mcdonalds.com › en-ca",
+    domain: "www.mcdonalds.com",
+    snippet:
+      "*Round Up available at participating McDonald's restaurants in Canada. The Spicy McChicken® Challenge is back!",
+  },
+  {
+    engine: "Google",
+    position: "1",
+    title: "tieltieltileiteteiletlitllitteillietilteiltelliliet2",
+    link: "https://www.mcdonalds.com/ca/en-ca/full-menu.html",
+    displayed_link: "www.mcdonalds.com › en-ca › full-menu",
+    domain: "www.mcdonalds.com",
+    snippet:
+      "For delicious food, visit McDonald's today! View our wide selection of meals, snacks, drinks, and more.",
+  },
+  {
+    engine: "Google",
+    position: "2",
+    title: "McDonald's - Wikipedia",
+    link: "https://en.wikipedia.org/wiki/McDonald%27s",
+    displayed_link: "en.wikipedia.org › wiki › McDonald's",
+    domain: "en.wikipeida.org",
+    snippet:
+      "McDonald's Corporation is an American fast food company, founded in 1940 as a restaurant operated by Richard and Maurice McDonald, in San Bernardino, ...",
+  },
+  {
+    engine: "Google",
+    position: "3",
+    title: "Coupons | McDonald's Canada",
+    link: "https://www4.mcdonalds.ca/coupons/",
+    displayed_link: "www4.mcdonalds.ca › coupons",
+    domain: "en.wikipeida.org",
+    snippet:
+      "When you order ahead on the McDonald's app with a coupon that has fries, you're automatically collecting a Reward from the fries included in the coupon.",
+  },
+  {
+    engine: "Google",
+    position: "4",
+    title: "McDonalds Jobs in Ottawa, ON (with Salaries) - Indeed",
+    link: "https://ca.indeed.com/McDonalds-jobs-in-Ottawa,-ON",
+    displayed_link: "ca.indeed.com › McDonalds-jobs-in-Ottawa,-ON",
+    domain: "www.facebook.com",
+    snippet:
+      "Search 53 McDonalds jobs now available in Ottawa, ON on Indeed.com, the world's largest job site.",
+  },
+  {
+    engine: "Google",
+    position: "5",
+    title: "McDonald's Canada - Home - Ottawa, Ontario - Menu, Prices ...",
+    link: "https://www.facebook.com/McDonalds594MontrealRdOttawaON/",
+    displayed_link: "www.facebook.com › ... › Sandwich Shop",
+    domain: "www.youtube.com",
+    snippet:
+      "McDonald's Canada, Ottawa. 29 likes · 1 talking about this · 524 were here. Fast Food Restaurant.",
+  },
+];
+
+ls.set("Google results", google_results);
+
 // 搜索结果网站筛选
 class SearchResultsWebsitesFilter extends React.Component {
   // 原始搜索结果网站
@@ -38,7 +103,7 @@ class SearchResultsWebsitesFilter extends React.Component {
 
   // 添加网站筛选（单独）
   loadWebsitesFromResults = () => {
-    // 来自于 Results.state.google_results
+    // 来自于 local storage("Google results")
     let { searchResultsFiltered, searchResultsOriginal } = this.props;
     // shwoGoogleResultsWebsitesFilter 代表每次点按 Google按钮时 重新生成新的网站筛选
     if (showGoogleResultsWebsitesFilter) {
@@ -54,7 +119,7 @@ class SearchResultsWebsitesFilter extends React.Component {
     let loadWebsitesFilter = ls.get("load websites filter");
     //有新输入值时，保存一份原始的网站筛选用来显示或隐藏 Google所包含的网站
     if (loadWebsitesFilter) {
-      // 此值不为 null时，代表网页 url是从 /favourite转至 /results
+      // 此值不为 null时，代表网页 url是从 /favourite转至 /results 或者页面被刷新
       let current_websites_retrieved = ls.get("current websites");
       let original_websites_retrieved = ls.get("original websites");
       if (original_websites_retrieved !== null) {
@@ -167,75 +232,9 @@ class Results extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      google_results: [
-        {
-          engine: "Google",
-          position: "0",
-          title: "McDonald's Canada: Your Favourite Burgers, Fries & More",
-          link: "http://www.mcdonalds.com/ca/en-ca.html",
-          displayed_link: "www.mcdonalds.com › en-ca",
-          domain: "www.mcdonalds.com",
-          snippet:
-            "*Round Up available at participating McDonald's restaurants in Canada. The Spicy McChicken® Challenge is back!",
-        },
-        {
-          engine: "Google",
-          position: "1",
-          title: "tieltieltileiteteiletlitllitteillietilteiltelliliet2",
-          link: "https://www.mcdonalds.com/ca/en-ca/full-menu.html",
-          displayed_link: "www.mcdonalds.com › en-ca › full-menu",
-          domain: "www.mcdonalds.com",
-          snippet:
-            "For delicious food, visit McDonald's today! View our wide selection of meals, snacks, drinks, and more.",
-        },
-        {
-          engine: "Google",
-          position: "2",
-          title: "McDonald's - Wikipedia",
-          link: "https://en.wikipedia.org/wiki/McDonald%27s",
-          displayed_link: "en.wikipedia.org › wiki › McDonald's",
-          domain: "en.wikipeida.org",
-          snippet:
-            "McDonald's Corporation is an American fast food company, founded in 1940 as a restaurant operated by Richard and Maurice McDonald, in San Bernardino, ...",
-        },
-        {
-          engine: "Google",
-          position: "3",
-          title: "Coupons | McDonald's Canada",
-          link: "https://www4.mcdonalds.ca/coupons/",
-          displayed_link: "www4.mcdonalds.ca › coupons",
-          domain: "en.wikipeida.org",
-          snippet:
-            "When you order ahead on the McDonald's app with a coupon that has fries, you're automatically collecting a Reward from the fries included in the coupon.",
-        },
-        {
-          engine: "Google",
-          position: "4",
-          title: "McDonalds Jobs in Ottawa, ON (with Salaries) - Indeed",
-          link: "https://ca.indeed.com/McDonalds-jobs-in-Ottawa,-ON",
-          displayed_link: "ca.indeed.com › McDonalds-jobs-in-Ottawa,-ON",
-          domain: "www.facebook.com",
-          snippet:
-            "Search 53 McDonalds jobs now available in Ottawa, ON on Indeed.com, the world's largest job site.",
-        },
-        {
-          engine: "Google",
-          position: "5",
-          title:
-            "McDonald's Canada - Home - Ottawa, Ontario - Menu, Prices ...",
-          link: "https://www.facebook.com/McDonalds594MontrealRdOttawaON/",
-          displayed_link: "www.facebook.com › ... › Sandwich Shop",
-          domain: "www.youtube.com",
-          snippet:
-            "McDonald's Canada, Ottawa. 29 likes · 1 talking about this · 524 were here. Fast Food Restaurant.",
-        },
-      ],
-      searchResultsError: null,
-      currentInput: "123",
-    };
+    this.state = { searchResultsError: null };
     this.all_results_original = this.all_results_original.concat(
-      this.state.google_results
+      ls.get("Google results")
     );
     this.all_results_filtered = this.all_results_original;
   }
@@ -262,12 +261,12 @@ class Results extends React.Component {
   //       (result) => {
   //         console.log(result);
   //         let resultsWithTag = this.addGoogleTag(result.organic_results);
-  //         this.all_results_original = this.all_results_original.concat(resultsWithTag);
-  //          this.all_results_filtered = this.all_results_original;
-  //         this.setState({
-  //           google_results: resultsWithTag,
-  //           currentInput: input,
-  //         });
+  //         this.all_results_original = this.all_results_original.concat(
+  //           resultsWithTag
+  //         );
+  //         this.all_results_filtered = this.all_results_original;
+  //         ls.set("Google results", resultsWithTag);
+  //         this.props.history.push("/results");
   //       },
   //       (searchResultsError) => {
   //         this.setState({ searchResultsError });
@@ -434,24 +433,27 @@ class Results extends React.Component {
   };
 
   render() {
+    // REMOVE THIS
+    ls.set("previous input", "123");
     // 检测数据提取是否存在错误
     this.retrieveResultsError();
     // 显示或隐藏 Google搜索结果
     this.filterGoogleResults();
     // 提取输入值
-    let input = ls.get("input");
-    if (!input) {
+    let currentInput = ls.get("current input");
+    if (!currentInput) {
       // 不存在输入值
       console.log("No input. Switch back to main page\n\n");
       return <Redirect from="/results" to="/"></Redirect>;
-    } else if (input !== this.state.currentInput) {
+    } else if (currentInput !== ls.get("previous input")) {
       // 存在新的输入值，存储新值并进行数据提取
       console.log("New input identified and stored\n\n");
       ls.set("load websites filter", true);
+      ls.set("previous input", currentInput);
       // 初始化搜索结果 array
       this.all_results_original = [];
       this.all_results_filtered = [];
-      // this.retrieveSearchResults(input);
+      // this.retrieveSearchResults(currentInput);
       return <React.Fragment />;
     } else {
       // 实时更新网站筛选

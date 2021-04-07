@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 // 初始化 local storage
 ls.set("show Google results", true);
 ls.set("load websites filter", true);
+ls.set("new input received", false);
 
 // 搜索框，搜索按钮，搜索清除按钮
 class SearchInputAndButton extends React.Component {
@@ -21,7 +22,7 @@ class SearchInputAndButton extends React.Component {
 
   // 实时监控和提取输入框内容并储存至 local storage
   handleSearchInputChange(event) {
-    ls.set("input", event.target.value);
+    ls.set("current input", event.target.value);
     let visible = document.getElementById("search-button-reset").style;
     if (event.target.value === "") {
       visible.visibility = "hidden";
@@ -32,7 +33,7 @@ class SearchInputAndButton extends React.Component {
 
   // 输入框清除按钮
   handleResetButtonOnClick() {
-    ls.set("input", "");
+    ls.set("current input", "");
     document.getElementById("search-button-reset").style.visibility = "hidden";
   }
 
@@ -49,14 +50,15 @@ class SearchInputAndButton extends React.Component {
       console.log("Switch to search results page\n\n");
     } else if (this.props.match.url === "/results") {
       // 已在搜索结果页面
-      this.props.history.push("/results")
+      this.props.history.push("/results");
       console.log("Already on search results page\n\n");
     } else {
       throw new Error(
         "Cannot find the correct url to show results.\nThis should never happen."
       );
     }
-    console.log("Input is: " + ls.get("input") + " \n\n");
+    ls.set("new input received", true);
+    console.log("Input is: " + ls.get("current input") + " \n\n");
   }
 
   // 回车键快捷搜索
@@ -70,7 +72,8 @@ class SearchInputAndButton extends React.Component {
     let { url } = this.props.match;
     // 每次进入 main page 时，清除已保存的输入值
     if (url === "/") {
-      ls.remove("input");
+      ls.remove("current input");
+      ls.remove("previous input");
     }
     return (
       <React.Fragment>
@@ -80,7 +83,7 @@ class SearchInputAndButton extends React.Component {
             id="search-input"
             autoComplete="off"
             // 确保返回或刷新页面时，输入值仍显示
-            defaultValue={url === "/results" ? ls.get("input") : ""}
+            defaultValue={url === "/results" ? ls.get("current input") : ""}
             onChange={this.handleSearchInputChange}
             onKeyPress={this.handleKeyPress}
           />
@@ -191,10 +194,11 @@ class SearchEngineFilter extends React.Component {
 // 搜索页面
 class Search extends React.Component {
   render() {
-    if (this.props.match.url === "/") {
+    if (ls.get("new input received")) {
       ls.set("current websites", null);
       ls.set("original websites", null);
       ls.set("exclude websites", []);
+      ls.set("new input received", false);
     }
     return (
       <main>
