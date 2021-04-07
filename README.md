@@ -18,9 +18,15 @@ _This project was created in winter term 2021_
 - Pagination
 - Search Engine Filter (Bing)
 
+### Known bugs
+
+- Search bar reset button & input value
+- Favourite webpage button
+
 ### Not yet implemented
 
-- Saved webpages presented first
+- Saved webpages presented first with colored background
+- Customized searching on google_domain,location,gl,hl
 
 ## Patch Notes
 
