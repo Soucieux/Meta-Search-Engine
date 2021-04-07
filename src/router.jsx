@@ -1,7 +1,7 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
 import Search from "./search";
 import Favourite from "./favourite";
+import { Route, Switch } from "react-router-dom";
 
 class Router extends React.Component {
   constructor(props) {
