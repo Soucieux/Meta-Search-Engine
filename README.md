@@ -200,7 +200,8 @@ One record per change; complete details and evidence are below. Older work dates
   [CONTRIBUTING.md](CONTRIBUTING.md) states how changes are made and checked.
 - **Unchanged:** the application source and its dependencies, so the build failure recorded under
   [Current state](#current-state) remains.
-- **Status:** uncommitted at delivery on 2026-10-01.
+- **Status:** delivered uncommitted on 2026-10-01, then committed the same day as `e94fd7b` (the
+  import with its history), `cebf8ba` and `40db4af`.
 
 [Back to change history](#change-history)
 
