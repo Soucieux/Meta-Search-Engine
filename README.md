@@ -142,7 +142,8 @@ three pages, and every piece of state lives in the browser's local storage.
 | Path | Contents |
 |---|---|
 | `src/` | The React components, their stylesheets and the bundled sample results. |
-| `html/` | `index.html`, the web app manifest, the favicon, the Google and Bing filter icons, and the home-page image, a Bing wallpaper the home page credits. |
+| `html/` | `index.html`, the web app manifest, the favicon made from the project icon, the Google and Bing filter icons, and the home-page image, a Bing wallpaper the home page credits. |
+| `Resources/` | The 1,024-pixel project icon master, kept outside `html/` so the build does not serve it. |
 | `config/` | The ejected webpack, development-server, Jest and path configuration. |
 | `scripts/` | The `start`, `build` and `test` scripts that `package.json` runs. |
 
@@ -166,6 +167,7 @@ One record per change; complete details and evidence are below. Older work dates
 
 | Record | Date | Highlights | Details |
 |---|---|---|---|
+| Maintenance | 2026-10-01 | <ul><li><strong>Icon:</strong> Added the project icon, three sources flowing into one magnifier on a light blue tile, in the macOS icon shape; its 1,024-pixel master lives in <code>Resources/</code>.</li><li><strong>Browser:</strong> The favicon, until now React's default logo, is a multi-size copy of the same icon.</li><li><strong>Finder:</strong> The project folder's icon is set from the same master.</li></ul> | [Full record](#project-icon) |
 | Maintenance | 2026-10-01 | <ul><li><strong>Dependencies:</strong> <code>node_modules</code> is gone from every commit and ignored, so dependencies come from <code>npm install</code>.</li><li><strong>Credentials:</strong> The three API keys earlier commits carried read <code>REDACTED</code> in every commit.</li><li><strong>Authorship:</strong> Commits that named a personal email address now name the author's GitHub noreply address.</li><li><strong>Documentation:</strong> This README gained the current state, setup, architecture, workflow and change history, and a contribution guide was added.</li></ul> | [Full record](#history-cleanup) |
 | Maintenance | 2026-10-01 | <ul><li><strong>Dependency:</strong> <code>package.json</code> requires <code>semver</code> 7.5.2 instead of 7.3.2, a Dependabot security update.</li></ul> | [Full record](#semver-update) |
 | Maintenance | 2022-09-11 | <ul><li><strong>Security updates:</strong> Dependabot updated url-parse, node-forge, minimist, async, eventsource and terser.</li><li><strong>Lock file:</strong> <code>package-lock.json</code> was removed, so installs resolve the ranges in <code>package.json</code>.</li></ul> | [Full record](#dependency-security-updates) |
@@ -177,6 +179,25 @@ One record per change; complete details and evidence are below. Older work dates
 
 <details>
 <summary>Full records for this table</summary>
+
+<a id="project-icon"></a>
+
+### Project icon — 2026-10-01
+
+- **Icon:** `Resources/MetaSearchEngineIcon.png` is the 1,024-pixel master: three coloured sources
+  flow into one magnifier showing a merged results list, on a light blue tile clipped to the rounded
+  square macOS draws for app icons, 824 of 1024 pixels, with a soft shadow that keeps its edge on a
+  white background. It sits outside `html/`, so the build does not serve it.
+- **Favicon:** `html/favicon.ico`, which `index.html` already loads, was React's default logo from
+  the Create React App template. It is now an icon file holding the same artwork at 16, 32, 48, 64,
+  128 and 256 pixels.
+- **Finder:** the project folder's icon was set from the same master.
+- **Checks:** the master is 1,024 by 1,024 pixels with a transparent margin around its 824-pixel
+  tile; the favicon's 16, 32 and 64-pixel images were inspected; and the folder icon as macOS
+  reports it shows the new artwork. The build still stops as [Current state](#current-state)
+  records, so the favicon has not been seen in a served page.
+
+[Back to change history](#change-history)
 
 <a id="history-cleanup"></a>
 
