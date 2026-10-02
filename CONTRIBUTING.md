@@ -15,21 +15,23 @@ that apply in both the canonical workspace and the standalone public repository.
 
 ## Product boundaries
 
-- Meta Search Engine is a browser-only single-page app. Its state stays in the browser's local
-  storage; there is no server and no other store.
+- Meta Search Engine is a single-page app whose state stays in the browser's local storage. Queries
+  go to one hosted service, Tavily, and only through the development or preview server's
+  `/live/search` address; send nothing else to a hosted service.
 - Never commit a search API key, in the source or in any other tracked file. The keys earlier
-  commits carried read `REDACTED`. A key for the commented-out ValueSERP request belongs in an
-  ignored `.env.local` file as a `VITE_` variable, which Vite passes to the app as
-  `import.meta.env`; any key the browser sends is visible to the people who use it.
-- The bundled sample results stand in for live results. Keep them clearly sample data until a real
-  search provider replaces them.
+  commits carried read `REDACTED`. The Tavily key belongs in the ignored `.env.local` file as
+  `TAVILY_API_KEY`, without the `VITE_` prefix, so only the server reads it. Never give the page a
+  key: Vite passes every `VITE_` variable to the browser, where the people who use it can read it.
+- Keep `/live/search` answering only the app's own page, and pass the page nothing from Tavily but
+  each result's title, address and excerpt.
 
 ## Checks for a change
 
 - Run `npm test` and `npm run build` for any source, dependency, or configuration change; both
   must finish without errors.
 - Add or update a test in `src/app.test.jsx` when behavior changes. The tests drive the app through
-  its router in a simulated browser page, as a user would.
+  its router in a simulated browser page, as a user would, against a stand-in for Tavily;
+  `scripts/liveSearch.test.js` covers the live search's answers and refusals.
 - Run `npm start` for interface changes, then check the home page, the results page, and My Pages
   in a browser. Passing tests and a build do not establish visual correctness.
 
