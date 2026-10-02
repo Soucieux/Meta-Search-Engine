@@ -8,18 +8,20 @@
 Meta Search Engine is a single-page search front end, created with React in winter term 2021. It
 was built to gather results from several search engines into one list: a home page with a search
 box, a results page with a websites filter and a search-engine filter, and **My Pages**, a
-collection of saved results. Everything it keeps stays in the browser; it has no server of its own.
+collection of saved results. Everything it keeps stays in the browser.
 
-Only Google results were ever connected, through the ValueSERP search API, and that request has been
-commented out since March 2021. The app now shows a bundled sample of six Google results instead, so
-it is an interface prototype rather than a live search service.
+It searches the **live web** through Tavily, a web search service with a free monthly allowance. The
+Tavily key stays with the local development server, which passes each query on. Google and Bing are
+shown but unavailable: only Google was ever connected, through the ValueSERP search API, and that
+request has been commented out since March 2021.
 
 <!-- project-control:section=overview -->
 ## Features
 
 The feature list as the project recorded it at Version 3.31 in April 2021. Its two known bugs, and
-two layout bugs found later, were fixed on 2026-10-01, and saved websites have been listed first
-since 2026-10-02.
+two layout bugs found later, were fixed on 2026-10-01. Since 2026-10-02 saved websites have been
+listed first, and the results come from the live web through Tavily, which the search-engine filter
+switches on and off.
 
 ### Completed
 
@@ -50,23 +52,35 @@ None known.
 Checked on 2026-10-02 with Node.js 22.
 
 - **Build:** Vite serves the app with `npm start` and builds it with `npm run build`.
-- **Search:** the ValueSERP request in `src/searchResults.jsx` is commented out, so every query
-  shows the six sample Google results bundled in that file.
-- **Tests:** `npm test` runs 20 tests of search, the filters, favourites, My Pages and what a
-  reload keeps.
+- **Search:** every query asks Tavily for 10 live results through the development server and lists
+  them in Tavily's order. Without a Tavily key, or once the month's free searches are used up, the
+  results page says why. Google and Bing are unavailable; the 2021 ValueSERP request in
+  `src/searchResults.jsx` stays commented out.
+- **Tests:** `npm test` runs 45 tests: the app's pages, filters, favourites and saved state
+  against a stand-in for Tavily, the live search's answers and refusals, and the snippets with
+  their bold search words.
 
 ## Quick start
 
-Requires Node.js 22.22 or newer, and npm. Run every command from this folder.
+Requires Node.js 22.22 or newer, and npm. Live search needs a free API key from
+[Tavily](https://tavily.com). Run every command from this folder.
 
 ```bash
 npm install
 npm start
 ```
 
-- `npm start` serves the app at http://localhost:3000; add `-- --port <number>` to use another port.
-- `npm run build` writes a production build to `build/`.
-- `npm run preview` serves that build at http://localhost:3000.
+1. First create `.env.local` in this folder with the line `TAVILY_API_KEY=` followed by your Tavily
+   key. Only the development server reads it, and the page never receives it; the server restarts
+   by itself when `.env.local` changes.
+2. `npm start` serves the app at http://localhost:3000; add `-- --port <number>` to use another port.
+
+Each search uses one of Tavily's free monthly searches, 1,000 on the free plan in October 2026.
+Without a key, the results page says how to add one.
+
+- `npm run build` writes a production build to `build/`. Live search needs a server that holds the
+  key, so a build searches only when `npm run preview` serves it.
+- `npm run preview` serves that build at http://localhost:3000, with live search.
 - `npm test` runs the tests once.
 
 <!-- project-control:section=workflows -->
@@ -76,9 +90,11 @@ npm start
 Search and filter
 Type a query on the home page and press Enter
   ↓
-The results page lists the bundled sample results
+The development server asks Tavily for live results
+  ↓
+The results page lists Tavily's top ten
   ├─→ Untick a website to hide its results
-  └─→ Turn Google off to hide every Google result
+  └─→ Turn Web off to hide its results
 
 Save a page
 Choose Favourite beside a result
@@ -95,8 +111,10 @@ Open a saved page, remove it, or go back to the results
 <!-- project-control:section=architecture -->
 ## Architecture
 
-The app runs entirely in the browser. `src/index.jsx` mounts the router, class components draw the
-three pages, and every piece of state lives in the browser's local storage.
+The app runs in the browser. `src/index.jsx` mounts the router, class components draw the three
+pages, and every piece of state lives in the browser's local storage. `src/webSearch.js` asks the
+development server's `/live/search` address for live results, which `scripts/liveSearch.js` fetches
+from Tavily with the key in `.env.local`.
 
 ### Frontend & Presentation
 
@@ -113,32 +131,36 @@ three pages, and every piece of state lives in the browser's local storage.
 
 | Technology or concept | Use in this project |
 |---|---|
-| Browser local storage | Through the `local-storage` package, it keeps the current and previous query, the cached results, the websites filter's state and the saved pages. |
-| Bundled sample results | Six Google results for a McDonald's search, defined in `src/searchResults.jsx`. |
+| Browser local storage | Through the `local-storage` package, it keeps the current and previous query, the last results, the websites filter's state and the saved pages. |
+| `.env.local` | Holds this computer's Tavily key, read only by the development and preview servers; it is never committed. |
 
 ### Integrations & Security
 
 | Technology or concept | Use in this project |
 |---|---|
 | ValueSERP API | Supplied Google results during development; the request is commented out, and the key it carried reads `REDACTED`. |
-| Google Fonts | Serves IBM Plex to the browser when the page loads; nothing else leaves the browser. |
+| Tavily Search API | Supplies the live results. The development and preview servers send each query to Tavily's basic search with the key from `.env.local` and pass only each result's title, address and excerpt to the page. The key never reaches the browser, and the servers answer only the app's own page. |
+| Google Fonts | Serves IBM Plex to the browser when the page loads. |
 
 ### Build & Delivery
 
 | Technology or concept | Use in this project |
 |---|---|
-| Vite | Serves the app for `npm start` and builds it into `build/` for `npm run build`, with `html/` as its public folder. |
+| Vite | Serves the app for `npm start` and builds it into `build/` for `npm run build`, with `html/` as its public folder; its development and preview servers answer `/live/search`. |
 | Vite React plugin | Compiles the JSX and refreshes changed components while the development server runs. |
-| Vitest | Runs `src/app.test.jsx` for `npm test` in a simulated browser page from jsdom, where React Testing Library drives the app through its router. |
+| Vitest | Runs the tests in `src/` and `scripts/` for `npm test`; in a simulated browser page from jsdom, React Testing Library drives the app through its router against a stand-in for Tavily. |
+| Scripts | `scripts/liveSearch.js` is the servers' live search, which asks Tavily. |
 
 ## Project map
 
 | Path | Contents |
 |---|---|
 | `index.html` | The page Vite serves and builds, which loads `src/index.jsx`. |
-| `vite.config.js` | The Vite configuration: the React plugin, the `html/` public folder, port 3000, the `build/` folder and the test environment. |
-| `src/` | The React components, their stylesheets, the icons, the bundled sample results and the tests. |
+| `vite.config.js` | The Vite configuration: the React plugin, the live search, the `html/` public folder, port 3000, the `build/` folder and the test environment. |
+| `src/` | The React components, their stylesheets, the icons, the web search and the tests. |
+| `scripts/` | The servers' live search and its tests. |
 | `html/` | The web app manifest, the favicon and the header logo made from the project icon, and the home-page image, a Bing wallpaper the home page credits. |
+| `.env.local` | This computer's Tavily key; not committed. |
 | `Resources/` | The 1,024-pixel project icon master, kept outside `html/` so the build does not serve it. |
 
 <!-- project-control:section=ignore -->
@@ -161,6 +183,8 @@ One record per change; complete details and evidence are below. Older work dates
 
 | Record | Date | Highlights | Details |
 |---|---|---|---|
+| Maintenance | 2026-10-02 | <ul><li><strong>Header:</strong> The page title and its icon are larger, as tall as the search box and buttons beside them.</li></ul> | [Full record](#header-title) |
+| Maintenance | 2026-10-02 | <ul><li><strong>Search:</strong> Queries now search the live web through Tavily's free search service, ten results at a time.</li><li><strong>Key:</strong> Your Tavily key stays with the local development server; the page never receives it.</li><li><strong>Sources:</strong> Web is the switchable source; Google and Bing show as unavailable.</li></ul> | [Full record](#live-web-search) |
 | Maintenance | 2026-10-02 | <ul><li><strong>Look:</strong> A refreshed interface keeps the three pages and their colours, with IBM Plex type and complete hover, focus and empty states.</li><li><strong>Home:</strong> The Bing photo sits under a soft dark wash, with the search box and sources in one white panel.</li><li><strong>My Pages:</strong> Cards show each page's address and snippet, and Remove takes a page off the list.</li></ul> | [Full record](#interface-refresh) |
 | Maintenance | 2026-10-02 | <ul><li><strong>Frameworks:</strong> React 19, React Router 8 and Bootstrap 5 replace React 17, React Router 5 and Bootstrap 4, and the pages look as they did.</li><li><strong>Node.js:</strong> The app needs Node.js 22.22 or newer.</li><li><strong>Dependencies:</strong> <code>react-router-dom</code>, <code>jquery</code> and <code>popper.js</code> are no longer installed.</li></ul> | [Full record](#framework-upgrade) |
 | Maintenance | 2026-10-02 | <ul><li><strong>Saved results:</strong> The results page lists saved results first, on a pale yellow background, one of the 2021 features not yet built.</li></ul> | [Full record](#saved-results-first) |
@@ -179,6 +203,44 @@ One record per change; complete details and evidence are below. Older work dates
 
 <details>
 <summary>Full records for this table</summary>
+
+<a id="header-title"></a>
+
+### Header title — 2026-10-02
+
+- **Header:** on the results page and My Pages, the project icon and "Custom Search" match the
+  search box and the header's buttons in size: the icon is as tall as they are, 40 pixels, with the
+  same top and bottom edges, and the 24-pixel text sits on their centre line.
+- **Checks:** in headless Chromium at 1,280 and 1,440 pixels wide, the icon, the search box, the
+  Search, Web and My Pages buttons all measured from 12 to 52 pixels down the page, and the middle
+  of the title's letters measured 32 pixels, the centre of that band.
+
+[Back to change history](#change-history)
+
+<a id="live-web-search"></a>
+
+### Live web search — 2026-10-02
+
+- **Search:** each query goes from the page to the development server's `/live/search` address,
+  which asks Tavily's basic search for 10 live results with the key in `.env.local` and passes back
+  each result's title, address and excerpt, without the Markdown marks Tavily sometimes leaves in
+  an excerpt. The results page lists them in Tavily's order with each page's address, title and a
+  snippet that bolds the search words; the websites filter, Favourite, saved results first and My
+  Pages work on them as before, and a line under the results names Tavily. The six McDonald's
+  sample results are gone.
+- **Key and limits:** the key stays on the development or preview server; the page never receives
+  it, and the server answers only requests from the app's own page. Without a key, with a key
+  Tavily refuses, once the month's free searches are used up, or when Tavily does not answer, the
+  results page says which and what to do.
+- **Sources:** Web is the source the toggle switches; Google and Bing show as unavailable.
+- **Checks:** 45 tests pass, and `npm run build` builds 105 modules with no trace of the
+  key, which the build was given. On the development server, a search with no key showed how to add
+  one, a made-up key came back from Tavily as refused, and a request marked as coming from another
+  website was turned away. With a real key, a search for “best pizza in ottawa” listed Tavily's 9
+  live results in their order in headless Chromium at 1,280 and 1,440 pixels wide, with no sideways
+  scrolling and no console errors. `.env.local` is ignored by Git and has never been committed.
+
+[Back to change history](#change-history)
 
 <a id="interface-refresh"></a>
 
