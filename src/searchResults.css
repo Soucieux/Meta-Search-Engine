@@ -105,8 +105,9 @@
   /* border: 2px solid #73ad21; */
 }
 
-/* 网站筛选勾选框 */
+/* 网站筛选勾选框：保持在按钮左侧，不随网站筛选列拉伸到网站名上方 */
 input[type="checkbox"] {
+  align-self: flex-start;
   position: relative;
   top: 33px;
   left: 9px;
