@@ -17,8 +17,8 @@ it is an interface prototype rather than a live search service.
 <!-- project-control:section=overview -->
 ## Features
 
-The feature list as the project recorded it at Version 3.31 in April 2021. Its two known bugs were
-fixed on 2026-10-01, and the bugs listed now were found then.
+The feature list as the project recorded it at Version 3.31 in April 2021. Its two known bugs, and
+two layout bugs found later, were fixed on 2026-10-01.
 
 ### Completed
 
@@ -36,8 +36,7 @@ fixed on 2026-10-01, and the bugs listed now were found then.
 
 ### Known bugs
 
-- Each website filter's tick box sits on top of the site's name.
-- The results header is placed in fixed pixels, so a narrow window cuts off the Bing button.
+None known.
 
 ### Not yet implemented
 
@@ -154,6 +153,7 @@ One record per change; complete details and evidence are below. Older work dates
 
 | Record | Date | Highlights | Details |
 |---|---|---|---|
+| Maintenance | 2026-10-01 | <ul><li><strong>Layout:</strong> The results header and the My Pages icon fit windows from 1,280 pixels wide, and each website filter's tick box sits beside the site's name.</li><li><strong>Dependencies:</strong> Seven packages nothing imported left <code>package.json</code>; the app needs six.</li></ul> | [Full record](#layout-and-dependency-cleanup) |
 | Maintenance | 2026-10-01 | <ul><li><strong>Build:</strong> Vite replaces the ejected Create React App setup, so <code>npm start</code> and <code>npm run build</code> work again on current Node.js.</li><li><strong>Search:</strong> Every query shows the bundled sample results, not only <code>123</code>.</li><li><strong>Bugs:</strong> The clear button empties the search box, and favourite buttons remember saved pages without saving one twice.</li><li><strong>Dependencies:</strong> An install adds 124 packages instead of about 920, and the security alerts were all in removed build tools.</li></ul> | [Full record](#vite-build-and-bug-fixes) |
 | Maintenance | 2026-10-01 | <ul><li><strong>Icon:</strong> Added the project icon, three sources flowing into one magnifier on a light blue tile, in the macOS icon shape; its 1,024-pixel master lives in <code>Resources/</code>.</li><li><strong>Browser:</strong> The favicon, until now React's default logo, is a multi-size copy of the same icon.</li><li><strong>Finder:</strong> The project folder's icon is set from the same master.</li></ul> | [Full record](#project-icon) |
 | Maintenance | 2026-10-01 | <ul><li><strong>Dependencies:</strong> <code>node_modules</code> is gone from every commit and ignored, so dependencies come from <code>npm install</code>.</li><li><strong>Credentials:</strong> The three API keys earlier commits carried read <code>REDACTED</code> in every commit.</li><li><strong>Authorship:</strong> Commits that named a personal email address now name the author's GitHub noreply address.</li><li><strong>Documentation:</strong> This README gained the current state, setup, architecture, workflow and change history, and a contribution guide was added.</li></ul> | [Full record](#history-cleanup) |
@@ -167,6 +167,29 @@ One record per change; complete details and evidence are below. Older work dates
 
 <details>
 <summary>Full records for this table</summary>
+
+<a id="layout-and-dependency-cleanup"></a>
+
+### Layout and dependency cleanup — 2026-10-01
+
+- **Results header:** the search box on the results page narrows with the window, from its full 700
+  pixels down, so the Google and Bing buttons stay in view on a 1,280-pixel window instead of
+  running past its edge.
+- **My Pages icon:** it is placed from the window's right edge, as the home page's icon is, instead
+  of 1,810 pixels from the left, which put it off-screen on any window narrower than about 1,860
+  pixels.
+- **Website filter:** each tick box sits at the left of its button. It used to stretch across the
+  filter column and land on top of the site's name.
+- **Dependencies:** `bootstrap-icons`, `web-vitals` and the three testing libraries left
+  `package.json`, as did `jquery` and `popper.js`, which npm still installs because Bootstrap 4
+  needs them. The app now needs React, React DOM, React Router, React Router DOM, Bootstrap and
+  `local-storage`.
+- **Checks:** in headless Chromium at 1,280, 1,440 and 1,920 pixels wide, the Bing button and the
+  My Pages icon stayed in the window with room between them, no tick box overlapped a site name,
+  and no window scrolled sideways. Search, the clear button, favourites, My Pages and both filters
+  behaved as before, without page errors, and `npm run build` built 46 modules.
+
+[Back to change history](#change-history)
 
 <a id="vite-build-and-bug-fixes"></a>
 
@@ -200,8 +223,8 @@ One record per change; complete details and evidence are below. Older work dates
   every query showed six results; the clear button emptied the box; favourites survived a return
   from My Pages and a reload without duplicates; unticking a website hid its two results and
   turning Google off showed the no-results message; no page errors. `npm run preview` served the
-  project icon's favicon to the page that links it. Two layout bugs found on the way are listed
-  under [Known bugs](#known-bugs).
+  project icon's favicon to the page that links it. Two layout bugs found on the way were added to
+  the known bugs.
 
 [Back to change history](#change-history)
 
