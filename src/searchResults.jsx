@@ -567,7 +567,11 @@ class Results extends React.Component {
       ls.set("load websites filter", true);
       ls.set("previous input", currentInput);
       this.all_results_original = [].concat(ls.get("Google results"));
-      this.all_results_filtered = this.all_results_original;
+      // 新的搜索结果同样按 Google 按钮的状态显示或隐藏
+      this.all_results_filtered = this.filterResultsBySearchEngine(
+        this.all_results_original,
+        ls.get("show Google results")
+      );
       // this.retrieveSearchResults(currentInput);
     }
     if (!currentInput) {
