@@ -224,13 +224,13 @@ class SearchResultsWebsitesFilter extends React.Component {
 }
 
 /**
- * 搜索结果的收藏按钮。按钮状态来自已收藏网页，点击时只重新渲染这个按钮，
- * 不会重新渲染整个结果页。
+ * 一条搜索结果及其收藏按钮。是否已收藏来自已收藏网页，已收藏的结果带有背景色。
+ * 点击收藏按钮时只重新渲染这条结果，不会重新渲染整个结果页。
  */
-class FavouriteButton extends React.Component {
+class SearchResult extends React.Component {
   /**
    * @param {{result: Object, isFavourite: function(Object): boolean, onToggle: function(Object): void}} props
-   *   result 为按钮所属的搜索结果；isFavourite 检查它是否已收藏；onToggle 收藏或取消收藏它
+   *   result 为要显示的搜索结果；isFavourite 检查它是否已收藏；onToggle 收藏或取消收藏它
    */
   constructor(props) {
     super(props);
@@ -239,7 +239,7 @@ class FavouriteButton extends React.Component {
   }
 
   /**
-   * 收藏或取消收藏这条搜索结果，并按已收藏网页更新按钮。
+   * 收藏或取消收藏这条搜索结果，并按已收藏网页更新按钮和背景色。
    */
   handleClick() {
     this.props.onToggle(this.props.result);
@@ -247,14 +247,44 @@ class FavouriteButton extends React.Component {
   }
 
   render() {
+    let result_individual = this.props.result;
     return (
-      <button
-        className="add-favourite-webpages"
-        style={this.state.saved ? { backgroundColor: "#dc3545" } : undefined}
-        onClick={this.handleClick}
+      <div
+        id="search-result-individual"
+        className={this.state.saved ? "saved-search-result" : undefined}
       >
-        {this.state.saved ? "Remove" : "Favourite"}
-      </button>
+        <h6 className="card-body">
+          <Link
+            id="search-result-link"
+            target="_blank"
+            to={
+              "//" +
+              (result_individual.link[4] === "s"
+                ? // https
+                  result_individual.link.slice(8, result_individual.link.length)
+                : // http
+                  result_individual.link.slice(7, result_individual.link.length))
+            }
+          >
+            {result_individual.title}
+          </Link>
+          <div
+            id="search-result-display-link"
+            className="card-subtitle mb-2 text-muted"
+          >
+            {result_individual.displayed_link}
+          </div>
+          <div>{result_individual.snippet}</div>
+        </h6>
+        <button
+          className="add-favourite-webpages"
+          style={this.state.saved ? { backgroundColor: "#dc3545" } : undefined}
+          onClick={this.handleClick}
+        >
+          {this.state.saved ? "Remove" : "Favourite"}
+        </button>
+        <hr />
+      </div>
     );
   }
 }
@@ -470,6 +500,18 @@ class Results extends React.Component {
     console.log("");
   };
 
+  /**
+   * 把已收藏的搜索结果排在前面，两部分各自保持原来的顺序。
+   * 在结果页渲染时排序，因此收藏或取消收藏后，结果页下次渲染时才移动这条结果。
+   * @param {Object[]} results 要显示的搜索结果
+   * @returns {Object[]} 排序后的新数组，传入的数组不变
+   */
+  orderFavouritesFirst(results) {
+    return results
+      .filter((result) => this.isFavouriteWebsite(result))
+      .concat(results.filter((result) => !this.isFavouriteWebsite(result)));
+  }
+
   render() {
     // 检测数据提取是否存在错误
     this.retrieveResultsError();
@@ -520,48 +562,16 @@ class Results extends React.Component {
             <React.Fragment>
               {/* 显示搜索结果 */}
               <div id="search-results">
-                {this.all_results_filtered.map((result_individual) => (
-                  <div
-                    id="search-result-individual"
-                    key={result_individual.position}
-                  >
-                    <h6 className="card-body">
-                      <Link
-                        id="search-result-link"
-                        target="_blank"
-                        to={
-                          "//" +
-                          (result_individual.link[4] === "s"
-                            ? // https
-                              result_individual.link.slice(
-                                8,
-                                result_individual.link.length
-                              )
-                            : // http
-                              result_individual.link.slice(
-                                7,
-                                result_individual.link.length
-                              ))
-                        }
-                      >
-                        {result_individual.title}
-                      </Link>
-                      <div
-                        id="search-result-display-link"
-                        className="card-subtitle mb-2 text-muted"
-                      >
-                        {result_individual.displayed_link}
-                      </div>
-                      <div>{result_individual.snippet}</div>
-                    </h6>
-                    <FavouriteButton
+                {this.orderFavouritesFirst(this.all_results_filtered).map(
+                  (result_individual) => (
+                    <SearchResult
+                      key={result_individual.position}
                       result={result_individual}
                       isFavourite={this.isFavouriteWebsite}
                       onToggle={this.changeFavouriteButtonStatus}
                     />
-                    <hr />
-                  </div>
-                ))}
+                  )
+                )}
               </div>
               <Favourite />
             </React.Fragment>
