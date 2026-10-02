@@ -264,6 +264,17 @@ describe("search engine filter", () => {
     );
   });
 
+  it("keeps the Google results hidden for a search made after turning Google off", async () => {
+    await openApp("/");
+    fireEvent.click(screen.getByRole("button", { name: "Google" }));
+
+    search("burgers");
+
+    expect(resultTitles()).toHaveLength(0);
+    expect(screen.getByText("Google results are hidden")).not.toBeNull();
+    expect(statusText()).toBe("Google results hidden");
+  });
+
   it("shows Bing as unavailable and does nothing when it is clicked", async () => {
     await openApp("/");
     search("burgers");
