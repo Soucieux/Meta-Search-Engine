@@ -238,6 +238,45 @@ describe("favourites", () => {
   });
 });
 
+describe("saved results", () => {
+  it("colours a result as soon as it is saved, without moving it yet", async () => {
+    await openApp("/");
+    search("burgers");
+    const title = resultTitles()[2];
+    const result = screen.getByText(title).closest("#search-result-individual");
+
+    fireEvent.click(favouriteButtonOf(title));
+
+    expect(result.className).toBe("saved-search-result");
+    expect(resultTitles()[2]).toBe(title);
+
+    fireEvent.click(favouriteButtonOf(title));
+
+    expect(result.className).toBe("");
+  });
+
+  it("lists saved results first when the results page is drawn again", async () => {
+    await openApp("/");
+    search("burgers");
+    const titles = resultTitles();
+    fireEvent.click(favouriteButtonOf(titles[2]));
+    fireEvent.click(favouriteButtonOf(titles[4]));
+
+    fireEvent.click(document.getElementById("favourite-pages-icon-after"));
+    fireEvent.click(screen.getByRole("button", { name: "<Go back" }));
+
+    expect(resultTitles()).toEqual([
+      titles[2],
+      titles[4],
+      titles[0],
+      titles[1],
+      titles[3],
+      titles[5],
+    ]);
+    expect(document.querySelectorAll(".saved-search-result")).toHaveLength(2);
+  });
+});
+
 describe("local storage", () => {
   it("keeps the query, the websites filter and the favourites after a reload", async () => {
     await openApp("/");

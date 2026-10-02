@@ -19,6 +19,12 @@
   box-shadow: 0 0 5px 2px #413c3c;
 }
 
+/* 已收藏的搜索结果：浅黄色背景，与其他结果区分 */
+.saved-search-result {
+  background-color: #fff3cd;
+  border-radius: 20px;
+}
+
 /* 搜索结果链接 */
 #search-result-link {
   font-size: 22px;
