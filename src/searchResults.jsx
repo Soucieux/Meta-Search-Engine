@@ -3,7 +3,7 @@ import ls from "local-storage";
 import "./searchResults.css";
 import Favourite from "./favourite";
 import "bootstrap/dist/css/bootstrap.css";
-import { Link, Redirect } from "react-router-dom";
+import { Link, Navigate } from "react-router";
 
 // 隐藏或显示搜索引擎结果
 var showGoogleResultsWebsitesFilter = true;
@@ -332,7 +332,7 @@ class Results extends React.Component {
   //         );
   //         this.all_results_filtered = this.all_results_original;
   //         ls.set("Google results", resultsWithTag);
-  //         this.props.history.push("/results");
+  //         this.props.navigate("/results");
   //       },
   //       (searchResultsError) => {
   //         this.setState({ searchResultsError });
@@ -359,7 +359,7 @@ class Results extends React.Component {
       let updated_exclude_websites = exclude_websites.concat(websiteUrl);
       ls.set("exclude websites", updated_exclude_websites);
     }
-    this.props.history.push("/results");
+    this.props.navigate("/results");
   };
 
   // 显示或隐藏特定网站搜索结果
@@ -531,7 +531,7 @@ class Results extends React.Component {
     if (!currentInput) {
       // 不存在输入值
       console.log("No input. Switch back to main page\n\n");
-      return <Redirect from="/results" to="/"></Redirect>;
+      return <Navigate to="/" replace />;
     } else {
       // 实时更新网站筛选
       if (ls.get("show Google results")) {

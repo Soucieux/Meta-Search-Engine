@@ -52,7 +52,7 @@
   /* border: 3px solid #73ad21; */
 }
 
-/* 搜索输入框清空按钮 */
+/* 搜索输入框清空按钮（Bootstrap 5 删除了 close 样式，内边距、粗细和半透明沿用 Bootstrap 4） */
 #search-button-reset {
   position: relative;
   right: 26px;
@@ -60,14 +60,24 @@
   bottom: 0;
   height: 30px;
   margin: auto;
+  padding: 0;
   cursor: pointer;
   background-color: transparent;
   border: 0px;
   color: rgb(0, 0, 0);
   font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+  text-shadow: 0 1px 0 #fff;
+  opacity: 0.5;
   visibility: hidden;
   /* 测试 div大小 */
   /* border: 3px solid #73ad21; */
+}
+
+/* 搜索输入框清空按钮：鼠标悬停 */
+#search-button-reset:hover {
+  opacity: 0.75;
 }
 
 /* 搜索标题（分为两部分） */

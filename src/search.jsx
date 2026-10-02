@@ -3,7 +3,7 @@ import React from "react";
 import ls from "local-storage";
 import SearchResults from "./searchResults";
 import "bootstrap/dist/css/bootstrap.css";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 // 初始化 local storage
 ls.set("show Google results", true);
@@ -47,16 +47,16 @@ class SearchInputAndButton extends React.Component {
   handleSubmitButtonOnClick(event) {
     // 禁止按钮默认自动刷新整个页面
     event.preventDefault();
-    if (this.props.match === undefined) {
+    if (this.props.location === undefined) {
       // 检测 this.props 是否有值
-      throw new Error("this.props.match is undefined!");
-    } else if (this.props.match.url === "/") {
+      throw new Error("this.props.location is undefined!");
+    } else if (this.props.location.pathname === "/") {
       // 转至搜索结果页面
-      this.props.history.push("/results");
+      this.props.navigate("/results");
       console.log("Switch to search results page\n\n");
-    } else if (this.props.match.url === "/results") {
+    } else if (this.props.location.pathname === "/results") {
       // 已在搜索结果页面
-      this.props.history.push("/results");
+      this.props.navigate("/results");
       console.log("Already on search results page\n\n");
     } else {
       throw new Error(
@@ -75,7 +75,7 @@ class SearchInputAndButton extends React.Component {
   }
 
   render() {
-    let { url } = this.props.match;
+    let url = this.props.location.pathname;
     // 每次进入 main page 时，清除已保存的输入值
     if (url === "/") {
       ls.remove("current input");
@@ -96,7 +96,6 @@ class SearchInputAndButton extends React.Component {
           <button
             type="reset"
             id="search-button-reset"
-            className="close"
             aria-label="Close"
             onClick={this.handleResetButtonOnClick}
           >
@@ -143,11 +142,11 @@ class SearchEngineFilter extends React.Component {
   prepareFilterGoogleSearchResults() {
     if (ls.get("show Google results") === true) {
       ls.set("show Google results", false);
-      this.props.history.push("/results");
+      this.props.navigate("/results");
       console.log("Google saerch results disabled\n\n");
     } else {
       ls.set("show Google results", true);
-      this.props.history.push("/results");
+      this.props.navigate("/results");
       console.log("Google saerch results enabled\n\n");
     }
     this.changeButtonColor();
@@ -189,7 +188,7 @@ class SearchEngineFilter extends React.Component {
             <input type="image" alt="Bing" src="bingIcon.ico" id="bing-icon" />
           </button>
         </div>
-        {this.props.match.url === "/results" && (
+        {this.props.location.pathname === "/results" && (
           <SearchResults {...this.props} />
         )}
       </div>
@@ -208,7 +207,7 @@ class Search extends React.Component {
     }
     return (
       <main>
-        {this.props.match.url !== "/results" && (
+        {this.props.location.pathname !== "/results" && (
           <div>
             <img src="main.jpg" id="main-image" />
             <div id="image-copyright-button">
@@ -233,7 +232,9 @@ class Search extends React.Component {
           <div
             id={
               "search-bar-" +
-              (this.props.match.url === "/results" ? "revised" : "group")
+              (this.props.location.pathname === "/results"
+                ? "revised"
+                : "group")
             }
           >
             <SearchEngineFilter {...this.props} />
@@ -248,10 +249,10 @@ class Search extends React.Component {
             className="bi bi-person-circle button-default"
             id={
               "favourite-pages-icon-" +
-              (this.props.match.url === "/" ? "before" : "after")
+              (this.props.location.pathname === "/" ? "before" : "after")
             }
             viewBox="0 0 16 16"
-            onClick={() => this.props.history.push("/favourite")}
+            onClick={() => this.props.navigate("/favourite")}
           >
             <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
             <path

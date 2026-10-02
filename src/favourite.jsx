@@ -2,7 +2,7 @@ import React from "react";
 import "./favourite.css";
 import ls from "local-storage";
 import "bootstrap/dist/css/bootstrap.css";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 class DisplayFavourite extends React.Component {
   render() {
@@ -16,7 +16,7 @@ class DisplayFavourite extends React.Component {
           className="btn btn-link"
           id="go-back-to-search-results"
           onClick={() => {
-            this.props.history.push("/results");
+            this.props.navigate("/results");
           }}
         >
           &lt;Go back
@@ -62,8 +62,8 @@ class Favourite extends React.Component {
   render() {
     return (
       <React.Fragment>
-        {this.props.match !== undefined &&
-          this.props.match.url === "/favourite" && (
+        {this.props.location !== undefined &&
+          this.props.location.pathname === "/favourite" && (
             <DisplayFavourite {...this.props} />
           )}
       </React.Fragment>

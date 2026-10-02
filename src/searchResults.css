@@ -25,10 +25,21 @@
   border-radius: 20px;
 }
 
-/* 搜索结果链接 */
+/* 搜索结果内容：Bootstrap 5 的 card-body 只在 card 内有内边距，这里沿用 Bootstrap 4 的内边距 */
+#search-result-individual .card-body {
+  padding: 1.25rem;
+}
+
+/* 搜索结果链接（Bootstrap 5 默认给链接加下划线，这里沿用 Bootstrap 4：鼠标悬停时才有） */
 #search-result-link {
   font-size: 22px;
   color: rgb(243, 13, 109);
+  text-decoration: none;
+}
+
+/* 搜索结果链接：鼠标悬停 */
+#search-result-link:hover {
+  text-decoration: underline;
 }
 
 /* 搜索结果链接：已访问过 */
@@ -88,8 +99,9 @@
   /* border: 2px solid#73ad21; */
 }
 
-/* 网站筛选（单独） */
+/* 网站筛选（单独）：Bootstrap 5 的 list-group-item 只在 list-group 内有内边距，这里沿用 Bootstrap 4 的内边距 */
 #website-filter-individual {
+  padding: 0.75rem 1.25rem;
   font-size: 18px;
   font-weight: bold;
   border-radius: 10px;
