@@ -7,7 +7,8 @@ that apply in both the canonical workspace and the standalone public repository.
 
 - Read the [project README](README.md) for supported behavior, setup, current state, architecture,
   and history.
-- Run commands from this project directory with Node.js and npm, after `npm install`.
+- Run commands from this project directory with Node.js 20.19 or newer, or 22.12 or newer, and npm,
+  after `npm install`.
 - Keep each change focused and update the README when capabilities, setup, architecture,
   workflows, or history change.
 - Never commit `node_modules`, build output, coverage, logs, `.env` files, credentials, or API keys.
@@ -18,20 +19,19 @@ that apply in both the canonical workspace and the standalone public repository.
   storage; there is no server and no other store.
 - Never commit a search API key, in the source or in any other tracked file. The keys earlier
   commits carried read `REDACTED`. A key for the commented-out ValueSERP request belongs in an
-  ignored `.env.local` file as a `REACT_APP_` variable, which `config/env.js` passes to the app; any
-  key the browser sends is visible to the people who use it.
+  ignored `.env.local` file as a `VITE_` variable, which Vite passes to the app as
+  `import.meta.env`; any key the browser sends is visible to the people who use it.
 - The bundled sample results stand in for live results. Keep them clearly sample data until a real
   search provider replaces them.
 
 ## Checks for a change
 
-- Run `npm run build` for any source, dependency, or configuration change. It currently stops at the
-  missing `react-dev-utils` module recorded under the README's current state, so a change that
-  repairs the build says so and names the Node.js version it was checked with.
+- Run `npm run build` for any source, dependency, or configuration change; it must finish without
+  errors.
 - Run `npm start` for interface changes, then check the home page, the results page, and My Pages
   in a browser. A passing build does not establish visual correctness.
-- There are no automated tests yet. Before adding them, correct the Windows-only `testRunner` path
-  in `package.json` so that `npm test` can start.
+- There are no automated tests yet. The 2021 Jest setup left with the old build, so tests need a
+  runner that works with Vite, such as Vitest.
 
 <a id="version-and-build-policy"></a>
 

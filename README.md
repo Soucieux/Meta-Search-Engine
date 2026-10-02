@@ -17,7 +17,8 @@ it is an interface prototype rather than a live search service.
 <!-- project-control:section=overview -->
 ## Features
 
-The feature list as the project last recorded it, at Version 3.31 in April 2021.
+The feature list as the project recorded it at Version 3.31 in April 2021. Its two known bugs were
+fixed on 2026-10-01, and the bugs listed now were found then.
 
 ### Completed
 
@@ -35,8 +36,8 @@ The feature list as the project last recorded it, at Version 3.31 in April 2021.
 
 ### Known bugs
 
-- Search bar reset button & input value
-- Favourite page button
+- Each website filter's tick box sits on top of the site's name.
+- The results header is placed in fixed pixels, so a narrow window cuts off the Bing button.
 
 ### Not yet implemented
 
@@ -48,34 +49,23 @@ The feature list as the project last recorded it, at Version 3.31 in April 2021.
 
 Checked on 2026-10-01 with Node.js 22.
 
-- **Build:** `npm start` and `npm run build` stop before compiling. The February 2022 dependency
-  upgrade moved to webpack 5 and `react-dev-utils` 12, but the webpack configuration in `config/`
-  still loads `react-dev-utils/WatchMissingNodeModulesPlugin`, which version 12 no longer has.
-- **Last 2021 version:** Version 3.31 also stops on Node.js 22, at a PostCSS package-export error;
-  its dependencies predate Node.js 17.
-- **Search:** the ValueSERP request in `src/searchResults.jsx` is commented out, so results come from
-  the six sample Google results bundled in that file. A leftover development line sets the previous
-  query to `123` on every render, which makes `123` the only query that shows them; any other query
-  shows no results.
-- **Tests:** there are no test files, and `npm test` cannot start on a Mac either, because
-  `package.json` points Jest's test runner at a Windows path (`D:\MetaData-Search-Engine\…`).
+- **Build:** Vite serves the app with `npm start` and builds it with `npm run build`.
+- **Search:** the ValueSERP request in `src/searchResults.jsx` is commented out, so every query
+  shows the six sample Google results bundled in that file.
+- **Tests:** there are no automated tests.
 
 ## Quick start
 
-Requires Node.js and npm. Run every command from this folder.
+Requires Node.js 20.19 or newer, or 22.12 or newer, and npm. Run every command from this folder.
 
 ```bash
 npm install
 npm start
 ```
 
-- `npm start` serves the app at http://localhost:3000; set `PORT` or `HOST` to change where it
-  listens.
+- `npm start` serves the app at http://localhost:3000; add `-- --port <number>` to use another port.
 - `npm run build` writes a production build to `build/`.
-- `npm test` runs Jest.
-
-Both `npm start` and `npm run build` currently stop before compiling; see
-[Current state](#current-state).
+- `npm run preview` serves that build at http://localhost:3000.
 
 <!-- project-control:section=workflows -->
 ## Workflow
@@ -131,21 +121,18 @@ three pages, and every piece of state lives in the browser's local storage.
 
 | Technology or concept | Use in this project |
 |---|---|
-| Create React App 4 configuration | Ejected into `config/` and `scripts/`, with `html/` serving as the public folder instead of `public/`. |
-| webpack | Bundles the app for `npm start` and `npm run build`; see [Current state](#current-state). |
-| Babel | Compiles the JSX with the `react-app` preset. |
-| ESLint | Checks the source during builds with the `react-app` configuration. |
-| Jest | Configured in `package.json`; there are no tests yet. |
+| Vite | Serves the app for `npm start` and builds it into `build/` for `npm run build`, with `html/` as its public folder. |
+| Vite React plugin | Compiles the JSX and refreshes changed components while the development server runs. |
 
 ## Project map
 
 | Path | Contents |
 |---|---|
+| `index.html` | The page Vite serves and builds, which loads `src/index.jsx`. |
+| `vite.config.js` | The Vite configuration: the React plugin, the `html/` public folder, port 3000 and the `build/` folder. |
 | `src/` | The React components, their stylesheets and the bundled sample results. |
-| `html/` | `index.html`, the web app manifest, the favicon made from the project icon, the Google and Bing filter icons, and the home-page image, a Bing wallpaper the home page credits. |
+| `html/` | The web app manifest, the favicon made from the project icon, the Google and Bing filter icons, and the home-page image, a Bing wallpaper the home page credits. |
 | `Resources/` | The 1,024-pixel project icon master, kept outside `html/` so the build does not serve it. |
-| `config/` | The ejected webpack, development-server, Jest and path configuration. |
-| `scripts/` | The `start`, `build` and `test` scripts that `package.json` runs. |
 
 <!-- project-control:section=ignore -->
 ## Contributing
@@ -167,6 +154,7 @@ One record per change; complete details and evidence are below. Older work dates
 
 | Record | Date | Highlights | Details |
 |---|---|---|---|
+| Maintenance | 2026-10-01 | <ul><li><strong>Build:</strong> Vite replaces the ejected Create React App setup, so <code>npm start</code> and <code>npm run build</code> work again on current Node.js.</li><li><strong>Search:</strong> Every query shows the bundled sample results, not only <code>123</code>.</li><li><strong>Bugs:</strong> The clear button empties the search box, and favourite buttons remember saved pages without saving one twice.</li><li><strong>Dependencies:</strong> An install adds 124 packages instead of about 920, and the security alerts were all in removed build tools.</li></ul> | [Full record](#vite-build-and-bug-fixes) |
 | Maintenance | 2026-10-01 | <ul><li><strong>Icon:</strong> Added the project icon, three sources flowing into one magnifier on a light blue tile, in the macOS icon shape; its 1,024-pixel master lives in <code>Resources/</code>.</li><li><strong>Browser:</strong> The favicon, until now React's default logo, is a multi-size copy of the same icon.</li><li><strong>Finder:</strong> The project folder's icon is set from the same master.</li></ul> | [Full record](#project-icon) |
 | Maintenance | 2026-10-01 | <ul><li><strong>Dependencies:</strong> <code>node_modules</code> is gone from every commit and ignored, so dependencies come from <code>npm install</code>.</li><li><strong>Credentials:</strong> The three API keys earlier commits carried read <code>REDACTED</code> in every commit.</li><li><strong>Authorship:</strong> Commits that named a personal email address now name the author's GitHub noreply address.</li><li><strong>Documentation:</strong> This README gained the current state, setup, architecture, workflow and change history, and a contribution guide was added.</li></ul> | [Full record](#history-cleanup) |
 | Maintenance | 2026-10-01 | <ul><li><strong>Dependency:</strong> <code>package.json</code> requires <code>semver</code> 7.5.2 instead of 7.3.2, a Dependabot security update.</li></ul> | [Full record](#semver-update) |
@@ -179,6 +167,43 @@ One record per change; complete details and evidence are below. Older work dates
 
 <details>
 <summary>Full records for this table</summary>
+
+<a id="vite-build-and-bug-fixes"></a>
+
+### Vite build and the 2021 bug fixes — 2026-10-01
+
+- **Why:** neither version of the app ran on current Node.js. The tip stopped at a module that
+  `react-dev-utils` 12 no longer has, and Version 3.31 at a PostCSS package-export error.
+- **Build:** Vite 8 and its React plugin replace the ejected Create React App 4 setup. `config/` and
+  `scripts/` are gone; `index.html` moved from `html/` to the project folder and loads
+  `src/index.jsx`; `vite.config.js` keeps `html/` as the public folder, port 3000 and the `build/`
+  folder. Vite maps Node's `global` to the browser's `globalThis` for the `local-storage` package,
+  as webpack used to.
+- **Scripts:** `npm start`, `npm run build` and the new `npm run preview`. `npm test` left with the
+  2021 Jest setup, which had no tests.
+- **Dependencies:** the build, lint and test tooling left `package.json`, and `vite` and
+  `@vitejs/plugin-react` are its only development dependencies. An install adds 124 packages
+  instead of about 920, and `package-lock.json`, deleted in 2022, pins them again. GitHub's seven open security alerts, six for `webpack-dev-server` and one
+  for `@babel/core`, were all in removed packages. The app's own packages are unchanged; nothing
+  imports `jquery`, `popper.js`, `bootstrap-icons`, `web-vitals` or the testing libraries, which
+  stay listed.
+- **Search:** the development line that set the previous query to `123` is gone. A new query loads
+  the six bundled sample results, so every query shows them, including a new search from the
+  results page.
+- **Clear button:** it empties the search box. It used to reset the form, which put the previous
+  query back.
+- **Favourite buttons:** each result's button reads the saved pages, so a saved result shows Remove
+  after a return from My Pages or a reload, and choosing it again removes the page instead of saving
+  it twice. Saved pages are matched by link, and choosing a button no longer redraws the whole
+  results page.
+- **Checks:** `npm run build` builds 46 modules. On the development server in headless Chromium,
+  every query showed six results; the clear button emptied the box; favourites survived a return
+  from My Pages and a reload without duplicates; unticking a website hid its two results and
+  turning Google off showed the no-results message; no page errors. `npm run preview` served the
+  project icon's favicon to the page that links it. Two layout bugs found on the way are listed
+  under [Known bugs](#known-bugs).
+
+[Back to change history](#change-history)
 
 <a id="project-icon"></a>
 
@@ -194,8 +219,8 @@ One record per change; complete details and evidence are below. Older work dates
 - **Finder:** the project folder's icon was set from the same master.
 - **Checks:** the master is 1,024 by 1,024 pixels with a transparent margin around its 824-pixel
   tile; the favicon's 16, 32 and 64-pixel images were inspected; and the folder icon as macOS
-  reports it shows the new artwork. The build still stops as [Current state](#current-state)
-  records, so the favicon has not been seen in a served page.
+  reports it shows the new artwork. The build stopped at the time, so the favicon was not yet seen
+  in a served page.
 
 [Back to change history](#change-history)
 
@@ -219,8 +244,8 @@ One record per change; complete details and evidence are below. Older work dates
 - **Documentation:** this README keeps the 2021 feature list and patch notes and adds the current
   state, setup, workflow, architecture, project map and this change history.
   [CONTRIBUTING.md](CONTRIBUTING.md) states how changes are made and checked.
-- **Unchanged:** the application source and its dependencies, so the build failure recorded under
-  [Current state](#current-state) remains.
+- **Unchanged:** the application source and its dependencies, so the build failure that the
+  [webpack 5 upgrade record](#webpack-5-upgrade) describes remained.
 - **Status:** delivered uncommitted on 2026-10-01, then committed the same day as `e94fd7b` (the
   import with its history), `cebf8ba` and `40db4af`.
 
@@ -276,8 +301,8 @@ One record per change; complete details and evidence are below. Older work dates
 - **Websites filter:** 3.21 and 3.25 to 3.29 fixed filter bugs. 3.24 fixed the Google toggle after
   3.23's change to store it was reverted.
 - **Home page:** 3.17 replaced the home-page image with `html/main.jpg`, a Bing wallpaper.
-- **Sample results:** 3.29 bundled the six sample Google results and the `123` development query
-  that [Current state](#current-state) describes.
+- **Sample results:** 3.29 bundled the six sample Google results, with a development line that set
+  the previous query to `123` on every render, so only the query `123` showed them.
 - **Dependencies:** 3.10 and 3.11 began committing `node_modules`.
 - **Documentation:** 3.5, 3.7 to 3.9, 3.16, 3.28, 3.30 and 3.31 updated this README's progress.
 
