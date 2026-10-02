@@ -126,6 +126,11 @@
   /* border: 3px solid #73ad21; */
 }
 
+/* 结果页的输入框随窗口宽度缩小，最宽 700px，使搜索引擎按钮和右上角图标留在窗口内 */
+#search-bar-revised #search-input {
+  width: min(700px, calc(100vw - 860px));
+}
+
 /* 搜索引擎筛选 */
 #search-engine-filter-group {
   margin-top: 11px;
@@ -234,10 +239,10 @@
   background-color: rgb(155, 163, 149);
 }
 
-/* 跳转至已保存页面图标 after */
+/* 跳转至已保存页面图标 after：与主页图标一样靠右定位，较窄的窗口中也不会位于屏幕外 */
 #favourite-pages-icon-after {
   position: absolute;
-  left: 1810px;
+  right: 80px;
   top: 20px;
   border-radius: 30px;
   background-color: transparent;
