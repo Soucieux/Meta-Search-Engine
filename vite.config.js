@@ -3,7 +3,8 @@ import react from "@vitejs/plugin-react";
 
 // html/ keeps the static files it held under the 2021 Create React App setup,
 // and the app keeps its port and its build folder. The local-storage package reads
-// Node's `global`, which webpack used to supply in the browser.
+// Node's `global`, which webpack used to supply in the browser. Vitest runs the tests
+// in a simulated browser page, which supplies local storage.
 export default defineConfig({
   plugins: [react()],
   define: { global: "globalThis" },
@@ -11,4 +12,5 @@ export default defineConfig({
   server: { port: 3000 },
   preview: { port: 3000 },
   build: { outDir: "build" },
+  test: { environment: "jsdom" },
 });
