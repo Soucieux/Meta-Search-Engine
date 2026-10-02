@@ -1,6 +1,6 @@
 # Meta Search Engine
 
-![Interface](https://img.shields.io/badge/Interface-React%2017-61dafb) ![Routing](https://img.shields.io/badge/Routing-React%20Router%205-ca4245) ![Styling](https://img.shields.io/badge/Styling-Bootstrap%204-7952b3) ![Language](https://img.shields.io/badge/Language-JavaScript-f7df1e) ![Status](https://img.shields.io/badge/Status-2021%20prototype-9f9f9f)
+![Interface](https://img.shields.io/badge/Interface-React%2019-61dafb) ![Routing](https://img.shields.io/badge/Routing-React%20Router%208-ca4245) ![Styling](https://img.shields.io/badge/Styling-Bootstrap%205-7952b3) ![Language](https://img.shields.io/badge/Language-JavaScript-f7df1e) ![Status](https://img.shields.io/badge/Status-2021%20prototype-9f9f9f)
 
 <!-- project-control:section=overview -->
 ## Overview
@@ -18,7 +18,8 @@ it is an interface prototype rather than a live search service.
 ## Features
 
 The feature list as the project recorded it at Version 3.31 in April 2021. Its two known bugs, and
-two layout bugs found later, were fixed on 2026-10-01.
+two layout bugs found later, were fixed on 2026-10-01, and saved websites have been listed first
+since 2026-10-02.
 
 ### Completed
 
@@ -28,6 +29,7 @@ two layout bugs found later, were fixed on 2026-10-01.
 - Save favourite websites
 - Search engine filter (Google)
 - Saved websites collection
+- Saved websites presented first with colored background
 
 ### In progress
 
@@ -40,22 +42,21 @@ None known.
 
 ### Not yet implemented
 
-- Saved websites presented first with colored background
 - Customized searching on google domain,location,gl,hl
 
 <!-- project-control:section=overview -->
 ## Current state
 
-Checked on 2026-10-01 with Node.js 22.
+Checked on 2026-10-02 with Node.js 22.
 
 - **Build:** Vite serves the app with `npm start` and builds it with `npm run build`.
 - **Search:** the ValueSERP request in `src/searchResults.jsx` is commented out, so every query
   shows the six sample Google results bundled in that file.
-- **Tests:** there are no automated tests.
+- **Tests:** `npm test` runs 14 tests of search, the filters, favourites and what a reload keeps.
 
 ## Quick start
 
-Requires Node.js 20.19 or newer, or 22.12 or newer, and npm. Run every command from this folder.
+Requires Node.js 22.22 or newer, and npm. Run every command from this folder.
 
 ```bash
 npm install
@@ -65,6 +66,7 @@ npm start
 - `npm start` serves the app at http://localhost:3000; add `-- --port <number>` to use another port.
 - `npm run build` writes a production build to `build/`.
 - `npm run preview` serves that build at http://localhost:3000.
+- `npm test` runs the tests once.
 
 <!-- project-control:section=workflows -->
 ## Workflow
@@ -80,7 +82,9 @@ The results page lists the bundled sample results
 Save a page
 Choose Favourite beside a result
   ↓
-The result joins the saved list in this browser
+The result is highlighted and joins the saved list in this browser
+  ↓
+Saved results lead the list the next time it is drawn
   ↓
 Open My Pages from the profile icon
   ↓
@@ -97,9 +101,9 @@ three pages, and every piece of state lives in the browser's local storage.
 
 | Technology or concept | Use in this project |
 |---|---|
-| React 17 | Class components draw the search page, the results page and My Pages. |
-| React Router 5 | `BrowserRouter` maps `/` to the search page, `/results` to the results page and `/favourite` to My Pages. |
-| Bootstrap 4 | Its stylesheet styles the buttons, list groups and cards. |
+| React 19 | Class components draw the search page, the results page and My Pages. |
+| React Router 8 | `BrowserRouter` maps `/` to the search page, `/results` to the results page and `/favourite` to My Pages; `src/router.jsx` hands each page the current location and a `navigate` function, since class components cannot call the router's hooks. |
+| Bootstrap 5 | Its stylesheet styles the buttons, list groups and cards; the project's stylesheets keep the Bootstrap 4 spacing, link and close-button styles the pages were drawn with. |
 | Bootstrap Icons | The search, information and profile icons are its artwork, inlined as SVG. |
 | CSS | `search.css`, `searchResults.css` and `favourite.css` lay out each page. |
 
@@ -122,14 +126,15 @@ three pages, and every piece of state lives in the browser's local storage.
 |---|---|
 | Vite | Serves the app for `npm start` and builds it into `build/` for `npm run build`, with `html/` as its public folder. |
 | Vite React plugin | Compiles the JSX and refreshes changed components while the development server runs. |
+| Vitest | Runs `src/app.test.jsx` for `npm test` in a simulated browser page from jsdom, where React Testing Library drives the app through its router. |
 
 ## Project map
 
 | Path | Contents |
 |---|---|
 | `index.html` | The page Vite serves and builds, which loads `src/index.jsx`. |
-| `vite.config.js` | The Vite configuration: the React plugin, the `html/` public folder, port 3000 and the `build/` folder. |
-| `src/` | The React components, their stylesheets and the bundled sample results. |
+| `vite.config.js` | The Vite configuration: the React plugin, the `html/` public folder, port 3000, the `build/` folder and the test environment. |
+| `src/` | The React components, their stylesheets, the bundled sample results and the tests. |
 | `html/` | The web app manifest, the favicon made from the project icon, the Google and Bing filter icons, and the home-page image, a Bing wallpaper the home page credits. |
 | `Resources/` | The 1,024-pixel project icon master, kept outside `html/` so the build does not serve it. |
 
@@ -153,6 +158,9 @@ One record per change; complete details and evidence are below. Older work dates
 
 | Record | Date | Highlights | Details |
 |---|---|---|---|
+| Maintenance | 2026-10-02 | <ul><li><strong>Frameworks:</strong> React 19, React Router 8 and Bootstrap 5 replace React 17, React Router 5 and Bootstrap 4, and the pages look as they did.</li><li><strong>Node.js:</strong> The app needs Node.js 22.22 or newer.</li><li><strong>Dependencies:</strong> <code>react-router-dom</code>, <code>jquery</code> and <code>popper.js</code> are no longer installed.</li></ul> | [Full record](#framework-upgrade) |
+| Maintenance | 2026-10-02 | <ul><li><strong>Saved results:</strong> The results page lists saved results first, on a pale yellow background, one of the 2021 features not yet built.</li></ul> | [Full record](#saved-results-first) |
+| Maintenance | 2026-10-02 | <ul><li><strong>Tests:</strong> <code>npm test</code> runs Vitest tests that drive the app in a simulated browser: search, the clear button, both filters, favourites, My Pages and a reload.</li></ul> | [Full record](#automated-tests) |
 | Maintenance | 2026-10-01 | <ul><li><strong>Layout:</strong> The results header and the My Pages icon fit windows from 1,280 pixels wide, and each website filter's tick box sits beside the site's name.</li><li><strong>Dependencies:</strong> Seven packages nothing imported left <code>package.json</code>; the app needs six.</li></ul> | [Full record](#layout-and-dependency-cleanup) |
 | Maintenance | 2026-10-01 | <ul><li><strong>Build:</strong> Vite replaces the ejected Create React App setup, so <code>npm start</code> and <code>npm run build</code> work again on current Node.js.</li><li><strong>Search:</strong> Every query shows the bundled sample results, not only <code>123</code>.</li><li><strong>Bugs:</strong> The clear button empties the search box, and favourite buttons remember saved pages without saving one twice.</li><li><strong>Dependencies:</strong> An install adds 124 packages instead of about 920, and the security alerts were all in removed build tools.</li></ul> | [Full record](#vite-build-and-bug-fixes) |
 | Maintenance | 2026-10-01 | <ul><li><strong>Icon:</strong> Added the project icon, three sources flowing into one magnifier on a light blue tile, in the macOS icon shape; its 1,024-pixel master lives in <code>Resources/</code>.</li><li><strong>Browser:</strong> The favicon, until now React's default logo, is a multi-size copy of the same icon.</li><li><strong>Finder:</strong> The project folder's icon is set from the same master.</li></ul> | [Full record](#project-icon) |
@@ -167,6 +175,65 @@ One record per change; complete details and evidence are below. Older work dates
 
 <details>
 <summary>Full records for this table</summary>
+
+<a id="framework-upgrade"></a>
+
+### Framework upgrade — 2026-10-02
+
+- **Frameworks:** React 19.3, React Router 8.4 and Bootstrap 5.3 replace React 17, React Router 5
+  and Bootstrap 4, and `src/index.jsx` mounts the app with `createRoot`.
+- **Routing:** `react-router-dom` is gone; the app imports from `react-router`. React Router 8 no
+  longer passes `match` and `history` to page components, and class components cannot call its
+  hooks, so `src/router.jsx` hands each page the current `location` and a `navigate` function. The
+  results page returns to the home page through `Navigate`.
+- **Styling:** Bootstrap 5 dropped the `close` and `card-columns` styles, pads cards and list items
+  only inside `.card` and `.list-group`, underlines links, and resets card heights. The project's
+  stylesheets now carry the Bootstrap 4 values the pages relied on, so they look as they did. The
+  small address under each result title takes Bootstrap 5's slightly darker grey.
+- **Node.js:** React Router 8 needs Node.js 22.22 or newer, up from 20.19 or 22.12.
+- **Dependencies:** `jquery` and `popper.js`, installed only for Bootstrap 4, are gone; Bootstrap 5
+  brings `@popperjs/core`, which the app does not use. An install adds 99 packages, 9 of them for
+  the app itself, and `npm audit` reports no vulnerabilities. The built script grew from 170 to
+  276 kB and the stylesheet from 149 to 236 kB.
+- **Checks:** the 14 tests pass with only their router import changed, and `npm run build` builds
+  102 modules. In headless Chromium at 1,440 by 900 pixels, the home page, the results page, newly
+  saved results, My Pages and a filtered list matched screenshots taken before the upgrade apart
+  from that grey and font smoothing, with no console errors or warnings.
+
+[Back to change history](#change-history)
+
+<a id="saved-results-first"></a>
+
+### Saved results first — 2026-10-02
+
+- **Results page:** saved results are listed above the others, each group in its original order,
+  on a pale yellow background with rounded corners. The 2021 feature list had this as not yet
+  implemented.
+- **When it changes:** choosing Favourite colours the result at once, and Remove clears it. The
+  result moves only when the list is next drawn, after a filter change, a new search, a return from
+  My Pages or a reload, so the list never jumps under the pointer.
+- **Code:** a `SearchResult` component in `src/searchResults.jsx` draws each result with its
+  button, replacing the button-only `FavouriteButton`.
+- **Checks:** two new tests cover the colour and the order, and all 14 pass. Headless Chromium
+  screenshots showed two newly saved results coloured in place and listed first after a return
+  from My Pages, without page errors.
+
+[Back to change history](#change-history)
+
+<a id="automated-tests"></a>
+
+### Automated tests — 2026-10-02
+
+- **Tests:** `npm test` runs Vitest with React Testing Library in a simulated browser page from
+  jsdom. `src/app.test.jsx` opens the app through its router and checks a search from the button
+  and from Enter, the result links, the return home without a query, the clear button, both
+  filters, saving and removing favourites, My Pages, and what a reload keeps.
+- **Isolation:** the app's modules set up local storage and the filter state when they load, so
+  each test reloads them and starts like a freshly opened page.
+- **Checks:** all 12 tests passed against the app as it stood, on React 17, and `npm run build`
+  still succeeded.
+
+[Back to change history](#change-history)
 
 <a id="layout-and-dependency-cleanup"></a>
 
