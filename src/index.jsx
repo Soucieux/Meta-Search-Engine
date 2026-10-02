@@ -1,10 +1,9 @@
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import Router from "./router";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter } from "react-router";
 
-ReactDOM.render(
+createRoot(document.getElementById("body")).render(
   <BrowserRouter>
     <Router />
-  </BrowserRouter>,
-  document.getElementById("body")
+  </BrowserRouter>
 );
