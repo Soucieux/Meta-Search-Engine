@@ -1,266 +1,439 @@
-/* 搜索输入框 */
-#search-input {
-  height: 40px;
-  width: 700px;
-  margin-left: 10px;
-  /* 输入框内文字缩进 */
-  text-indent: 10px;
-  /* 输入框边缘圆滑度 */
-  border-radius: 5px;
-  /* 从左至右：增加立体感，边框厚度 */
-  border: solid 1.5px #d3d3d3;
-  /* 渐变时间 */
-  transition: 0.5s;
+/* =====================================================================
+   设计变量（Console, bright）：文字、底色、线条、品牌色、圆角、阴影和动效。
+   index.jsx 先载入 Bootstrap，这里的 --bs-* 变量和焦点样式才能覆盖它。
+   index.html 载入 IBM Plex 字体；没有它时，各字体回退到系统字体。
+   ===================================================================== */
+
+:root {
+  /* 字体 */
+  --cs-font: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --cs-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* 文字 */
+  --cs-ink: #16191c;
+  --cs-text-2: #3d4449;
+  --cs-muted: #5c636a;
+  --cs-placeholder: #6c757d;
+
+  /* 底色 */
+  --cs-page: #f7f8fa;
+  --cs-surface: #ffffff;
+  --cs-surface-2: #f1f4f7;
+
+  /* 线条 */
+  --cs-line: #dfe3e8;
+  --cs-line-row: #e9ecef;
+  --cs-line-strong: #c9d0d6;
+  --cs-control: #d3d3d3;
+
+  /* 品牌色 */
+  --cs-red: #dc3545;
+  --cs-red-hover: #bb2d3b;
+  --cs-red-active: #b02a37;
+  --cs-pink: #d6085e;
+  --cs-pink-hover: #b8074f;
+  --cs-sage: #9ba395;
+  --cs-sage-hover: #8d9687;
+  --cs-sage-700: #56614f;
+  --cs-saved: #fff3cd;
+  --cs-saved-tag: #ffe69c;
+  --cs-saved-ink: #664d03;
+  --cs-link: #0b5ed7;
+  --cs-link-hover: #0a58ca;
+
+  /* 只用于鼠标悬停和按下的浅色 */
+  --cs-row-hover: #f9fafb;
+  --cs-filter-hover: #eceff2;
+  --cs-pressed: #e4e9ee;
+  --cs-bar-track: #e3e7eb;
+
+  /* 圆角 */
+  --cs-r-tag: 6px;
+  --cs-r-control: 8px;
+  --cs-r-input: 10px;
+  --cs-r-panel: 14px;
+  --cs-r-console: 16px;
+
+  /* 阴影 */
+  --cs-shadow-hover: 0 2px 10px rgba(16, 24, 40, 0.08);
+  --cs-shadow-chip: 0 2px 10px rgba(16, 24, 40, 0.18);
+  --cs-shadow-console: 0 24px 64px rgba(16, 24, 40, 0.32);
+
+  /* 动效 */
+  --cs-ease: 150ms ease-out;
+
+  /* Bootstrap 5.3 的变量 */
+  --bs-body-font-family: var(--cs-font);
+  --bs-body-color: var(--cs-ink);
+  --bs-link-color-rgb: 11, 94, 215;
+  --bs-link-hover-color-rgb: 10, 88, 202;
 }
 
-/* 搜索输入框：鼠标悬停 */
-#search-input:hover {
-  /* 从左至右：阴影垂直位置，阴影水平位置，阴影模糊度，阴影大小*/
-  box-shadow: 0 0 5px 0.5px #d3d3d3;
+/* 所有控件使用同一种焦点样式：2px 实线，向外 2px */
+:focus-visible {
+  outline: 2px solid var(--cs-link);
+  outline-offset: 2px;
 }
 
-/* 搜索输入框：聚焦 */
-#search-input:focus {
-  /* 从左至右：阴影垂直位置，阴影水平位置，阴影模糊度，阴影大小*/
-  box-shadow: 0 0 8px 3px #d3d3d3;
-  /* 输入框无边框*/
-  outline-width: 0px;
+/* 去掉 Bootstrap 的半透明光晕，只保留上面的实线 */
+.btn:focus-visible,
+.form-control:focus,
+.form-check-input:focus {
+  box-shadow: none;
 }
 
-/* 搜索输入框提交按钮 */
-#search-button-submit {
-  width: 50px;
-  margin-left: -8px;
-  margin-right: 10px;
-  /* 持续时间 */
-  transition: 0.5s;
+input::placeholder {
+  color: var(--cs-placeholder);
 }
 
-/* 搜索输入框提交按钮：鼠标悬停 */
-#search-button-submit:hover {
-  /* 从左至右：阴影垂直位置，阴影水平位置，阴影模糊度，阴影大小*/
-  box-shadow: 0 0 18px 3px #d3d3d3;
+/* 系统设置减少动态效果时，不使用过渡 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+  }
 }
 
-/* 搜索输入框，提交按钮 */
-.search-input-button-submit-group {
+/* ---------- 主页 ---------------------------------------------------- */
+
+/* 主页背景图片（Bing 壁纸，html/main.jpg），载入前显示深绿色 */
+.home {
   position: relative;
-  margin-top: 10px;
-  /* 输入框和按钮平行 */
-  display: flex;
-  /* 测试 div大小 */
-  /* border: 3px solid #73ad21; */
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 96px 24px;
+  box-sizing: border-box;
+  overflow: hidden;
+  background: #3e5446 url("/main.jpg") center / cover no-repeat;
+  font-family: var(--cs-font);
 }
 
-/* 搜索输入框清空按钮（Bootstrap 5 删除了 close 样式，内边距、粗细和半透明沿用 Bootstrap 4） */
-#search-button-reset {
-  position: relative;
-  right: 26px;
-  top: 0px;
-  bottom: 0;
-  height: 30px;
-  margin: auto;
-  padding: 0;
-  cursor: pointer;
-  background-color: transparent;
-  border: 0px;
-  color: rgb(0, 0, 0);
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 1;
-  text-shadow: 0 1px 0 #fff;
-  opacity: 0.5;
-  visibility: hidden;
-  /* 测试 div大小 */
-  /* border: 3px solid #73ad21; */
-}
-
-/* 搜索输入框清空按钮：鼠标悬停 */
-#search-button-reset:hover {
-  opacity: 0.75;
-}
-
-/* 搜索标题（分为两部分） */
-#search-title {
-  padding: 5px;
+/* 图片上的径向遮罩，使白色标题在明亮的天空上仍然清楚 */
+.home::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 62% 52% at 50% 46%,
+    rgba(10, 14, 18, 0.55) 0%,
+    rgba(10, 14, 18, 0.45) 35%,
+    rgba(10, 14, 18, 0.25) 70%,
+    rgba(10, 14, 18, 0.12) 100%
+  );
   pointer-events: none;
-  /* 测试 div大小 */
-  /* border: 3px solid #73ad21; */
 }
 
-/* 搜索标题组 */
-#search-title-group {
-  display: flex;
-  width: 700px;
-  /* align-items && justify-content
-    只在 display:flex 的情况下可以触发
-    默认情况下,
-      align-items 调整垂直方向
-      justify-content 调整水平方向
-    如果 display-direction 更改了方向
-    那么以上两个的方向也随之逆转 */
-  justify-content: center;
-  /* 跟随上一个 div 保持此宽度和其相同 */
-  width: 100%;
-  /* 测试 div大小 */
-  /* border: 3px solid #73ad21; */
-}
-
-/* 搜索输入框，标题，两个按钮 */
-#search-bar-group {
-  /* 横向缩小浏览器仍然完全显示标题，输入框和按钮 */
-  width: 100%;
-  /* 保持此 element 只占用它们实际大小的空间 而不是水平一直扩展*/
-  max-width: fit-content;
-  /* 保持标题，输入框和按钮水平居中和垂直居中，无论浏览器窗口大小*/
+.home__inner {
   position: relative;
-  top: 30rem;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  z-index: 1;
+  width: min(760px, 100%);
+  display: grid;
+  justify-items: center;
+  gap: 28px;
+}
+
+.home__title {
+  margin: 0;
+  color: #fff;
+  font: 600 60px/68px var(--cs-font);
+  letter-spacing: -0.025em;
+  text-align: center;
+  text-shadow: 0 2px 18px rgba(10, 14, 18, 0.45);
+}
+
+/* 白色搜索面板（console）：上为搜索框，下为搜索引擎 */
+.console {
+  width: 100%;
+  background: var(--cs-surface);
+  border-radius: var(--cs-r-console);
+  box-shadow: var(--cs-shadow-console);
+  transition: box-shadow var(--cs-ease);
+}
+
+/* 在搜索框输入或用键盘移动焦点时显示蓝色外框；用鼠标点击 Google 按钮时不显示，避免面板闪动 */
+.console:has(:focus-visible) {
+  box-shadow: 0 0 0 2px var(--cs-link), var(--cs-shadow-console);
+}
+
+.console__search {
   display: flex;
-  flex-direction: column-reverse;
-  /* 测试 div大小 */
-  /* border: 3px solid #73ad21; */
+  align-items: center;
+  gap: 14px;
+  padding: 10px 10px 10px 20px;
+  /* 前面的搜索图标 */
+  color: var(--cs-muted);
 }
 
-/* 进入/results页面后，自动更改输入框，标题，两个按钮位置 */
-#search-bar-revised {
-  margin-top: 30px;
+/* 面板内的输入框没有边框，焦点由整个面板显示 */
+.console__search input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--cs-ink);
+  font: 400 20px/1 var(--cs-font);
+}
+
+.console__sources {
   display: flex;
-  align-items: flex-start;
-  flex-direction: row-reverse;
-  column-gap: 10px;
-  position: absolute;
-  left: 100px;
-  /* 测试 div大小 */
-  /* border: 3px solid #73ad21; */
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-top: 1px solid #e6e9ed;
 }
 
-/* 结果页的输入框随窗口宽度缩小，最宽 700px，使搜索引擎按钮和右上角图标留在窗口内 */
-#search-bar-revised #search-input {
-  width: min(700px, calc(100vw - 860px));
+/* 等宽大写小标签："Sources"、"Websites Filter" */
+.label-mono {
+  margin: 0;
+  font: 500 12px/18px var(--cs-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cs-muted);
 }
 
-/* 搜索引擎筛选 */
-#search-engine-filter-group {
-  margin-top: 11px;
-  flex-direction: row;
-  column-gap: 25px;
-  justify-content: center;
-  /* 测试 div大小 */
-  /* border: 3px solid #73ad21; */
-}
-
-/* 搜索引擎筛选（单独） */
-#engine-filter-individual {
-  width: 75px;
+/* 图片上的标签：右上角 My Pages，右下角图片来源 */
+.photo-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   height: 40px;
-  border-radius: 25px;
-  background-color: rgb(155, 163, 149);
-  border: 2px solid rgb(155, 163, 149);
+  padding: 0 14px 0 12px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: var(--cs-r-input);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--cs-ink);
+  font: 500 15px/20px var(--cs-font);
+  text-decoration: none;
+  box-shadow: var(--cs-shadow-chip);
+  transition: background-color var(--cs-ease);
 }
 
-/* 搜索引擎： 鼠标悬停*/
-#engine-filter-individual:hover {
-  background-color: rgb(119, 124, 115) !important;
-  border-color: rgb(119, 124, 115) !important;
+.photo-chip:hover {
+  background: #fff;
+  color: var(--cs-ink);
 }
 
-#google-icon {
-  height: 40px;
-  position: relative;
-  top: -2px;
-  outline: none;
+/* 图片上的焦点：白色实线加深色外圈 */
+.photo-chip:focus-visible,
+.photo-chip a:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.55);
 }
 
-#bing-icon {
-  height: 30px;
-  outline: none;
-  position: relative;
-  top: 4px;
-  left: 3px;
-}
-
-#main-image {
+.home__mypages {
   position: absolute;
-  height: 100%;
-  width: 100%;
-  background: no-repeat;
-  background-position: center;
-  background-size: cover;
-  z-index: -1;
+  z-index: 2;
+  top: 24px;
+  right: 32px;
 }
 
-/* 主页背景图片信息图标 */
-#image-copyright-button {
-  position: fixed;
-  bottom: 20px;
-  right: 80px;
-  background-color: transparent;
+/* 图片来源：可见的文字和链接 */
+.credit {
+  position: absolute;
+  z-index: 2;
+  right: 32px;
+  bottom: 24px;
+  height: 32px;
+  margin: 0;
+  padding: 0 12px 0 10px;
+  border-radius: var(--cs-r-control);
+  font: 400 12px/18px var(--cs-mono);
+}
+
+.credit a {
+  color: var(--cs-ink);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.credit a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ---------- 主页和结果页共用：搜索框，搜索按钮，搜索引擎，My Pages ---------- */
+
+.search-form {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 600px;
+}
+
+/* 输入框和其中的清空按钮 */
+.search-field {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.search-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 40px;
+  box-sizing: border-box;
+  padding: 0 14px;
+  border: 1px solid var(--cs-control);
+  border-right: 0;
+  border-radius: var(--cs-r-input) 0 0 var(--cs-r-input);
+  background: var(--cs-surface);
+  color: var(--cs-ink);
+  font: 400 15px/1 var(--cs-font);
+}
+
+.search-input:focus-visible {
+  outline: 0;
+  border-color: var(--cs-link);
+  box-shadow: inset 0 0 0 1px var(--cs-link);
+}
+
+/* 为输入框右侧的清空按钮留出位置 */
+.search-field input {
+  padding-right: 40px;
+}
+
+/* 清空按钮：输入内容后才显示（search.jsx 切换 visibility） */
+#search-button-reset {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-top: -14px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--cs-r-control);
+  background: transparent;
+  color: var(--cs-muted);
   cursor: pointer;
-  padding: 15px;
-}
-
-/* 版权漂浮文字 */
-#image-copyright-text {
-  color: white;
-  font-size: 15px;
-  font-weight: bold;
   visibility: hidden;
-  position: fixed;
-  bottom: 85px;
-  right: 10px;
-  padding: 10px;
-  width: fit-content;
-  /* 清晰度 */
-  opacity: 0;
-  z-index: 11;
+  transition: background-color var(--cs-ease), color var(--cs-ease);
 }
 
-/* 鼠标悬停信息图标时，显示版权漂浮文字 */
-#image-copyright-button:hover + #image-copyright-text {
-  font-size: 15px;
-  font-weight: bold;
-  opacity: 1;
-  position: fixed;
-  right: 10px;
-  bottom: 80px;
-  visibility: visible;
-  transform: translate(0, 10px);
-  transition: all 0.5s cubic-bezier(0.75, -0.02, 0.2, 0.97);
+#search-button-reset:hover {
+  background: var(--cs-surface-2);
+  color: var(--cs-ink);
 }
 
-/* 跳转至已保存页面图标 before */
-#favourite-pages-icon-before {
-  border-radius: 30px;
-  background-color: transparent;
-  border: 0px solid transparent;
-  position: absolute;
-  top: 20px;
-  right: 80px;
-  color: #f1f3f1;
+.btn-search {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--cs-red);
+  border-radius: 0 var(--cs-r-input) var(--cs-r-input) 0;
+  background: var(--cs-red);
+  color: #fff;
+  font: 600 14px/20px var(--cs-font);
   cursor: pointer;
-  /* 测试 div大小 */
-  /* border: 3px solid #73ad21; */
+  transition: background-color var(--cs-ease), border-color var(--cs-ease);
 }
 
-/* 跳转至已保存页面图标 before: 鼠标悬停 */
-#favourite-pages-icon-before:hover {
-  background-color: rgb(155, 163, 149);
+.btn-search:hover {
+  background: var(--cs-red-hover);
+  border-color: var(--cs-red-hover);
 }
 
-/* 跳转至已保存页面图标 after：与主页图标一样靠右定位，较窄的窗口中也不会位于屏幕外 */
-#favourite-pages-icon-after {
-  position: absolute;
-  right: 80px;
-  top: 20px;
-  border-radius: 30px;
-  background-color: transparent;
-  border: 0px solid transparent;
+.btn-search:active {
+  background: var(--cs-red-active);
+  border-color: var(--cs-red-active);
+}
+
+/* 主页面板中的搜索按钮是独立的圆角按钮 */
+.console .btn-search {
+  height: 48px;
+  padding: 0 22px;
+  border-radius: var(--cs-r-input);
+  font-size: 16px;
+}
+
+/* Google 和 Bing 搜索引擎按钮 */
+.sources {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+}
+
+.source-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px 0 10px;
+  border: 1px solid var(--cs-line-strong);
+  border-radius: var(--cs-r-control);
+  background: var(--cs-surface);
+  color: var(--cs-ink);
+  font: 600 14px/20px var(--cs-font);
   cursor: pointer;
+  transition: background-color var(--cs-ease), border-color var(--cs-ease);
 }
 
-/* 跳转至已保存页面图标 after 鼠标悬停 */
-#favourite-pages-icon-after:hover {
-  background-color: rgb(167, 173, 162);
+.source-toggle:hover {
+  background: var(--cs-surface-2);
+}
+
+/* 显示该搜索引擎的结果时：灰绿色并带勾 */
+.source-toggle[aria-pressed="true"] {
+  background: var(--cs-sage);
+  border-color: var(--cs-sage);
+}
+
+.source-toggle[aria-pressed="true"]:hover {
+  background: var(--cs-sage-hover);
+  border-color: var(--cs-sage-hover);
+}
+
+/* 尚未接入的搜索引擎（Bing）：虚线边框，灰色文字 */
+.source-toggle[aria-disabled="true"],
+.source-toggle[aria-disabled="true"]:hover {
+  border-style: dashed;
+  background: var(--cs-surface);
+  color: var(--cs-muted);
+  font-weight: 500;
+  cursor: not-allowed;
+}
+
+/* "unavailable" 字样 */
+.source-toggle__note {
+  font: 400 12px/18px var(--cs-mono);
+}
+
+/* My Pages 链接 */
+.mypages-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 12px 0 10px;
+  border: 1px solid var(--cs-control);
+  border-radius: var(--cs-r-input);
+  background: var(--cs-surface);
+  color: var(--cs-ink);
+  font: 500 14px/20px var(--cs-font);
+  text-decoration: none;
+  transition: background-color var(--cs-ease);
+}
+
+.mypages-link:hover {
+  background: var(--cs-surface-2);
+  color: var(--cs-ink);
+}
+
+/* 当前位于 My Pages 时 */
+.mypages-link[aria-current="page"] {
+  background: var(--cs-surface-2);
+  border-color: var(--cs-line-strong);
+  font-weight: 600;
 }

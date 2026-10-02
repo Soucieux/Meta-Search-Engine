@@ -2,8 +2,15 @@ import "./search.css";
 import React from "react";
 import ls from "local-storage";
 import SearchResults from "./searchResults";
-import "bootstrap/dist/css/bootstrap.css";
 import { Link } from "react-router";
+import {
+  CheckIcon,
+  CloseIcon,
+  InfoCircleIcon,
+  PersonCircleIcon,
+  SearchIcon,
+  SlashCircleIcon,
+} from "./icons";
 
 // 初始化 local storage
 ls.set("show Google results", true);
@@ -81,12 +88,20 @@ class SearchInputAndButton extends React.Component {
       ls.remove("current input");
       ls.remove("previous input");
     }
+    // 主页的搜索框在白色面板（console）中，结果页的搜索框在页头
+    let isHome = url === "/";
     return (
-      <React.Fragment>
-        <form className="search-input-button-submit-group">
+      <form role="search" className={isHome ? "console__search" : "search-form"}>
+        {isHome && <SearchIcon size={20} />}
+        <label htmlFor="search-input" className="visually-hidden">
+          Search the web
+        </label>
+        <span className="search-field">
           <input
             type="text"
             id="search-input"
+            className={isHome ? undefined : "search-input"}
+            placeholder={isHome ? "Search the web" : undefined}
             autoComplete="off"
             // 确保返回或刷新页面时，输入值仍显示
             defaultValue={url === "/results" ? ls.get("current input") : ""}
@@ -96,42 +111,22 @@ class SearchInputAndButton extends React.Component {
           <button
             type="reset"
             id="search-button-reset"
-            aria-label="Close"
+            aria-label="Clear the search box"
             onClick={this.handleResetButtonOnClick}
           >
-            <span aria-hidden="true">&times;</span>
+            <CloseIcon size={14} />
           </button>
-          <button
-            type="submit"
-            className="btn btn-danger"
-            id="search-button-submit"
-            onClick={this.handleSubmitButtonOnClick}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              className="bi bi-search"
-              viewBox="0 0 16 16"
-            >
-              <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-            </svg>
-          </button>
-        </form>
-      </React.Fragment>
-    );
-  }
-}
-
-// 搜索标题
-class SearchTitle extends React.Component {
-  render() {
-    return (
-      <div id="search-title-group">
-        <h1 id="search-title">Custom</h1>
-        <h1 id="search-title">Search</h1>
-      </div>
+        </span>
+        <button
+          type="submit"
+          className="btn-search"
+          id="search-button-submit"
+          onClick={this.handleSubmitButtonOnClick}
+        >
+          {!isHome && <SearchIcon />}
+          <span>Search</span>
+        </button>
+      </form>
     );
   }
 }
@@ -142,55 +137,67 @@ class SearchEngineFilter extends React.Component {
   prepareFilterGoogleSearchResults() {
     if (ls.get("show Google results") === true) {
       ls.set("show Google results", false);
-      this.props.navigate("/results");
       console.log("Google saerch results disabled\n\n");
     } else {
       ls.set("show Google results", true);
-      this.props.navigate("/results");
       console.log("Google saerch results enabled\n\n");
     }
-    this.changeButtonColor();
-  }
-  // 原始图标颜色
-  googleIconColor = "rgb(155, 163, 149)";
-
-  // 改变按钮颜色
-  changeButtonColor() {
-    let { style } = document.getElementById("engine-filter-individual");
-    if (this.googleIconColor === "rgb(155, 163, 149)") {
-      this.googleIconColor = "rgb(255, 255, 255)";
+    if (this.props.location.pathname === "/results") {
+      // 重新渲染结果页，按新的状态筛选搜索结果
+      this.props.navigate("/results");
     } else {
-      this.googleIconColor = "rgb(155, 163, 149)";
+      // 主页没有搜索结果，只更新按钮。跳转到结果页时，没有搜索内容会立即返回主页，使页面闪烁
+      this.forceUpdate();
     }
-    style.backgroundColor = this.googleIconColor;
   }
 
   render() {
-    return (
-      <div>
-        <div
-          className="list-group list-group-flush"
-          id="search-engine-filter-group"
+    // 按钮状态来自 local storage，切换后重新渲染时随之更新
+    let showGoogle = ls.get("show Google results") === true;
+    let toggles = (
+      <React.Fragment>
+        <button
+          type="button"
+          className="source-toggle"
+          aria-pressed={showGoogle}
+          onClick={() => this.prepareFilterGoogleSearchResults()}
         >
-          <button
-            id="engine-filter-individual"
-            className="button-default"
-            onClick={() => this.prepareFilterGoogleSearchResults()}
-          >
-            <input
-              type="image"
-              alt="Google"
-              src="googleIcon.ico"
-              id="google-icon"
-            />
-          </button>
-          <button id="engine-filter-individual" className="button-default">
-            <input type="image" alt="Bing" src="bingIcon.ico" id="bing-icon" />
-          </button>
+          {showGoogle && <CheckIcon size={14} />}
+          Google
+        </button>
+        {/* Bing 尚未接入：用 aria-disabled 而不是 disabled，按钮仍可获得焦点，读屏软件会读出 unavailable */}
+        <button
+          type="button"
+          className="source-toggle"
+          aria-disabled="true"
+          aria-describedby="bing-note"
+          title="Bing results aren’t available yet"
+        >
+          <SlashCircleIcon size={14} />
+          Bing{" "}
+          <span id="bing-note" className="source-toggle__note">
+            unavailable
+          </span>
+        </button>
+      </React.Fragment>
+    );
+    if (this.props.location.pathname === "/") {
+      return (
+        <div
+          role="group"
+          aria-labelledby="sources-label"
+          className="console__sources"
+        >
+          <span id="sources-label" className="label-mono">
+            Sources
+          </span>
+          {toggles}
         </div>
-        {this.props.location.pathname === "/results" && (
-          <SearchResults {...this.props} />
-        )}
+      );
+    }
+    return (
+      <div role="group" aria-label="Search sources" className="sources">
+        {toggles}
       </div>
     );
   }
@@ -205,62 +212,55 @@ class Search extends React.Component {
       ls.set("exclude websites", []);
       ls.set("new input received", false);
     }
-    return (
-      <main>
-        {this.props.location.pathname !== "/results" && (
-          <div>
-            <img src="main.jpg" id="main-image" />
-            <div id="image-copyright-button">
-              <Link target="_blank" to="//peapix.com/bing/34161">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="26"
-                  height="26"
-                  fill="white"
-                  className="bi bi-info-circle"
-                  viewBox="0 0 16 16"
-                >
-                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                  <path d="M8.93 6.588l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
-                </svg>
+    if (this.props.location.pathname === "/results") {
+      // 结果页：页头（标题，搜索框，搜索引擎，My Pages），其下为网站筛选和搜索结果
+      return (
+        <div className="results-page">
+          <header className="app-header">
+            <div className="app-header__inner">
+              <Link to="/" className="app-header__title">
+                <img src="/logo.png" alt="" className="app-header__logo" />
+                Custom Search
+              </Link>
+              <div className="app-header__controls">
+                <SearchInputAndButton {...this.props} />
+                <SearchEngineFilter {...this.props} />
+              </div>
+              <Link to="/favourite" className="mypages-link">
+                <PersonCircleIcon size={18} />
+                My Pages
               </Link>
             </div>
-            <div id="image-copyright-text">Image provided by Bing</div>
-          </div>
-        )}
-        <div>
-          <div
-            id={
-              "search-bar-" +
-              (this.props.location.pathname === "/results"
-                ? "revised"
-                : "group")
-            }
-          >
-            <SearchEngineFilter {...this.props} />
-            <SearchInputAndButton {...this.props} />
-            <SearchTitle />
-          </div>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="50"
-            height="50"
-            fill="currentColor"
-            className="bi bi-person-circle button-default"
-            id={
-              "favourite-pages-icon-" +
-              (this.props.location.pathname === "/" ? "before" : "after")
-            }
-            viewBox="0 0 16 16"
-            onClick={() => this.props.navigate("/favourite")}
-          >
-            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
-            <path
-              fillRule="evenodd"
-              d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"
-            />
-          </svg>
+          </header>
+          <SearchResults {...this.props} />
         </div>
+      );
+    }
+    // 主页：背景图片（search.css），标题和搜索面板，右上角 My Pages，右下角图片来源
+    return (
+      <main className="home">
+        <Link to="/favourite" className="photo-chip home__mypages">
+          <PersonCircleIcon size={18} />
+          My Pages
+        </Link>
+        <div className="home__inner">
+          <h1 className="home__title">Custom Search</h1>
+          <div className="console">
+            <SearchInputAndButton {...this.props} />
+            <SearchEngineFilter {...this.props} />
+          </div>
+        </div>
+        <p className="photo-chip credit">
+          <InfoCircleIcon />
+          Image provided by{" "}
+          <a
+            href="https://peapix.com/bing/34161"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Bing
+          </a>
+        </p>
       </main>
     );
   }

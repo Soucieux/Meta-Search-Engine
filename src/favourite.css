@@ -1,76 +1,258 @@
-#favourite-websites-page-main-title {
-  position: relative;
-  margin-top: 10px;
-  margin-left: 30px;
+/* =====================================================================
+   收藏：Favourite 和 Remove 按钮，已收藏的搜索结果，My Pages 页面。
+   设计变量在 search.css。
+   ===================================================================== */
+
+/* ---------- Favourite 和 Remove 按钮 ---------------------------------- */
+
+.btn-favourite,
+.btn-remove {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 12px 0 10px;
+  border-radius: var(--cs-r-control);
+  font: 500 14px/20px var(--cs-font);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--cs-ease), border-color var(--cs-ease);
 }
 
-/* 返回按钮（Bootstrap 5 的链接按钮颜色较深且有下划线，这里沿用 Bootstrap 4） */
-#go-back-to-search-results {
-  position: absolute;
-  left: 170px;
-  top: 20px;
-  color: #007bff;
+.btn-favourite {
+  border: 1px solid var(--cs-control);
+  background: var(--cs-surface);
+  color: var(--cs-ink);
+}
+
+.btn-favourite:hover {
+  background: var(--cs-surface-2);
+}
+
+.btn-favourite:active {
+  background: var(--cs-pressed);
+  border-color: var(--cs-line-strong);
+}
+
+.btn-remove {
+  border: 1px solid var(--cs-red);
+  background: var(--cs-red);
+  color: #fff;
+  font-weight: 600;
+}
+
+.btn-remove:hover {
+  background: var(--cs-red-hover);
+  border-color: var(--cs-red-hover);
+}
+
+.btn-remove:active {
+  background: var(--cs-red-active);
+  border-color: var(--cs-red-active);
+}
+
+/* ---------- 已收藏的搜索结果 ------------------------------------------ */
+
+/* 点击 Favourite 后立即变为浅黄色；排到前面要等结果页下次渲染 */
+.result--saved,
+.result--saved:hover {
+  background: var(--cs-saved);
+}
+
+/* "Saved" 标签，使已收藏不只靠颜色区分 */
+.saved-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+  height: 20px;
+  padding: 0 7px;
+  border-radius: var(--cs-r-tag);
+  background: var(--cs-saved-tag);
+  color: var(--cs-saved-ink);
+  font: 500 11px/20px var(--cs-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ---------- My Pages ------------------------------------------------- */
+
+.mypages-page {
+  min-height: 100vh;
+  background: var(--cs-page);
+  color: var(--cs-ink);
+  font-family: var(--cs-font);
+}
+
+.mypages {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px 32px 64px;
+  box-sizing: border-box;
+}
+
+.mypages__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  color: var(--cs-link);
+  font: 500 15px/20px var(--cs-font);
   text-decoration: none;
 }
 
-/* 返回按钮：鼠标悬停 */
-#go-back-to-search-results:hover {
-  color: #0056b3;
+.mypages__back:hover {
+  color: var(--cs-link-hover);
   text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
-/* 喜爱列表 */
-#favourite-websites-list {
-  position: relative;
-  margin-top: 20px;
-  margin-left: 300px;
-  margin-right: 20px;
+.mypages__head {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-top: 12px;
 }
 
-/* 喜爱列表（Bootstrap 5 删除了 card-columns，列间距和卡片不跨列断开沿用 Bootstrap 4） */
-.card-columns {
-  column-count: 3;
-  column-gap: 1.25rem;
-  orphans: 1;
-  widows: 1;
+.mypages__head h1 {
+  margin: 0;
+  font: 600 32px/40px var(--cs-font);
+  letter-spacing: -0.02em;
 }
 
-/* 喜爱列表（单独）：整张卡片留在同一列；Bootstrap 5 会重设 card 的高度，因此高度写在这里 */
-.card-columns .card {
-  display: inline-block;
-  width: 100%;
-  height: 80px;
-  margin-bottom: 0.75rem;
+/* 标题旁的数量，例如 "2 saved pages" */
+.mypages__count {
+  margin: 0;
+  font: 400 13px/20px var(--cs-mono);
+  color: var(--cs-muted);
 }
 
-/* 喜爱列表（单独）的内容和链接：沿用 Bootstrap 4 的内边距和蓝色链接，鼠标悬停时才有下划线 */
-#favourite-websites-list .card-body {
-  padding: 1.25rem;
+/* 1280 到 1920 像素宽时都是三列 */
+.saved-grid {
+  list-style: none;
+  margin: 24px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
 }
 
-#favourite-websites-list .card-title {
-  color: #007bff;
+.saved-grid > li {
+  display: flex;
+}
+
+.saved-card {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 236px;
+  box-sizing: border-box;
+  padding: 20px 20px 16px;
+  background: var(--cs-surface);
+  border: 1px solid var(--cs-line);
+  border-radius: var(--cs-r-panel);
+  transition: box-shadow var(--cs-ease), border-color var(--cs-ease);
+}
+
+.saved-card:hover {
+  border-color: var(--cs-line-strong);
+  box-shadow: var(--cs-shadow-hover);
+}
+
+.saved-card__address {
+  margin: 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 400 13px/20px var(--cs-mono);
+  color: var(--cs-muted);
+}
+
+/* 网站名 */
+.saved-card__address b {
+  font-weight: 400;
+  color: var(--cs-ink);
+}
+
+.saved-card h2 {
+  margin: 8px 0 0;
+  font: 600 18px/25px var(--cs-font);
+  letter-spacing: -0.005em;
+}
+
+/* 标题保持蓝色链接 */
+.saved-card h2 a {
+  color: var(--cs-link);
   text-decoration: none;
 }
 
-#favourite-websites-list .card-title:hover {
-  color: #0056b3;
+.saved-card h2 a:hover {
+  color: var(--cs-link-hover);
   text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
-/* 喜爱列表（单独） */
-.card {
+/* 摘要最多显示三行 */
+.saved-card__snippet {
+  margin: 8px 0 0;
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--cs-text-2);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Remove 在卡片右下角 */
+.saved-card__actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: auto;
+  padding-top: 16px;
+}
+
+/* 没有已收藏网页时 */
+.saved-empty {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  margin-top: 24px;
+  padding: 56px 32px;
   text-align: center;
-  /* 从左至右：增加立体感，边框厚度 */
-  border: solid 1px #000000;
-  /* 测试 div大小 */
-  /* border: 3px solid #73ad21; */
+  background: var(--cs-surface);
+  border: 1px solid var(--cs-line);
+  border-radius: var(--cs-r-panel);
 }
 
-/* 喜爱列表（单独）：鼠标悬停 */
-.card:hover {
-  /* 从左至右：增加立体感，边框厚度 */
-  border: solid 3px #000000;
-  /* 渐变时间 */
-  transition: 0.5s;
+.saved-empty__icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 4px;
+  border-radius: 12px;
+  background: var(--cs-saved);
+  color: var(--cs-saved-ink);
+}
+
+.saved-empty h2 {
+  margin: 0;
+  font: 600 20px/28px var(--cs-font);
+}
+
+.saved-empty p {
+  margin: 0;
+  max-width: 420px;
+  font-size: 15px;
+  line-height: 24px;
+  color: var(--cs-text-2);
+}
+
+.saved-empty .mypages-link {
+  height: 40px;
+  margin-top: 8px;
+  font-size: 15px;
 }
