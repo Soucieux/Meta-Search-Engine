@@ -410,6 +410,17 @@ input::placeholder {
   font: 400 12px/18px var(--cs-mono);
 }
 
+/* 页头空间有限：尚未接入的搜索引擎只显示虚线边框和斜杠图标，
+   "unavailable" 字样仍供读屏软件读出，鼠标悬停时按钮的提示也会说明 */
+.app-header .source-toggle__note {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
 /* My Pages 链接 */
 .mypages-link {
   display: inline-flex;
