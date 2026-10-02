@@ -433,28 +433,25 @@ class Results extends React.Component {
   };
 
   render() {
-    // REMOVE THIS
-    ls.set("previous input", "123");
     // 检测数据提取是否存在错误
     this.retrieveResultsError();
     // 显示或隐藏 Google搜索结果
     this.filterGoogleResults();
     // 提取输入值
     let currentInput = ls.get("current input");
+    if (currentInput && currentInput !== ls.get("previous input")) {
+      // 存在新的输入值，存储新值；实时搜索未启用，载入内置的示例搜索结果
+      console.log("New input identified and stored\n\n");
+      ls.set("load websites filter", true);
+      ls.set("previous input", currentInput);
+      this.all_results_original = [].concat(ls.get("Google results"));
+      this.all_results_filtered = this.all_results_original;
+      // this.retrieveSearchResults(currentInput);
+    }
     if (!currentInput) {
       // 不存在输入值
       console.log("No input. Switch back to main page\n\n");
       return <Redirect from="/results" to="/"></Redirect>;
-    } else if (currentInput !== ls.get("previous input")) {
-      // 存在新的输入值，存储新值并进行数据提取
-      console.log("New input identified and stored\n\n");
-      ls.set("load websites filter", true);
-      ls.set("previous input", currentInput);
-      // 初始化搜索结果 array
-      this.all_results_original = [];
-      this.all_results_filtered = [];
-      // this.retrieveSearchResults(currentInput);
-      return <React.Fragment />;
     } else {
       // 实时更新网站筛选
       if (ls.get("show Google results")) {
