@@ -52,7 +52,8 @@ Checked on 2026-10-02 with Node.js 22.
 - **Build:** Vite serves the app with `npm start` and builds it with `npm run build`.
 - **Search:** the ValueSERP request in `src/searchResults.jsx` is commented out, so every query
   shows the six sample Google results bundled in that file.
-- **Tests:** `npm test` runs 14 tests of search, the filters, favourites and what a reload keeps.
+- **Tests:** `npm test` runs 20 tests of search, the filters, favourites, My Pages and what a
+  reload keeps.
 
 ## Quick start
 
@@ -86,9 +87,9 @@ The result is highlighted and joins the saved list in this browser
   ↓
 Saved results lead the list the next time it is drawn
   ↓
-Open My Pages from the profile icon
+Open My Pages from the My Pages link
   ↓
-Open a saved page, or go back to the results
+Open a saved page, remove it, or go back to the results
 ```
 
 <!-- project-control:section=architecture -->
@@ -103,9 +104,10 @@ three pages, and every piece of state lives in the browser's local storage.
 |---|---|
 | React 19 | Class components draw the search page, the results page and My Pages. |
 | React Router 8 | `BrowserRouter` maps `/` to the search page, `/results` to the results page and `/favourite` to My Pages; `src/router.jsx` hands each page the current location and a `navigate` function, since class components cannot call the router's hooks. |
-| Bootstrap 5 | Its stylesheet styles the buttons, list groups and cards; the project's stylesheets keep the Bootstrap 4 spacing, link and close-button styles the pages were drawn with. |
-| Bootstrap Icons | The search, information and profile icons are its artwork, inlined as SVG. |
-| CSS | `search.css`, `searchResults.css` and `favourite.css` lay out each page. |
+| Bootstrap 5 | Its stylesheet supplies the base styles and the `visually-hidden` helper; it loads first, so the project's stylesheets draw the pages. |
+| Bootstrap Icons | Its glyphs mark the buttons and links, inlined as SVG in `src/icons.jsx`; there is no icon package. |
+| CSS | The design's colours, type, radii and focus ring are variables at the top of `search.css`; it, `searchResults.css` and `favourite.css` lay out each page. |
+| IBM Plex Sans and Mono | The interface and the addresses, counts and labels; without them, every font falls back to the system font. |
 
 ### Data & Storage
 
@@ -119,6 +121,7 @@ three pages, and every piece of state lives in the browser's local storage.
 | Technology or concept | Use in this project |
 |---|---|
 | ValueSERP API | Supplied Google results during development; the request is commented out, and the key it carried reads `REDACTED`. |
+| Google Fonts | Serves IBM Plex to the browser when the page loads; nothing else leaves the browser. |
 
 ### Build & Delivery
 
@@ -134,8 +137,8 @@ three pages, and every piece of state lives in the browser's local storage.
 |---|---|
 | `index.html` | The page Vite serves and builds, which loads `src/index.jsx`. |
 | `vite.config.js` | The Vite configuration: the React plugin, the `html/` public folder, port 3000, the `build/` folder and the test environment. |
-| `src/` | The React components, their stylesheets, the bundled sample results and the tests. |
-| `html/` | The web app manifest, the favicon made from the project icon, the Google and Bing filter icons, and the home-page image, a Bing wallpaper the home page credits. |
+| `src/` | The React components, their stylesheets, the icons, the bundled sample results and the tests. |
+| `html/` | The web app manifest, the favicon and the header logo made from the project icon, and the home-page image, a Bing wallpaper the home page credits. |
 | `Resources/` | The 1,024-pixel project icon master, kept outside `html/` so the build does not serve it. |
 
 <!-- project-control:section=ignore -->
@@ -158,6 +161,7 @@ One record per change; complete details and evidence are below. Older work dates
 
 | Record | Date | Highlights | Details |
 |---|---|---|---|
+| Maintenance | 2026-10-02 | <ul><li><strong>Look:</strong> A refreshed interface keeps the three pages and their colours, with IBM Plex type and complete hover, focus and empty states.</li><li><strong>Home:</strong> The Bing photo sits under a soft dark wash, with the search box and sources in one white panel.</li><li><strong>My Pages:</strong> Cards show each page's address and snippet, and Remove takes a page off the list.</li></ul> | [Full record](#interface-refresh) |
 | Maintenance | 2026-10-02 | <ul><li><strong>Frameworks:</strong> React 19, React Router 8 and Bootstrap 5 replace React 17, React Router 5 and Bootstrap 4, and the pages look as they did.</li><li><strong>Node.js:</strong> The app needs Node.js 22.22 or newer.</li><li><strong>Dependencies:</strong> <code>react-router-dom</code>, <code>jquery</code> and <code>popper.js</code> are no longer installed.</li></ul> | [Full record](#framework-upgrade) |
 | Maintenance | 2026-10-02 | <ul><li><strong>Saved results:</strong> The results page lists saved results first, on a pale yellow background, one of the 2021 features not yet built.</li></ul> | [Full record](#saved-results-first) |
 | Maintenance | 2026-10-02 | <ul><li><strong>Tests:</strong> <code>npm test</code> runs Vitest tests that drive the app in a simulated browser: search, the clear button, both filters, favourites, My Pages and a reload.</li></ul> | [Full record](#automated-tests) |
@@ -175,6 +179,43 @@ One record per change; complete details and evidence are below. Older work dates
 
 <details>
 <summary>Full records for this table</summary>
+
+<a id="interface-refresh"></a>
+
+### Interface refresh — 2026-10-02
+
+- **Look:** the three pages keep their layout and colours: the red Search and Remove buttons, the
+  sage Google button, pink result titles, pale-yellow saved results and blue links on My Pages. IBM
+  Plex Sans and Mono replace the system font, and text meets WCAG AA contrast; the result titles
+  are a deeper pink for it.
+- **Home:** the Bing photo fills the page under a dark radial wash, so the white title reads at
+  4.5:1 or better over the brightest part of the photo behind it. The search box and the Google
+  and Bing buttons sit in one white panel, and My Pages and the photo credit are labelled chips.
+- **Results:** the header stays at the top while the page scrolls. Its title carries the project
+  icon and lines up with the websites filter below it, its search box lines up with the results,
+  and its buttons share one height. Each site in the websites filter is one row with its tick box, its number of
+  results and a bar, in place of a tick box beside a separate button. A status line counts the
+  results shown and the sites hidden, results are numbered in one panel, and each result's
+  Favourite or Remove button sits in its own column. A saved result also carries a Saved tag.
+- **States:** Bing reads unavailable instead of looking like a working button. Hiding every site,
+  turning Google off and an empty My Pages each have their own message, and every control shows a
+  blue ring when reached with the keyboard.
+- **My Pages:** cards show each page's address, title and snippet, and Remove takes a page off the
+  list; until now pages could be removed only from the results page.
+- **Google button:** on the home page it now switches in place. It used to open the results page,
+  which returned straight to the home page without a query and made the page flash. A search made
+  with Google switched off now keeps the Google results hidden; since 2021 a new search had shown
+  them anyway.
+- **Kept:** the clear button in the search box, which empties the box and the saved query.
+- **Code:** the icons are Bootstrap Icons 1.13.1 glyphs, inlined in `src/icons.jsx`;
+  `src/address.jsx` sets each address's site in bold. The Google and Bing image icons left `html/`,
+  and Bootstrap now loads before the project's stylesheets.
+- **Checks:** 20 tests pass, and `npm run build` builds 104 modules. In headless Chromium at 1,280,
+  1,440 and 1,920 pixels wide, every page and state matched the design's mockups, the search box
+  lined up with the results, nothing scrolled sideways, and there were no console errors or
+  warnings.
+
+[Back to change history](#change-history)
 
 <a id="framework-upgrade"></a>
 
