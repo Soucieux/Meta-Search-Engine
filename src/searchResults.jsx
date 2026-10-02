@@ -5,77 +5,33 @@ import Favourite from "./favourite";
 import { Link, Navigate } from "react-router";
 import Address from "./address";
 import { CloseIcon, FunnelIcon, StarFillIcon, StarIcon } from "./icons";
+import { TAVILY_URL, WEB, highlightSegments, queryTerms, searchWeb } from "./webSearch";
 
-// 隐藏或显示搜索引擎结果
-var showGoogleResultsWebsitesFilter = true;
+// 隐藏或显示网页结果时，重新生成网站筛选
+var showSourceWebsitesFilter = true;
 
-// 储存上一次 Google 按钮状态
-var previousGoogleSearchStatus = true;
+// 储存上一次网页按钮状态
+var previousSourceStatus = true;
 
-var google_results = [
-  {
-    engine: "Google",
-    position: "0",
-    title: "McDonald's Canada: Your Favourite Burgers, Fries & More",
-    link: "http://www.mcdonalds.com/ca/en-ca.html",
-    displayed_link: "www.mcdonalds.com › en-ca",
-    domain: "www.mcdonalds.com",
-    snippet:
-      "*Round Up available at participating McDonald's restaurants in Canada. The Spicy McChicken® Challenge is back!",
+// 在线搜索没有结果时，状态行和结果位置的说明，按开发服务器给出的原因
+const UNAVAILABLE = {
+  nokey: {
+    heading: "Live search needs a Tavily key",
+    body: "Create a free key at tavily.com, add it to .env.local as TAVILY_API_KEY, then search again, as the README describes.",
   },
-  {
-    engine: "Google",
-    position: "1",
-    title: "tieltieltileiteteiletlitllitteillietilteiltelliliet2",
-    link: "https://www.mcdonalds.com/ca/en-ca/full-menu.html",
-    displayed_link: "www.mcdonalds.com › en-ca › full-menu",
-    domain: "www.mcdonalds.com",
-    snippet:
-      "For delicious food, visit McDonald's today! View our wide selection of meals, snacks, drinks, and more.",
+  badkey: {
+    heading: "Tavily didn't accept the key",
+    body: "Check TAVILY_API_KEY in .env.local, then search again.",
   },
-  {
-    engine: "Google",
-    position: "2",
-    title: "McDonald's - Wikipedia",
-    link: "https://en.wikipedia.org/wiki/McDonald%27s",
-    displayed_link: "en.wikipedia.org › wiki › McDonald's",
-    domain: "en.wikipeida.org",
-    snippet:
-      "McDonald's Corporation is an American fast food company, founded in 1940 as a restaurant operated by Richard and Maurice McDonald, in San Bernardino, ...",
+  limit: {
+    heading: "This month's free searches are used up",
+    body: "Tavily's free plan resets every month; search again after it does.",
   },
-  {
-    engine: "Google",
-    position: "3",
-    title: "Coupons | McDonald's Canada",
-    link: "https://www4.mcdonalds.ca/coupons/",
-    displayed_link: "www4.mcdonalds.ca › coupons",
-    domain: "en.wikipeida.org",
-    snippet:
-      "When you order ahead on the McDonald's app with a coupon that has fries, you're automatically collecting a Reward from the fries included in the coupon.",
+  unavailable: {
+    heading: "Live search didn't answer",
+    body: "Check the internet connection and that npm start is still running, then search again.",
   },
-  {
-    engine: "Google",
-    position: "4",
-    title: "McDonalds Jobs in Ottawa, ON (with Salaries) - Indeed",
-    link: "https://ca.indeed.com/McDonalds-jobs-in-Ottawa,-ON",
-    displayed_link: "ca.indeed.com › McDonalds-jobs-in-Ottawa,-ON",
-    domain: "www.facebook.com",
-    snippet:
-      "Search 53 McDonalds jobs now available in Ottawa, ON on Indeed.com, the world's largest job site.",
-  },
-  {
-    engine: "Google",
-    position: "5",
-    title: "McDonald's Canada - Home - Ottawa, Ontario - Menu, Prices ...",
-    link: "https://www.facebook.com/McDonalds594MontrealRdOttawaON/",
-    displayed_link: "www.facebook.com › ... › Sandwich Shop",
-    domain: "www.youtube.com",
-    snippet:
-      "McDonald's Canada, Ottawa. 29 likes · 1 talking about this · 524 were here. Fast Food Restaurant.",
-  },
-];
-
-ls.set("Google results", google_results);
+};
 
 // 搜索结果网站筛选
 class SearchResultsWebsitesFilter extends React.Component {
@@ -98,11 +54,11 @@ class SearchResultsWebsitesFilter extends React.Component {
 
   // 添加网站筛选（单独）
   loadWebsitesFromResults = () => {
-    // 来自于 local storage("Google results")
+    // 来自于 local storage("web results")
     let { searchResultsFiltered, searchResultsOriginal } = this.props;
-    // shwoGoogleResultsWebsitesFilter 代表每次点按 Google按钮时 重新生成新的网站筛选
-    if (showGoogleResultsWebsitesFilter) {
-      // 显示 Google搜索结果时，将现有网站筛选替换成原始的包含 Google的网站筛选
+    // showSourceWebsitesFilter 代表每次点按网页按钮时 重新生成新的网站筛选
+    if (showSourceWebsitesFilter) {
+      // 显示网页结果时，将现有网站筛选替换成原始的网站筛选
       this.current_websites = this.original_websites;
     } else {
       // 把网站列表转换成网站筛选
@@ -112,7 +68,7 @@ class SearchResultsWebsitesFilter extends React.Component {
     }
     // 此值为 true时，代表当前为首次生成网站筛选列表，此列表只会在网页最初加载时生成一次
     let loadWebsitesFilter = ls.get("load websites filter");
-    //有新输入值时，保存一份原始的网站筛选用来显示或隐藏 Google所包含的网站
+    //有新输入值时，保存一份原始的网站筛选用来显示或隐藏网页结果所包含的网站
     if (loadWebsitesFilter) {
       // 此值不为 null时，代表网页 url是从 /favourite转至 /results 或者页面被刷新
       let current_websites_retrieved = ls.get("current websites");
@@ -122,7 +78,7 @@ class SearchResultsWebsitesFilter extends React.Component {
         this.current_websites = current_websites_retrieved;
       } else {
         // 把网站列表转换成网站筛选
-        if (showGoogleResultsWebsitesFilter) {
+        if (showSourceWebsitesFilter) {
           this.current_websites = this.loadWebsitesFromResultsHelper(
             searchResultsFiltered
           );
@@ -235,8 +191,8 @@ class SearchResultsWebsitesFilter extends React.Component {
  */
 class SearchResult extends React.Component {
   /**
-   * @param {{result: Object, number: number, isFavourite: function(Object): boolean, onToggle: function(Object): void}} props
-   *   result 为要显示的搜索结果；number 为它在列表中的序号（从 1 开始）；
+   * @param {{result: Object, number: number, terms: string[], isFavourite: function(Object): boolean, onToggle: function(Object): void}} props
+   *   result 为要显示的搜索结果；number 为它在列表中的序号（从 1 开始）；terms 为摘要中加粗的搜索词；
    *   isFavourite 检查它是否已收藏；onToggle 收藏或取消收藏它
    */
   constructor(props) {
@@ -291,7 +247,12 @@ class SearchResult extends React.Component {
                 {result_individual.title}
               </Link>
             </h3>
-            <p className="result__snippet">{result_individual.snippet}</p>
+            <p className="result__snippet">
+              {highlightSegments(result_individual.snippet, this.props.terms).map(
+                (segment, index) =>
+                  segment.bold ? <b key={index}>{segment.text}</b> : segment.text
+              )}
+            </p>
           </div>
           <button
             type="button"
@@ -315,13 +276,45 @@ class Results extends React.Component {
   // 筛选后的所有搜索结果
   all_results_filtered = [];
 
+  // 正在进行的搜索的编号；连续搜索时只采用最后一次的结果
+  latestSearch = 0;
+  // 网页搜索还没有返回时为 true
+  searching = false;
+
   constructor(props) {
     super(props);
     this.state = { searchResultsError: null };
+    // 返回结果页或刷新时，显示上一次保存的搜索结果
     this.all_results_original = this.all_results_original.concat(
-      ls.get("Google results")
+      ls.get("web results") || []
     );
     this.all_results_filtered = this.all_results_original;
+  }
+
+  /**
+   * 搜索在线网页；结果返回后保存，重新生成网站筛选，并重新渲染结果页。
+   * @param {string} query 搜索内容
+   */
+  runSearch(query) {
+    let searchId = ++this.latestSearch;
+    this.searching = true;
+    searchWeb(query).then((search) => {
+      if (searchId !== this.latestSearch) {
+        return;
+      }
+      this.searching = false;
+      ls.set("web results", search.results);
+      ls.set("web search", { status: search.status });
+      ls.set("current websites", null);
+      ls.set("original websites", null);
+      ls.set("load websites filter", true);
+      this.all_results_original = search.results;
+      this.all_results_filtered = this.filterResultsBySearchEngine(
+        search.results,
+        ls.get("show web results")
+      );
+      this.setState({ searchedAt: Date.now() });
+    });
   }
 
   // 增加搜索引擎标签
@@ -403,24 +396,24 @@ class Results extends React.Component {
     return filtered_websites_results;
   };
 
-  // 显示或隐藏特定搜索引擎搜索结果
+  // 显示或隐藏网页的搜索结果
   // 此操作会不会更改 all_results_original 的值，但会更改 all_results_filtered 的值
-  filterResultsBySearchEngine(results, google) {
+  filterResultsBySearchEngine(results, shown) {
     let show_results = [];
-    if (google === false) {
+    if (shown === false) {
       for (let i = 0; i < results.length; i++) {
-        if (results[i]["engine"] !== "Google") {
+        if (results[i]["engine"] !== WEB) {
           show_results.push(results[i]);
         }
       }
-      previousGoogleSearchStatus = false;
-    } else if (google === true) {
+      previousSourceStatus = false;
+    } else if (shown === true) {
       for (let i = 0; i < this.all_results_original.length; i++) {
-        if (this.all_results_original[i]["engine"] === "Google") {
+        if (this.all_results_original[i]["engine"] === WEB) {
           show_results.push(this.all_results_original[i]);
         }
       }
-      previousGoogleSearchStatus = true;
+      previousSourceStatus = true;
     }
     return show_results;
   }
@@ -444,21 +437,21 @@ class Results extends React.Component {
     }
   };
 
-  // 显示或隐藏 Google搜索结果
-  filterGoogleResults = () => {
-    let google_status = ls.get("show Google results");
+  // 显示或隐藏网页的搜索结果
+  filterSourceResults = () => {
+    let source_status = ls.get("show web results");
     if (
-      (previousGoogleSearchStatus === true && google_status === false) ||
-      (previousGoogleSearchStatus === false && google_status === true)
+      (previousSourceStatus === true && source_status === false) ||
+      (previousSourceStatus === false && source_status === true)
     ) {
       this.all_results_filtered = this.filterResultsBySearchEngine(
         this.all_results_filtered,
-        google_status
+        source_status
       );
-      if (showGoogleResultsWebsitesFilter) {
-        showGoogleResultsWebsitesFilter = false;
+      if (showSourceWebsitesFilter) {
+        showSourceWebsitesFilter = false;
       } else {
-        showGoogleResultsWebsitesFilter = true;
+        showSourceWebsitesFilter = true;
       }
     }
   };
@@ -532,13 +525,21 @@ class Results extends React.Component {
   }
 
   /**
-   * 结果列表上方的状态行：显示了多少条结果，隐藏了几个网站，或 Google 结果已隐藏。
+   * 结果列表上方的状态行：正在搜索，在线搜索为什么没有结果，网页结果已隐藏，
+   * 或显示了多少条结果和隐藏了几个网站。
    * @param {string} query 当前的搜索内容
    * @returns {string} 状态行文字
    */
   statusText(query) {
-    if (!ls.get("show Google results")) {
-      return "Google results hidden";
+    if (this.searching) {
+      return "Searching the web…";
+    }
+    let search = ls.get("web search") || {};
+    if (UNAVAILABLE[search.status]) {
+      return UNAVAILABLE[search.status].heading;
+    }
+    if (!ls.get("show web results")) {
+      return "Web results hidden";
     }
     let total = this.all_results_original.length;
     let shown = this.all_results_filtered.length;
@@ -554,24 +555,52 @@ class Results extends React.Component {
     } hidden`;
   }
 
+  /**
+   * 没有可显示的结果时，结果列表位置的说明。
+   * @param {string} query 当前的搜索内容
+   * @returns {{heading: string, body: string} | null} 说明；正在搜索时为 null
+   */
+  emptyState(query) {
+    if (this.searching) {
+      return null;
+    }
+    let search = ls.get("web search") || {};
+    if (UNAVAILABLE[search.status]) {
+      return UNAVAILABLE[search.status];
+    }
+    if (!ls.get("show web results")) {
+      return {
+        heading: "Web results are hidden",
+        body: "Turn the Web source back on to show results.",
+      };
+    }
+    if (ls.get("exclude websites").length > 0) {
+      return {
+        heading: "No results for the selected filters",
+        body: "Tick a website in Websites Filter to show its results.",
+      };
+    }
+    return {
+      heading: `No pages match “${query}”`,
+      body: "Try other words.",
+    };
+  }
+
   render() {
     // 检测数据提取是否存在错误
     this.retrieveResultsError();
-    // 显示或隐藏 Google搜索结果
-    this.filterGoogleResults();
+    // 显示或隐藏网页的搜索结果
+    this.filterSourceResults();
     // 提取输入值
     let currentInput = ls.get("current input");
     if (currentInput && currentInput !== ls.get("previous input")) {
-      // 存在新的输入值，存储新值；实时搜索未启用，载入内置的示例搜索结果
+      // 存在新的输入值，存储新值，并搜索在线网页；结果返回后重新渲染
       console.log("New input identified and stored\n\n");
       ls.set("load websites filter", true);
       ls.set("previous input", currentInput);
-      this.all_results_original = [].concat(ls.get("Google results"));
-      // 新的搜索结果同样按 Google 按钮的状态显示或隐藏
-      this.all_results_filtered = this.filterResultsBySearchEngine(
-        this.all_results_original,
-        ls.get("show Google results")
-      );
+      this.all_results_original = [];
+      this.all_results_filtered = [];
+      this.runSearch(currentInput);
       // this.retrieveSearchResults(currentInput);
     }
     if (!currentInput) {
@@ -580,7 +609,7 @@ class Results extends React.Component {
       return <Navigate to="/" replace />;
     } else {
       // 实时更新网站筛选
-      if (ls.get("show Google results")) {
+      if (ls.get("show web results")) {
         this.all_results_filtered = this.retrieveResultsByWebsites();
       }
       // log
@@ -594,7 +623,8 @@ class Results extends React.Component {
       console.log(ls.get("favourite websites"));
       console.log("");
       console.log("Re-rendering search results based on filtered\n\n");
-      let googleShown = ls.get("show Google results");
+      let terms = queryTerms(currentInput);
+      let empty = this.emptyState(currentInput);
       // 渲染页面：左侧网站筛选，右侧状态行和搜索结果
       return (
         <div className="results-layout">
@@ -620,30 +650,30 @@ class Results extends React.Component {
                         key={result_individual.position}
                         number={index + 1}
                         result={result_individual}
+                        terms={terms}
                         isFavourite={this.isFavouriteWebsite}
                         onToggle={this.changeFavouriteButtonStatus}
                       />
                     )
                   )}
                 </ol>
+                {/* 注明搜索结果的来源 */}
+                <p className="source-credit">
+                  Results from{" "}
+                  <a href={TAVILY_URL} target="_blank" rel="noopener noreferrer">
+                    Tavily
+                  </a>
+                </p>
                 <Favourite />
               </React.Fragment>
             )}
-            {this.all_results_filtered[0] === undefined && (
+            {this.all_results_filtered[0] === undefined && empty && (
               <div className="empty">
                 <span className="empty__icon" aria-hidden="true">
                   <FunnelIcon size={22} />
                 </span>
-                <h3>
-                  {googleShown
-                    ? "No results for the selected filters"
-                    : "Google results are hidden"}
-                </h3>
-                <p>
-                  {googleShown
-                    ? "Tick a website in Websites Filter to show its results."
-                    : "Turn the Google source back on to show results."}
-                </p>
+                <h3>{empty.heading}</h3>
+                <p>{empty.body}</p>
               </div>
             )}
           </section>

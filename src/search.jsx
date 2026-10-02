@@ -13,7 +13,7 @@ import {
 } from "./icons";
 
 // 初始化 local storage
-ls.set("show Google results", true);
+ls.set("show web results", true);
 ls.set("load websites filter", true);
 ls.set("new input received", false);
 
@@ -133,14 +133,14 @@ class SearchInputAndButton extends React.Component {
 
 // 搜索引擎筛选
 class SearchEngineFilter extends React.Component {
-  // 发送显示或隐藏 Google 搜索结果请求
-  prepareFilterGoogleSearchResults() {
-    if (ls.get("show Google results") === true) {
-      ls.set("show Google results", false);
-      console.log("Google saerch results disabled\n\n");
+  // 发送显示或隐藏网页搜索结果请求
+  prepareFilterSourceResults() {
+    if (ls.get("show web results") === true) {
+      ls.set("show web results", false);
+      console.log("Web results disabled\n\n");
     } else {
-      ls.set("show Google results", true);
-      console.log("Google saerch results enabled\n\n");
+      ls.set("show web results", true);
+      console.log("Web results enabled\n\n");
     }
     if (this.props.location.pathname === "/results") {
       // 重新渲染结果页，按新的状态筛选搜索结果
@@ -151,34 +151,48 @@ class SearchEngineFilter extends React.Component {
     }
   }
 
+  /**
+   * 尚未接入的搜索引擎按钮。用 aria-disabled 而不是 disabled，按钮仍可获得焦点，
+   * 读屏软件会读出 unavailable；点击时什么也不做。
+   * @param {string} name 搜索引擎名称，例如 "Google"
+   * @returns {React.ReactElement} 按钮
+   */
+  unavailableSource(name) {
+    let noteId = name.toLowerCase() + "-note";
+    return (
+      <button
+        type="button"
+        className="source-toggle"
+        aria-disabled="true"
+        aria-describedby={noteId}
+        title={`${name} results aren’t available yet`}
+      >
+        <SlashCircleIcon size={14} />
+        {name}{" "}
+        <span id={noteId} className="source-toggle__note">
+          unavailable
+        </span>
+      </button>
+    );
+  }
+
   render() {
     // 按钮状态来自 local storage，切换后重新渲染时随之更新
-    let showGoogle = ls.get("show Google results") === true;
+    let showWeb = ls.get("show web results") === true;
     let toggles = (
       <React.Fragment>
         <button
           type="button"
           className="source-toggle"
-          aria-pressed={showGoogle}
-          onClick={() => this.prepareFilterGoogleSearchResults()}
+          aria-pressed={showWeb}
+          onClick={() => this.prepareFilterSourceResults()}
         >
-          {showGoogle && <CheckIcon size={14} />}
-          Google
+          {showWeb && <CheckIcon size={14} />}
+          Web
         </button>
-        {/* Bing 尚未接入：用 aria-disabled 而不是 disabled，按钮仍可获得焦点，读屏软件会读出 unavailable */}
-        <button
-          type="button"
-          className="source-toggle"
-          aria-disabled="true"
-          aria-describedby="bing-note"
-          title="Bing results aren’t available yet"
-        >
-          <SlashCircleIcon size={14} />
-          Bing{" "}
-          <span id="bing-note" className="source-toggle__note">
-            unavailable
-          </span>
-        </button>
+        {/* Google 和 Bing 自己的搜索结果需要付费服务，尚未接入 */}
+        {this.unavailableSource("Google")}
+        {this.unavailableSource("Bing")}
       </React.Fragment>
     );
     if (this.props.location.pathname === "/") {

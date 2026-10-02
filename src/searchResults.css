@@ -229,6 +229,20 @@
   color: var(--cs-muted);
 }
 
+/* 结果列表下方注明搜索结果的来源 */
+.source-credit {
+  margin: 12px 0 0;
+  padding-inline: 4px;
+  font: 400 12px/18px var(--cs-mono);
+  color: var(--cs-muted);
+}
+
+.source-credit a {
+  color: var(--cs-muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 /* ---------- 搜索结果 ------------------------------------------------- */
 
 .results {
