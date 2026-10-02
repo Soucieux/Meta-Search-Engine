@@ -7,8 +7,8 @@ that apply in both the canonical workspace and the standalone public repository.
 
 - Read the [project README](README.md) for supported behavior, setup, current state, architecture,
   and history.
-- Run commands from this project directory with Node.js 20.19 or newer, or 22.12 or newer, and npm,
-  after `npm install`.
+- Run commands from this project directory with Node.js 22.22 or newer and npm, after
+  `npm install`.
 - Keep each change focused and update the README when capabilities, setup, architecture,
   workflows, or history change.
 - Never commit `node_modules`, build output, coverage, logs, `.env` files, credentials, or API keys.
@@ -26,12 +26,12 @@ that apply in both the canonical workspace and the standalone public repository.
 
 ## Checks for a change
 
-- Run `npm run build` for any source, dependency, or configuration change; it must finish without
-  errors.
+- Run `npm test` and `npm run build` for any source, dependency, or configuration change; both
+  must finish without errors.
+- Add or update a test in `src/app.test.jsx` when behavior changes. The tests drive the app through
+  its router in a simulated browser page, as a user would.
 - Run `npm start` for interface changes, then check the home page, the results page, and My Pages
-  in a browser. A passing build does not establish visual correctness.
-- There are no automated tests yet. The 2021 Jest setup left with the old build, so tests need a
-  runner that works with Vite, such as Vitest.
+  in a browser. Passing tests and a build do not establish visual correctness.
 
 <a id="version-and-build-policy"></a>
 
