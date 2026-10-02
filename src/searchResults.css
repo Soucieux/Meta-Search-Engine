@@ -42,14 +42,15 @@
   justify-content: space-between;
 }
 
-/* 页面标题：项目图标和 "Custom Search" */
+/* 页面标题：项目图标和 "Custom Search"，与页头中的搜索框和按钮同高（40px）：
+   图标的上下边与它们的上下边对齐，文字在同一中线上 */
 .app-header__title {
   flex: 0 0 260px;
   display: flex;
   align-items: center;
   gap: 10px;
   box-sizing: border-box;
-  font: 700 22px/28px var(--cs-font);
+  font: 700 24px/40px var(--cs-font);
   letter-spacing: -0.02em;
   color: var(--cs-ink);
   text-decoration: none;
@@ -61,8 +62,8 @@
 
 .app-header__logo {
   flex: none;
-  width: 28px;
-  height: 28px;
+  width: 40px;
+  height: 40px;
 }
 
 /* 结果页：标题的左边与 "Websites Filter" 和勾选框对齐 */
