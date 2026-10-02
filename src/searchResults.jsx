@@ -223,6 +223,42 @@ class SearchResultsWebsitesFilter extends React.Component {
   }
 }
 
+/**
+ * 搜索结果的收藏按钮。按钮状态来自已收藏网页，点击时只重新渲染这个按钮，
+ * 不会重新渲染整个结果页。
+ */
+class FavouriteButton extends React.Component {
+  /**
+   * @param {{result: Object, isFavourite: function(Object): boolean, onToggle: function(Object): void}} props
+   *   result 为按钮所属的搜索结果；isFavourite 检查它是否已收藏；onToggle 收藏或取消收藏它
+   */
+  constructor(props) {
+    super(props);
+    this.state = { saved: props.isFavourite(props.result) };
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  /**
+   * 收藏或取消收藏这条搜索结果，并按已收藏网页更新按钮。
+   */
+  handleClick() {
+    this.props.onToggle(this.props.result);
+    this.setState({ saved: this.props.isFavourite(this.props.result) });
+  }
+
+  render() {
+    return (
+      <button
+        className="add-favourite-webpages"
+        style={this.state.saved ? { backgroundColor: "#dc3545" } : undefined}
+        onClick={this.handleClick}
+      >
+        {this.state.saved ? "Remove" : "Favourite"}
+      </button>
+    );
+  }
+}
+
 // 搜索结果
 class Results extends React.Component {
   // 筛选前的所搜搜索结果，保存为初始结果
@@ -378,7 +414,11 @@ class Results extends React.Component {
     }
   };
 
-  // 更新已收藏网页
+  /**
+   * 更新已收藏网页：加入一条搜索结果，或按链接移除它。
+   * @param {Object} resultToBeChecked 要加入或移除的搜索结果
+   * @param {boolean} add_result 为 true 时加入，为 false 时移除
+   */
   updateFavouriteWebsites(resultToBeChecked, add_result) {
     let updated_favourite = [];
     let current_favourite = ls.get("favourite websites");
@@ -391,13 +431,7 @@ class Results extends React.Component {
       }
     } else {
       for (let i = 0; i < current_favourite.length; i++) {
-        if (
-          current_favourite[i]["title"] !== resultToBeChecked["title"] &&
-          current_favourite[i]["link"] !== resultToBeChecked["link"] &&
-          current_favourite[i]["displayed_link"] !==
-            resultToBeChecked["displayed_link"] &&
-          current_favourite[i]["snippet"] !== resultToBeChecked["snippet"]
-        ) {
+        if (current_favourite[i]["link"] !== resultToBeChecked["link"]) {
           updated_favourite = updated_favourite.concat(current_favourite[i]);
         }
       }
@@ -405,31 +439,35 @@ class Results extends React.Component {
     ls.set("favourite websites", updated_favourite);
   }
 
-  // 改变网页收藏按钮显示文字
+  /**
+   * 检查一条搜索结果是否已收藏，以链接作为网页的标识。
+   * @param {Object} result 搜索结果
+   * @returns {boolean} 已收藏时为 true
+   */
+  isFavouriteWebsite(result) {
+    let current_favourite = ls.get("favourite websites");
+    return (
+      current_favourite !== null &&
+      current_favourite.some((favourite) => favourite.link === result.link)
+    );
+  }
+
+  /**
+   * 收藏或取消收藏一条搜索结果。是否已收藏由已收藏网页决定，
+   * 因此返回结果页或刷新后按钮仍然正确，也不会重复收藏同一网页。
+   * @param {Object} resultToBeChanged 被点击按钮所属的搜索结果
+   */
   changeFavouriteButtonStatus = (resultToBeChanged) => {
-    if (resultToBeChanged === undefined) {
-      return "Favourite";
+    if (this.isFavouriteWebsite(resultToBeChanged)) {
+      this.updateFavouriteWebsites(resultToBeChanged, false);
+      console.log("Favourite website removed\n\n");
     } else {
-      let position = resultToBeChanged.position;
-      let searchResultsDiv = document.getElementById("search-results");
-      let searchResultsButton = searchResultsDiv.getElementsByClassName(
-        "add-favourite-webpages"
-      );
-      if (searchResultsButton[position]["innerText"] === "Favourite") {
-        searchResultsButton[position]["innerText"] = "Remove";
-        searchResultsButton[position].style.backgroundColor = "#dc3545";
-        this.updateFavouriteWebsites(resultToBeChanged, true);
-        console.log("Favourite website added\n\n");
-      } else {
-        searchResultsButton[position]["innerText"] = "Favourite";
-        searchResultsButton[position].style.backgroundColor = "#f1f4f7";
-        this.updateFavouriteWebsites(resultToBeChanged, false);
-        console.log("Favourite website removed\n\n");
-      }
-      console.log("Data in favourite\n");
-      console.log(ls.get("favourite websites"));
-      console.log("");
+      this.updateFavouriteWebsites(resultToBeChanged, true);
+      console.log("Favourite website added\n\n");
     }
+    console.log("Data in favourite\n");
+    console.log(ls.get("favourite websites"));
+    console.log("");
   };
 
   render() {
@@ -516,14 +554,11 @@ class Results extends React.Component {
                       </div>
                       <div>{result_individual.snippet}</div>
                     </h6>
-                    <button
-                      className="add-favourite-webpages"
-                      onClick={() =>
-                        this.changeFavouriteButtonStatus(result_individual)
-                      }
-                    >
-                      {this.changeFavouriteButtonStatus()}
-                    </button>
+                    <FavouriteButton
+                      result={result_individual}
+                      isFavourite={this.isFavouriteWebsite}
+                      onToggle={this.changeFavouriteButtonStatus}
+                    />
                     <hr />
                   </div>
                 ))}

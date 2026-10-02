@@ -31,8 +31,14 @@ class SearchInputAndButton extends React.Component {
     }
   }
 
-  // 输入框清除按钮
-  handleResetButtonOnClick() {
+  /**
+   * 输入框清除按钮：清空输入框和已保存的输入值。
+   * 阻止表单重置，因为重置会把输入框恢复为初始值，也就是上一次搜索的内容。
+   * @param {Event} event 清除按钮的点击事件
+   */
+  handleResetButtonOnClick(event) {
+    event.preventDefault();
+    document.getElementById("search-input").value = "";
     ls.set("current input", "");
     document.getElementById("search-button-reset").style.visibility = "hidden";
   }
