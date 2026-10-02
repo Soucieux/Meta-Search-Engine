@@ -2,8 +2,9 @@ import React from "react";
 import ls from "local-storage";
 import "./searchResults.css";
 import Favourite from "./favourite";
-import "bootstrap/dist/css/bootstrap.css";
 import { Link, Navigate } from "react-router";
+import Address from "./address";
+import { CloseIcon, FunnelIcon, StarFillIcon, StarIcon } from "./icons";
 
 // 隐藏或显示搜索引擎结果
 var showGoogleResultsWebsitesFilter = true;
@@ -82,12 +83,6 @@ class SearchResultsWebsitesFilter extends React.Component {
   original_websites = [];
   // 当前搜索结果网站
   current_websites = [];
-  // 发送显示或隐藏特定网页请求
-  fireWebsitesFilterRequest(website) {
-    this.switchWebsitesButtonColor(website[1]);
-    // 来自于 Results.updateExcludeWebsitesList()
-    this.props.fireWebsitesFilterRequest(website[0]);
-  }
 
   // 将搜索网站 URL 转换成 array
   loadWebsitesFromResultsHelper(websites) {
@@ -142,16 +137,12 @@ class SearchResultsWebsitesFilter extends React.Component {
     ls.set("load websites filter", false);
   };
 
-  // 改变按钮颜色和勾选框状态
-  switchWebsitesButtonColor = (position, checkboxClicked) => {
-    let websitesDiv = document.getElementById("websites-filter");
-    let websitesFilterButtons = websitesDiv.getElementsByClassName(
-      "list-group-item"
-    );
-    let websiteFilterCheckboxes = websitesDiv.getElementsByClassName(
-      "checkbox"
-    );
-
+  /**
+   * 切换一个网站的勾选状态，并保存网站筛选。勾选框由这个状态渲染。
+   * 已保存的网站筛选仍记录 2021 年的按钮颜色，以保持 local storage 中的格式不变。
+   * @param {number} position 网站在网站筛选中的位置
+   */
+  switchWebsiteStatus = (position) => {
     // 代表此网站相关的搜索结果已显示
     let displayResult = "#f1f4f7";
     // 代表此网站相关的搜索结果未显示
@@ -169,56 +160,71 @@ class SearchResultsWebsitesFilter extends React.Component {
       this.current_websites[position][3] = true;
     }
 
-    if (checkboxClicked === undefined) {
-      if (websiteFilterCheckboxes[position].checked) {
-        websiteFilterCheckboxes[position].checked = false;
-      } else {
-        websiteFilterCheckboxes[position].checked = true;
-      }
-    }
-    websitesFilterButtons[
-      position
-    ].style.backgroundColor = this.current_websites[position][2];
     this.original_websites = this.current_websites;
     ls.set("current websites", this.current_websites);
     ls.set("original websites", this.original_websites);
   };
 
-  // 勾选框触发筛选网站
+  // 勾选框触发筛选网站（点击整行即点击勾选框）
   websitesFilterCheckboxClicked(website) {
-    this.switchWebsitesButtonColor(website[1], true);
+    this.switchWebsiteStatus(website[1]);
+    // 来自于 Results.updateExcludeWebsitesList()
     this.props.fireWebsitesFilterRequest(website[0]);
+  }
+
+  /**
+   * 统计每个网站在全部搜索结果中的结果数，用于网站筛选中的数字和比例条。
+   * @returns {Object<string, number>} 以网站为键的结果数
+   */
+  countResultsByWebsite() {
+    let counts = {};
+    this.props.searchResultsOriginal.forEach((result) => {
+      counts[result.domain] = (counts[result.domain] || 0) + 1;
+    });
+    return counts;
   }
 
   render() {
     this.loadWebsitesFromResults();
     console.log("Re-rendering websites filter\n\n");
+    let counts = this.countResultsByWebsite();
+    let maxCount = Math.max(1, ...Object.values(counts));
     return (
-      <div id="websites-filter">
-        <span id="websites-filter-title">Websites Filter</span>
+      <aside className="filter" aria-labelledby="websites-filter-title">
+        <h2 id="websites-filter-title" className="label-mono">
+          Websites Filter
+        </h2>
         {this.current_websites[0] === undefined ? (
-          <span id="websites-filter-secondary-title">No websites</span>
+          <div className="filter__empty">
+            <p>No websites</p>
+            <p>Websites appear here when there are results to filter.</p>
+          </div>
         ) : (
-          this.current_websites.map((website) => (
-            <React.Fragment key={website[1]}>
-              <input
-                type="checkbox"
-                className="checkbox"
-                checked={website[3]}
-                onChange={() => this.websitesFilterCheckboxClicked(website)}
-              />
-              <button
-                className="list-group-item button-default"
-                id="website-filter-individual"
-                onClick={() => this.fireWebsitesFilterRequest(website)}
-                style={{ background: website[2] }}
-              >
-                <span id="website-filter-individual-display">{website[0]}</span>
-              </button>
-            </React.Fragment>
-          ))
+          <ul className="filter__list">
+            {this.current_websites.map((website) => (
+              <li key={website[1]}>
+                <label className="filter__row">
+                  <input
+                    type="checkbox"
+                    checked={website[3]}
+                    onChange={() => this.websitesFilterCheckboxClicked(website)}
+                  />
+                  <span className="filter__name">{website[0]}</span>
+                  <span className="filter__count">
+                    {counts[website[0]]}
+                    <span className="visually-hidden"> results</span>
+                  </span>
+                  <span
+                    className="filter__bar"
+                    aria-hidden="true"
+                    style={{ "--pct": (counts[website[0]] / maxCount) * 100 + "%" }}
+                  />
+                </label>
+              </li>
+            ))}
+          </ul>
         )}
-      </div>
+      </aside>
     );
   }
 }
@@ -229,8 +235,9 @@ class SearchResultsWebsitesFilter extends React.Component {
  */
 class SearchResult extends React.Component {
   /**
-   * @param {{result: Object, isFavourite: function(Object): boolean, onToggle: function(Object): void}} props
-   *   result 为要显示的搜索结果；isFavourite 检查它是否已收藏；onToggle 收藏或取消收藏它
+   * @param {{result: Object, number: number, isFavourite: function(Object): boolean, onToggle: function(Object): void}} props
+   *   result 为要显示的搜索结果；number 为它在列表中的序号（从 1 开始）；
+   *   isFavourite 检查它是否已收藏；onToggle 收藏或取消收藏它
    */
   constructor(props) {
     super(props);
@@ -248,43 +255,55 @@ class SearchResult extends React.Component {
 
   render() {
     let result_individual = this.props.result;
+    // 收藏按钮以标题作为说明，读屏软件会读出它收藏的是哪一条结果
+    let titleId = "result-title-" + result_individual.position;
     return (
-      <div
-        id="search-result-individual"
-        className={this.state.saved ? "saved-search-result" : undefined}
-      >
-        <h6 className="card-body">
-          <Link
-            id="search-result-link"
-            target="_blank"
-            to={
-              "//" +
-              (result_individual.link[4] === "s"
-                ? // https
-                  result_individual.link.slice(8, result_individual.link.length)
-                : // http
-                  result_individual.link.slice(7, result_individual.link.length))
-            }
-          >
-            {result_individual.title}
-          </Link>
-          <div
-            id="search-result-display-link"
-            className="card-subtitle mb-2 text-muted"
-          >
-            {result_individual.displayed_link}
+      <li>
+        <article className={this.state.saved ? "result result--saved" : "result"}>
+          <span className="result__num" aria-hidden="true">
+            {String(this.props.number).padStart(2, "0")}
+          </span>
+          <div className="result__body">
+            <p className="result__address">
+              <span className="result__url">
+                <Address displayedLink={result_individual.displayed_link} />
+              </span>
+              {this.state.saved && (
+                <span className="saved-tag">
+                  <StarFillIcon size={11} />
+                  Saved
+                </span>
+              )}
+            </p>
+            <h3 className="result__title">
+              <Link
+                id={titleId}
+                target="_blank"
+                to={
+                  "//" +
+                  (result_individual.link[4] === "s"
+                    ? // https
+                      result_individual.link.slice(8, result_individual.link.length)
+                    : // http
+                      result_individual.link.slice(7, result_individual.link.length))
+                }
+              >
+                {result_individual.title}
+              </Link>
+            </h3>
+            <p className="result__snippet">{result_individual.snippet}</p>
           </div>
-          <div>{result_individual.snippet}</div>
-        </h6>
-        <button
-          className="add-favourite-webpages"
-          style={this.state.saved ? { backgroundColor: "#dc3545" } : undefined}
-          onClick={this.handleClick}
-        >
-          {this.state.saved ? "Remove" : "Favourite"}
-        </button>
-        <hr />
-      </div>
+          <button
+            type="button"
+            className={this.state.saved ? "btn-remove" : "btn-favourite"}
+            aria-describedby={titleId}
+            onClick={this.handleClick}
+          >
+            {this.state.saved ? <CloseIcon /> : <StarIcon />}
+            {this.state.saved ? "Remove" : "Favourite"}
+          </button>
+        </article>
+      </li>
     );
   }
 }
@@ -512,6 +531,29 @@ class Results extends React.Component {
       .concat(results.filter((result) => !this.isFavouriteWebsite(result)));
   }
 
+  /**
+   * 结果列表上方的状态行：显示了多少条结果，隐藏了几个网站，或 Google 结果已隐藏。
+   * @param {string} query 当前的搜索内容
+   * @returns {string} 状态行文字
+   */
+  statusText(query) {
+    if (!ls.get("show Google results")) {
+      return "Google results hidden";
+    }
+    let total = this.all_results_original.length;
+    let shown = this.all_results_filtered.length;
+    let hiddenWebsites = ls.get("exclude websites").length;
+    if (hiddenWebsites === 0) {
+      return `${total} results · “${query}”`;
+    }
+    if (shown === 0) {
+      return `0 of ${total} results · all websites hidden`;
+    }
+    return `${shown} of ${total} results · ${hiddenWebsites} website${
+      hiddenWebsites === 1 ? "" : "s"
+    } hidden`;
+  }
+
   render() {
     // 检测数据提取是否存在错误
     this.retrieveResultsError();
@@ -548,38 +590,60 @@ class Results extends React.Component {
       console.log(ls.get("favourite websites"));
       console.log("");
       console.log("Re-rendering search results based on filtered\n\n");
-      // 渲染页面
+      let googleShown = ls.get("show Google results");
+      // 渲染页面：左侧网站筛选，右侧状态行和搜索结果
       return (
-        <React.Fragment>
-          <React.Fragment>
-            <SearchResultsWebsitesFilter
-              searchResultsFiltered={this.all_results_filtered}
-              searchResultsOriginal={this.all_results_original}
-              fireWebsitesFilterRequest={this.updateExcludeWebsitesList}
-            />
-          </React.Fragment>
-          {this.all_results_filtered[0] !== undefined && (
-            <React.Fragment>
-              {/* 显示搜索结果 */}
-              <div id="search-results">
-                {this.orderFavouritesFirst(this.all_results_filtered).map(
-                  (result_individual) => (
-                    <SearchResult
-                      key={result_individual.position}
-                      result={result_individual}
-                      isFavourite={this.isFavouriteWebsite}
-                      onToggle={this.changeFavouriteButtonStatus}
-                    />
-                  )
-                )}
+        <div className="results-layout">
+          <SearchResultsWebsitesFilter
+            searchResultsFiltered={this.all_results_filtered}
+            searchResultsOriginal={this.all_results_original}
+            fireWebsitesFilterRequest={this.updateExcludeWebsitesList}
+          />
+          <section aria-labelledby="results-label">
+            <h2 id="results-label" className="visually-hidden">
+              Results
+            </h2>
+            <p className="status" role="status">
+              {this.statusText(currentInput)}
+            </p>
+            {this.all_results_filtered[0] !== undefined && (
+              <React.Fragment>
+                {/* 显示搜索结果 */}
+                <ol className="results">
+                  {this.orderFavouritesFirst(this.all_results_filtered).map(
+                    (result_individual, index) => (
+                      <SearchResult
+                        key={result_individual.position}
+                        number={index + 1}
+                        result={result_individual}
+                        isFavourite={this.isFavouriteWebsite}
+                        onToggle={this.changeFavouriteButtonStatus}
+                      />
+                    )
+                  )}
+                </ol>
+                <Favourite />
+              </React.Fragment>
+            )}
+            {this.all_results_filtered[0] === undefined && (
+              <div className="empty">
+                <span className="empty__icon" aria-hidden="true">
+                  <FunnelIcon size={22} />
+                </span>
+                <h3>
+                  {googleShown
+                    ? "No results for the selected filters"
+                    : "Google results are hidden"}
+                </h3>
+                <p>
+                  {googleShown
+                    ? "Tick a website in Websites Filter to show its results."
+                    : "Turn the Google source back on to show results."}
+                </p>
               </div>
-              <Favourite />
-            </React.Fragment>
-          )}
-          {this.all_results_filtered[0] === undefined && (
-            <span id="no-results">No results for the selected filters</span>
-          )}
-        </React.Fragment>
+            )}
+          </section>
+        </div>
       );
     }
   }
