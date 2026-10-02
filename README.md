@@ -336,8 +336,8 @@ One record per change; complete details and evidence are below. Older work dates
   [CONTRIBUTING.md](CONTRIBUTING.md) states how changes are made and checked.
 - **Unchanged:** the application source and its dependencies, so the build failure that the
   [webpack 5 upgrade record](#webpack-5-upgrade) describes remained.
-- **Status:** delivered uncommitted on 2026-10-01, then committed the same day as `e94fd7b` (the
-  import with its history), `cebf8ba` and `40db4af`.
+- **Status:** delivered uncommitted on 2026-10-01, then committed the same day as `a5bb3d1` (the
+  import with its history), `54f6df9` and `1cc222a`.
 
 [Back to change history](#change-history)
 
