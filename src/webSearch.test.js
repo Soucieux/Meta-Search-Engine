@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { highlightSegments, queryTerms, searchWeb } from "./webSearch";
+import { highlighter, queryTerms, searchWeb } from "./webSearch";
 
 // 测试用的 Tavily 结果
 const WEATHER = { title: "Weather today", url: "https://www.weather.com/today", content: "Sunny skies" };
@@ -69,6 +69,14 @@ describe("searchWeb", () => {
     });
   });
 
+  it("names a result after its website when Tavily gives it no title", async () => {
+    vi.stubGlobal("fetch", fakeFetch({ live: liveAnswer([{ ...DINER, title: "" }]) }));
+
+    let [result] = (await searchWeb("burger")).results;
+
+    expect(result.title).toBe("www.diner.com");
+  });
+
   it("starts the snippet shortly before a search word that comes late in a long excerpt", async () => {
     let content = "Filler words come first. ".repeat(12) + "The burger arrives late in this excerpt.";
     vi.stubGlobal("fetch", fakeFetch({ live: liveAnswer([{ ...RECIPES, content }]) }));
@@ -110,9 +118,9 @@ describe("queryTerms", () => {
   });
 });
 
-describe("highlightSegments", () => {
+describe("highlighter", () => {
   it("bolds every whole word that starts with a search term, in any case", () => {
-    expect(highlightSegments("Burgers and burger buns", ["burger"])).toEqual([
+    expect(highlighter(["burger"])("Burgers and burger buns")).toEqual([
       { text: "Burgers", bold: true },
       { text: " and ", bold: false },
       { text: "burger", bold: true },
@@ -120,16 +128,33 @@ describe("highlightSegments", () => {
     ]);
   });
 
-  it("leaves words that only contain a term inside them plain", () => {
-    expect(highlightSegments("hamburger", ["burger"])).toEqual([
-      { text: "hamburger", bold: false },
+  it("bolds accented and Chinese search words, which have no ASCII word boundary", () => {
+    expect(highlighter(["école"])("Une école de pizza")).toEqual([
+      { text: "Une ", bold: false },
+      { text: "école", bold: true },
+      { text: " de pizza", bold: false },
+    ]);
+    expect(highlighter(["北京"])("去 北京 吃饭")).toEqual([
+      { text: "去 ", bold: false },
+      { text: "北京", bold: true },
+      { text: " 吃饭", bold: false },
     ]);
   });
 
+  it("leaves words that only contain a term inside them plain", () => {
+    expect(highlighter(["burger"])("hamburger")).toEqual([{ text: "hamburger", bold: false }]);
+  });
+
   it("treats regular-expression characters in terms as plain text", () => {
-    expect(highlightSegments("abc and a.c", ["a.c"])).toEqual([
+    expect(highlighter(["a.c"])("abc and a.c")).toEqual([
       { text: "abc and ", bold: false },
       { text: "a.c", bold: true },
     ]);
+  });
+
+  it("returns the whole snippet plain when there are no search terms", () => {
+    let highlight = highlighter([]);
+
+    expect(highlight("what is the")).toEqual([{ text: "what is the", bold: false }]);
   });
 });

@@ -1,97 +1,80 @@
 import "./search.css";
 import React from "react";
-import ls from "local-storage";
 import SearchResults from "./searchResults";
-import { Link } from "react-router";
+import { APP_TITLE, AppHeader, MyPagesLink } from "./header";
+import { CheckIcon, CloseIcon, InfoCircleIcon, SearchIcon, SlashCircleIcon } from "./icons";
+import { RESULTS_PATH } from "./routes";
 import {
-  CheckIcon,
-  CloseIcon,
-  InfoCircleIcon,
-  PersonCircleIcon,
-  SearchIcon,
-  SlashCircleIcon,
-} from "./icons";
+  CURRENT_INPUT,
+  EXCLUDED_WEBSITES,
+  PREVIOUS_INPUT,
+  SHOW_WEB_RESULTS,
+  read,
+  remove,
+  write,
+} from "./storage";
 
-// 初始化 local storage
-ls.set("show web results", true);
-ls.set("load websites filter", true);
-ls.set("new input received", false);
+// 首次打开时显示 Web 来源；之后的切换存在 local storage 中，刷新后保持
+if (read(SHOW_WEB_RESULTS) === null) {
+  write(SHOW_WEB_RESULTS, true);
+}
 
-// 搜索框，搜索按钮，搜索清除按钮
+/**
+ * 搜索框、搜索按钮和搜索框中的清除按钮。输入的内容随时保存，返回结果页或刷新时仍然显示。
+ * props：isHome 为 true 时是主页白色面板中的搜索框，否则是结果页页头中的；navigate 为跳转函数。
+ */
 class SearchInputAndButton extends React.Component {
+  /**
+   * @param {{isHome: boolean, navigate: function(string): void}} props 见类的说明
+   */
   constructor(props) {
     super(props);
-    this.handleSearchInputChange = this.handleSearchInputChange.bind(this);
-    this.handleKeyPress = this.handleKeyPress.bind(this);
-    this.handleSubmitButtonOnClick = this.handleSubmitButtonOnClick.bind(this);
-    this.handleResetButtonOnClick = this.handleResetButtonOnClick.bind(this);
-  }
-
-  // 实时监控和提取输入框内容并储存至 local storage
-  handleSearchInputChange(event) {
-    ls.set("current input", event.target.value);
-    let visible = document.getElementById("search-button-reset").style;
-    if (event.target.value === "") {
-      visible.visibility = "hidden";
-    } else {
-      visible.visibility = "visible";
+    // 每次进入主页时搜索框为空，已保存的输入值和上一次的搜索内容都清除
+    if (props.isHome) {
+      remove(CURRENT_INPUT);
+      remove(PREVIOUS_INPUT);
     }
+    this.state = { value: props.isHome ? "" : read(CURRENT_INPUT) || "" };
   }
 
   /**
-   * 输入框清除按钮：清空输入框和已保存的输入值。
-   * 阻止表单重置，因为重置会把输入框恢复为初始值，也就是上一次搜索的内容。
-   * @param {Event} event 清除按钮的点击事件
+   * 输入时保存内容；有内容时显示清除按钮。
+   * @param {React.ChangeEvent<HTMLInputElement>} event 输入事件
    */
-  handleResetButtonOnClick(event) {
-    event.preventDefault();
-    document.getElementById("search-input").value = "";
-    ls.set("current input", "");
-    document.getElementById("search-button-reset").style.visibility = "hidden";
-  }
+  #handleChange = (event) => {
+    write(CURRENT_INPUT, event.target.value);
+    this.setState({ value: event.target.value });
+  };
 
-  // 输入框提交按钮
-  handleSubmitButtonOnClick(event) {
-    // 禁止按钮默认自动刷新整个页面
-    event.preventDefault();
-    if (this.props.location === undefined) {
-      // 检测 this.props 是否有值
-      throw new Error("this.props.location is undefined!");
-    } else if (this.props.location.pathname === "/") {
-      // 转至搜索结果页面
-      this.props.navigate("/results");
-      console.log("Switch to search results page\n\n");
-    } else if (this.props.location.pathname === "/results") {
-      // 已在搜索结果页面
-      this.props.navigate("/results");
-      console.log("Already on search results page\n\n");
-    } else {
-      throw new Error(
-        "Cannot find the correct url to show results.\nThis should never happen."
-      );
-    }
-    ls.set("new input received", true);
-    console.log("Input is: " + ls.get("current input") + " \n\n");
-  }
+  /**
+   * 清除按钮：清空搜索框和已保存的输入值。
+   */
+  #handleClear = () => {
+    write(CURRENT_INPUT, "");
+    this.setState({ value: "" });
+  };
 
-  // 回车键快捷搜索
-  handleKeyPress(event) {
-    if (event.key === "Enter") {
-      this.handleSubmitButtonOnClick(event);
-    }
-  }
+  /**
+   * 提交搜索（点击搜索按钮，或在搜索框中按回车）：重设网站筛选，忘记上一次的搜索内容，
+   * 转至结果页；结果页读取已保存的输入值并搜索，再次提交同样的内容也会重新搜索。
+   * @param {React.FormEvent<HTMLFormElement>} event 表单提交事件；阻止浏览器刷新页面
+   */
+  #handleSubmit = (event) => {
+    event.preventDefault();
+    write(EXCLUDED_WEBSITES, []);
+    remove(PREVIOUS_INPUT);
+    this.props.navigate(RESULTS_PATH);
+  };
 
   render() {
-    let url = this.props.location.pathname;
-    // 每次进入 main page 时，清除已保存的输入值
-    if (url === "/") {
-      ls.remove("current input");
-      ls.remove("previous input");
-    }
-    // 主页的搜索框在白色面板（console）中，结果页的搜索框在页头
-    let isHome = url === "/";
+    let { isHome } = this.props;
+    let { value } = this.state;
     return (
-      <form role="search" className={isHome ? "console__search" : "search-form"}>
+      <form
+        role="search"
+        className={isHome ? "console__search" : "search-form"}
+        onSubmit={this.#handleSubmit}
+      >
         {isHome && <SearchIcon size={20} />}
         <label htmlFor="search-input" className="visually-hidden">
           Search the web
@@ -103,26 +86,21 @@ class SearchInputAndButton extends React.Component {
             className={isHome ? undefined : "search-input"}
             placeholder={isHome ? "Search the web" : undefined}
             autoComplete="off"
-            // 确保返回或刷新页面时，输入值仍显示
-            defaultValue={url === "/results" ? ls.get("current input") : ""}
-            onChange={this.handleSearchInputChange}
-            onKeyPress={this.handleKeyPress}
+            value={value}
+            onChange={this.#handleChange}
           />
-          <button
-            type="reset"
-            id="search-button-reset"
-            aria-label="Clear the search box"
-            onClick={this.handleResetButtonOnClick}
-          >
-            <CloseIcon size={14} />
-          </button>
+          {value && (
+            <button
+              type="button"
+              className="search-clear"
+              aria-label="Clear the search box"
+              onClick={this.#handleClear}
+            >
+              <CloseIcon size={14} />
+            </button>
+          )}
         </span>
-        <button
-          type="submit"
-          className="btn-search"
-          id="search-button-submit"
-          onClick={this.handleSubmitButtonOnClick}
-        >
+        <button type="submit" className="btn-search btn-red">
           {!isHome && <SearchIcon />}
           <span>Search</span>
         </button>
@@ -131,33 +109,29 @@ class SearchInputAndButton extends React.Component {
   }
 }
 
-// 搜索引擎筛选
+/**
+ * 搜索来源按钮：Web 可以切换显示或隐藏，Google 和 Bing 尚未接入。按钮状态来自 local storage，
+ * 切换后由父页面重新渲染。
+ * props：isHome 为 true 时在主页面板中，带 "Sources" 标签；onToggle 在 Web 切换之后调用，
+ * 父页面借此重新渲染。
+ */
 class SearchEngineFilter extends React.Component {
-  // 发送显示或隐藏网页搜索结果请求
-  prepareFilterSourceResults() {
-    if (ls.get("show web results") === true) {
-      ls.set("show web results", false);
-      console.log("Web results disabled\n\n");
-    } else {
-      ls.set("show web results", true);
-      console.log("Web results enabled\n\n");
-    }
-    if (this.props.location.pathname === "/results") {
-      // 重新渲染结果页，按新的状态筛选搜索结果
-      this.props.navigate("/results");
-    } else {
-      // 主页没有搜索结果，只更新按钮。跳转到结果页时，没有搜索内容会立即返回主页，使页面闪烁
-      this.forceUpdate();
-    }
-  }
+  /**
+   * 显示或隐藏 Web 来源的结果。
+   */
+  #toggleWeb = () => {
+    write(SHOW_WEB_RESULTS, !read(SHOW_WEB_RESULTS));
+    this.props.onToggle();
+  };
 
   /**
    * 尚未接入的搜索引擎按钮。用 aria-disabled 而不是 disabled，按钮仍可获得焦点，
-   * 读屏软件会读出 unavailable；点击时什么也不做。
+   * 读屏软件会读出 unavailable；点击时什么也不做。页头空间有限，那里只显示虚线边框和斜杠图标，
+   * "unavailable" 字样对读屏软件仍然可读，鼠标悬停时按钮的提示也会说明。
    * @param {string} name 搜索引擎名称，例如 "Google"
    * @returns {React.ReactElement} 按钮
    */
-  unavailableSource(name) {
+  #unavailableSource(name) {
     let noteId = name.toLowerCase() + "-note";
     return (
       <button
@@ -169,7 +143,12 @@ class SearchEngineFilter extends React.Component {
       >
         <SlashCircleIcon size={14} />
         {name}{" "}
-        <span id={noteId} className="source-toggle__note">
+        <span
+          id={noteId}
+          className={
+            this.props.isHome ? "source-toggle__note" : "source-toggle__note visually-hidden"
+          }
+        >
           unavailable
         </span>
       </button>
@@ -177,31 +156,26 @@ class SearchEngineFilter extends React.Component {
   }
 
   render() {
-    // 按钮状态来自 local storage，切换后重新渲染时随之更新
-    let showWeb = ls.get("show web results") === true;
+    let showWeb = read(SHOW_WEB_RESULTS) === true;
     let toggles = (
       <React.Fragment>
         <button
           type="button"
           className="source-toggle"
           aria-pressed={showWeb}
-          onClick={() => this.prepareFilterSourceResults()}
+          onClick={this.#toggleWeb}
         >
           {showWeb && <CheckIcon size={14} />}
           Web
         </button>
         {/* Google 和 Bing 自己的搜索结果需要付费服务，尚未接入 */}
-        {this.unavailableSource("Google")}
-        {this.unavailableSource("Bing")}
+        {this.#unavailableSource("Google")}
+        {this.#unavailableSource("Bing")}
       </React.Fragment>
     );
-    if (this.props.location.pathname === "/") {
+    if (this.props.isHome) {
       return (
-        <div
-          role="group"
-          aria-labelledby="sources-label"
-          className="console__sources"
-        >
+        <div role="group" aria-labelledby="sources-label" className="console__sources">
           <span id="sources-label" className="label-mono">
             Sources
           </span>
@@ -217,51 +191,27 @@ class SearchEngineFilter extends React.Component {
   }
 }
 
-// 搜索页面
-class Search extends React.Component {
+/**
+ * 主页：背景图片（search.css）上的标题和搜索面板，右上角 My Pages，右下角图片来源。
+ * props：navigate 为路由的跳转函数。
+ */
+class Home extends React.Component {
+  /**
+   * 重新渲染主页，使来源按钮显示切换后的状态。
+   */
+  #redraw = () => {
+    this.forceUpdate();
+  };
+
   render() {
-    if (ls.get("new input received")) {
-      ls.set("current websites", null);
-      ls.set("original websites", null);
-      ls.set("exclude websites", []);
-      ls.set("new input received", false);
-    }
-    if (this.props.location.pathname === "/results") {
-      // 结果页：页头（标题，搜索框，搜索引擎，My Pages），其下为网站筛选和搜索结果
-      return (
-        <div className="results-page">
-          <header className="app-header">
-            <div className="app-header__inner">
-              <Link to="/" className="app-header__title">
-                <img src="/logo.png" alt="" className="app-header__logo" />
-                Custom Search
-              </Link>
-              <div className="app-header__controls">
-                <SearchInputAndButton {...this.props} />
-                <SearchEngineFilter {...this.props} />
-              </div>
-              <Link to="/favourite" className="mypages-link">
-                <PersonCircleIcon size={18} />
-                My Pages
-              </Link>
-            </div>
-          </header>
-          <SearchResults {...this.props} />
-        </div>
-      );
-    }
-    // 主页：背景图片（search.css），标题和搜索面板，右上角 My Pages，右下角图片来源
     return (
       <main className="home">
-        <Link to="/favourite" className="photo-chip home__mypages">
-          <PersonCircleIcon size={18} />
-          My Pages
-        </Link>
+        <MyPagesLink className="photo-chip home__mypages" />
         <div className="home__inner">
-          <h1 className="home__title">Custom Search</h1>
+          <h1 className="home__title">{APP_TITLE}</h1>
           <div className="console">
-            <SearchInputAndButton {...this.props} />
-            <SearchEngineFilter {...this.props} />
+            <SearchInputAndButton isHome navigate={this.props.navigate} />
+            <SearchEngineFilter isHome onToggle={this.#redraw} />
           </div>
         </div>
         <p className="photo-chip credit">
@@ -269,6 +219,7 @@ class Search extends React.Component {
           Image provided by{" "}
           <a
             href="https://peapix.com/bing/34161"
+            className="link-underline"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -280,4 +231,31 @@ class Search extends React.Component {
   }
 }
 
-export default Search;
+/**
+ * 结果页：页头（标题，搜索框，来源按钮，My Pages），其下为网站筛选和搜索结果。
+ * props：navigate 为路由的跳转函数。
+ */
+class ResultsPage extends React.Component {
+  /**
+   * 重新渲染结果页，按切换后的来源状态显示结果和网站筛选。
+   */
+  #redraw = () => {
+    this.forceUpdate();
+  };
+
+  render() {
+    return (
+      <div className="page results-page">
+        <AppHeader>
+          <div className="app-header__controls">
+            <SearchInputAndButton isHome={false} navigate={this.props.navigate} />
+            <SearchEngineFilter isHome={false} onToggle={this.#redraw} />
+          </div>
+        </AppHeader>
+        <SearchResults />
+      </div>
+    );
+  }
+}
+
+export { Home, ResultsPage };

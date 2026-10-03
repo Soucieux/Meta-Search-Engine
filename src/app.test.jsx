@@ -1,7 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
-import ls from "local-storage";
+import {
+  CURRENT_INPUT,
+  EXCLUDED_WEBSITES,
+  FAVOURITE_WEBSITES,
+  PREVIOUS_INPUT,
+  SHOW_WEB_RESULTS,
+  read,
+} from "./storage";
 
 // 测试用的 Tavily 结果：4 个网站各 2 个网页，按 Tavily 返回的顺序排列
 const RESULTS = [
@@ -16,6 +23,7 @@ const RESULTS = [
 ];
 const TITLES = RESULTS.map((r) => r.title);
 const [CLASSIC, , COUNCIL, TEAM, , SLEEP] = TITLES;
+// 每个打开新标签页的链接都带有这段只给读屏软件的说明
 const NEW_TAB_NOTE = " (opens in a new tab)";
 
 /**
@@ -46,8 +54,8 @@ function fakeFetch({ live = "ok", results = RESULTS } = {}) {
 }
 
 /**
- * 重新载入应用并在指定地址打开。应用模块载入时会初始化 local storage 和模块内的筛选状态，
- * 因此每次打开前都重新载入，与刷新网页相同：已存入 local storage 的数据保留。
+ * 重新载入应用并在指定地址打开。每次打开前都重新载入模块，与刷新网页相同：
+ * 已存入 local storage 的数据保留，模块载入时的初始化重新执行。
  * @param {string} path 打开的地址，例如 "/" 或 "/results"
  */
 async function openApp(path) {
@@ -84,12 +92,11 @@ async function searchFinished() {
 }
 
 /**
- * @returns {string[]} 结果页上按显示顺序排列的搜索结果标题
+ * @returns {string[]} 结果页上按显示顺序排列的搜索结果标题，不含新标签页的说明
  */
 function resultTitles() {
-  return Array.from(
-    document.querySelectorAll(".result__title a"),
-    (link) => link.textContent
+  return Array.from(document.querySelectorAll(".result__title a"), (link) =>
+    link.textContent.replace(NEW_TAB_NOTE, "").trim()
   );
 }
 
@@ -116,6 +123,13 @@ function statusText() {
   return screen.getByRole("status").textContent;
 }
 
+/**
+ * @returns {HTMLElement | null} 搜索框中的清除按钮；搜索框为空时没有
+ */
+function clearButton() {
+  return screen.queryByRole("button", { name: "Clear the search box" });
+}
+
 /** 从结果页点击 My Pages，再点击 Go back 返回结果页 */
 function visitMyPagesAndGoBack() {
   fireEvent.click(screen.getByRole("link", { name: "My Pages" }));
@@ -125,14 +139,11 @@ function visitMyPagesAndGoBack() {
 beforeEach(() => {
   localStorage.clear();
   vi.stubGlobal("fetch", fakeFetch());
-  // 应用在每次渲染时都输出调试信息，测试中不显示
-  vi.spyOn(console, "log").mockImplementation(() => {});
 });
 
 afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();
-  vi.restoreAllMocks();
 });
 
 describe("search", () => {
@@ -145,24 +156,43 @@ describe("search", () => {
     expect(resultTitles()).toEqual(TITLES);
     expect(document.querySelector(".result__num").textContent).toBe("01");
     expect(statusText()).toBe("8 results · “burgers”");
-    expect(ls.get("previous input")).toBe("burgers");
+    expect(read(PREVIOUS_INPUT)).toBe("burgers");
     expect(screen.getByRole("link", { name: "Tavily" }).getAttribute("href")).toBe(
       "https://tavily.com"
     );
   });
 
-  it("searches when Enter is pressed", async () => {
+  it("searches when the search box's form is submitted, as Enter does in a browser", async () => {
     await openApp("/");
     typeQuery("burgers");
 
-    fireEvent.keyPress(screen.getByRole("textbox"), {
-      key: "Enter",
-      code: "Enter",
-      charCode: 13,
-    });
+    fireEvent.submit(screen.getByRole("search"));
     await searchFinished();
 
     expect(resultTitles()[0]).toBe(CLASSIC);
+  });
+
+  it("searches again when the same query is submitted a second time", async () => {
+    await openApp("/");
+    await search("burgers");
+    expect(fetch).toHaveBeenCalledTimes(1);
+
+    await search("burgers");
+
+    expect(fetch).toHaveBeenCalledTimes(2);
+    expect(resultTitles()).toEqual(TITLES);
+  });
+
+  it("searches the typed query when the results page is opened directly", async () => {
+    await openApp("/");
+    typeQuery("burgers");
+    cleanup();
+
+    await openApp("/results");
+    await searchFinished();
+
+    expect(resultTitles()).toEqual(TITLES);
+    expect(statusText()).toBe("8 results · “burgers”");
   });
 
   it("links each result to its page in a new tab", async () => {
@@ -171,8 +201,10 @@ describe("search", () => {
     await search("burgers");
 
     const link = screen.getByText(CLASSIC);
-    expect(link.getAttribute("href")).toBe("//www.burgerplace.com/menu/classic-burgers");
+    expect(link.getAttribute("href")).toBe("https://www.burgerplace.com/menu/classic-burgers");
     expect(link.getAttribute("target")).toBe("_blank");
+    expect(link.getAttribute("rel")).toBe("noopener noreferrer");
+    expect(screen.getByRole("link", { name: CLASSIC + NEW_TAB_NOTE })).toBe(link);
   });
 
   it("bolds the search words in each snippet", async () => {
@@ -218,23 +250,23 @@ describe("search", () => {
 
     expect(screen.queryByText("Websites Filter")).toBeNull();
     expect(
-      screen.getByRole("heading", { level: 1, name: "Custom Search" })
+      screen.getByRole("heading", { level: 1, name: "MetaData Search Engine" })
     ).not.toBeNull();
   });
 });
 
 describe("clear button", () => {
-  it("empties the search box and the saved query", async () => {
+  it("appears once something is typed and empties the search box and the saved query", async () => {
     await openApp("/");
+    expect(clearButton()).toBeNull();
     typeQuery("burgers");
-    const clearButton = screen.getByRole("button", { name: "Clear the search box" });
-    expect(clearButton.style.visibility).toBe("visible");
+    expect(clearButton()).not.toBeNull();
 
-    fireEvent.click(clearButton);
+    fireEvent.click(clearButton());
 
     expect(screen.getByRole("textbox").value).toBe("");
-    expect(ls.get("current input")).toBe("");
-    expect(clearButton.style.visibility).toBe("hidden");
+    expect(read(CURRENT_INPUT)).toBe("");
+    expect(clearButton()).toBeNull();
   });
 });
 
@@ -271,13 +303,13 @@ describe("websites filter", () => {
 
     expect(resultTitles()).toHaveLength(6);
     expect(resultTitles()).not.toContain(COUNCIL);
-    expect(ls.get("exclude websites")).toEqual(["www.citynews.com"]);
+    expect(read(EXCLUDED_WEBSITES)).toEqual(["www.citynews.com"]);
     expect(statusText()).toBe("6 of 8 results · 1 website hidden");
 
     fireEvent.click(siteName());
 
     expect(resultTitles()).toHaveLength(8);
-    expect(ls.get("exclude websites")).toEqual([]);
+    expect(read(EXCLUDED_WEBSITES)).toEqual([]);
   });
 
   it("hides and shows a site's results when its tick box is clicked", async () => {
@@ -308,6 +340,17 @@ describe("websites filter", () => {
     expect(screen.getByText("No results for the selected filters")).not.toBeNull();
     expect(statusText()).toBe("0 of 8 results · all websites hidden");
   });
+
+  it("starts afresh for a new search", async () => {
+    await openApp("/");
+    await search("burgers");
+    fireEvent.click(websiteCheckbox("www.citynews.com"));
+
+    await search("pizza");
+
+    expect(read(EXCLUDED_WEBSITES)).toEqual([]);
+    expect(resultTitles()).toHaveLength(8);
+  });
 });
 
 describe("sources", () => {
@@ -330,7 +373,7 @@ describe("sources", () => {
     expect(resultTitles()).toHaveLength(8);
   });
 
-  it("switches the web source on the home page without leaving it", async () => {
+  it("switches the web source on the home page without leaving it or losing the typed query", async () => {
     await openApp("/");
     typeQuery("burgers");
 
@@ -339,6 +382,7 @@ describe("sources", () => {
     expect(screen.getByRole("button", { name: "Web" }).getAttribute("aria-pressed")).toBe("false");
     expect(screen.queryByText("Websites Filter")).toBeNull();
     expect(screen.getByRole("textbox").value).toBe("burgers");
+    expect(read(CURRENT_INPUT)).toBe("burgers");
   });
 
   it("keeps the web results hidden for a search made after turning it off", async () => {
@@ -375,12 +419,12 @@ describe("favourites", () => {
     fireEvent.click(button);
 
     expect(button.textContent).toBe("Remove");
-    expect(ls.get("favourite websites").map((saved) => saved.title)).toEqual([CLASSIC]);
+    expect(read(FAVOURITE_WEBSITES).map((saved) => saved.title)).toEqual([CLASSIC]);
 
     fireEvent.click(button);
 
     expect(button.textContent).toBe("Favourite");
-    expect(ls.get("favourite websites")).toEqual([]);
+    expect(read(FAVOURITE_WEBSITES)).toEqual([]);
   });
 
   it("lists saved results in My Pages and keeps them saved after going back", async () => {
@@ -391,7 +435,8 @@ describe("favourites", () => {
     fireEvent.click(screen.getByRole("link", { name: "My Pages" }));
 
     expect(screen.getByRole("heading", { level: 1, name: "My Pages" })).not.toBeNull();
-    expect(screen.getByRole("link", { name: CLASSIC + NEW_TAB_NOTE })).not.toBeNull();
+    const saved = screen.getByRole("link", { name: CLASSIC + NEW_TAB_NOTE });
+    expect(saved.getAttribute("href")).toBe("https://www.burgerplace.com/menu/classic-burgers");
 
     fireEvent.click(screen.getByRole("link", { name: "Go back" }));
     const button = favouriteButtonOf(CLASSIC);
@@ -399,7 +444,7 @@ describe("favourites", () => {
 
     fireEvent.click(button);
 
-    expect(ls.get("favourite websites")).toEqual([]);
+    expect(read(FAVOURITE_WEBSITES)).toEqual([]);
   });
 });
 
@@ -460,7 +505,7 @@ describe("My Pages", () => {
     fireEvent.click(within(firstCard).getByRole("button", { name: "Remove" }));
 
     expect(statusText()).toBe("1 saved page");
-    expect(ls.get("favourite websites").map((saved) => saved.title)).toEqual([SLEEP]);
+    expect(read(FAVOURITE_WEBSITES).map((saved) => saved.title)).toEqual([SLEEP]);
 
     fireEvent.click(screen.getByRole("button", { name: "Remove" }));
 
@@ -490,6 +535,25 @@ describe("local storage", () => {
     expect(screen.getByRole("textbox").value).toBe("burgers");
     expect(resultTitles()).toHaveLength(6);
     expect(resultTitles()).not.toContain(COUNCIL);
+    expect(websiteCheckbox("www.citynews.com").checked).toBe(false);
     expect(favouriteButtonOf(CLASSIC).textContent).toBe("Remove");
+  });
+
+  it("keeps the Web source switched off after a reload", async () => {
+    await openApp("/");
+    fireEvent.click(screen.getByRole("button", { name: "Web" }));
+    cleanup();
+
+    await openApp("/");
+
+    expect(screen.getByRole("button", { name: "Web" }).getAttribute("aria-pressed")).toBe("false");
+    expect(read(SHOW_WEB_RESULTS)).toBe(false);
+  });
+
+  it("shows the Web source on the first visit", async () => {
+    await openApp("/");
+
+    expect(screen.getByRole("button", { name: "Web" }).getAttribute("aria-pressed")).toBe("true");
+    expect(read(SHOW_WEB_RESULTS)).toBe(true);
   });
 });

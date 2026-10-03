@@ -13,6 +13,8 @@
 
 # misc
 .DS_Store
+# Finder's custom folder-icon file ("Icon\r"), set from Resources/MetaSearchEngineIcon.png
+Icon?
 .env.local
 .env.development.local
 .env.test.local

@@ -1,7 +1,7 @@
 /* =====================================================================
    设计变量（Console, bright）：文字、底色、线条、品牌色、圆角、阴影和动效。
-   index.jsx 先载入 Bootstrap，这里的 --bs-* 变量和焦点样式才能覆盖它。
-   index.html 载入 IBM Plex 字体；没有它时，各字体回退到系统字体。
+   index.jsx 先载入 Bootstrap 的基础样式，这里的 --bs-* 变量和焦点样式才能覆盖它；
+   它也载入随应用发布的 IBM Plex 字体（@fontsource）；没有它时，各字体回退到系统字体。
    ===================================================================== */
 
 :root {
@@ -19,9 +19,14 @@
   --cs-page: #f7f8fa;
   --cs-surface: #ffffff;
   --cs-surface-2: #f1f4f7;
+  /* 白色文字和图片上的白色 */
+  --cs-white: #ffffff;
+  /* 主页背景图片载入前的深绿色 */
+  --cs-photo: #3e5446;
 
   /* 线条 */
   --cs-line: #dfe3e8;
+  --cs-line-soft: #e6e9ed;
   --cs-line-row: #e9ecef;
   --cs-line-strong: #c9d0d6;
   --cs-control: #d3d3d3;
@@ -51,8 +56,16 @@
   --cs-r-tag: 6px;
   --cs-r-control: 8px;
   --cs-r-input: 10px;
+  --cs-r-icon: 12px;
   --cs-r-panel: 14px;
   --cs-r-console: 16px;
+
+  /* 版面：结果页和 My Pages 的内容宽度、左右边距、页头高度，以及页头标题和网站筛选共用的第一列宽度
+     （放得下 24 像素的应用名称和 40 像素的图标，结果页的搜索框因此与结果列表对齐） */
+  --cs-page-width: 1400px;
+  --cs-gutter: 32px;
+  --cs-header-height: 64px;
+  --cs-sidebar-width: 330px;
 
   /* 阴影 */
   --cs-shadow-hover: 0 2px 10px rgba(16, 24, 40, 0.08);
@@ -75,11 +88,20 @@
   outline-offset: 2px;
 }
 
-/* 去掉 Bootstrap 的半透明光晕，只保留上面的实线 */
-.btn:focus-visible,
-.form-control:focus,
-.form-check-input:focus {
-  box-shadow: none;
+/* 只给读屏软件的文字：Bootstrap 的 visually-hidden，应用只载入 Bootstrap 的基础样式，因此在这里 */
+.visually-hidden {
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.visually-hidden:not(caption) {
+  position: absolute !important;
 }
 
 input::placeholder {
@@ -106,7 +128,7 @@ input::placeholder {
   padding: 96px 24px;
   box-sizing: border-box;
   overflow: hidden;
-  background: #3e5446 url("/main.jpg") center / cover no-repeat;
+  background: var(--cs-photo) url("/main.jpg") center / cover no-repeat;
   font-family: var(--cs-font);
 }
 
@@ -136,7 +158,7 @@ input::placeholder {
 
 .home__title {
   margin: 0;
-  color: #fff;
+  color: var(--cs-white);
   font: 600 60px/68px var(--cs-font);
   letter-spacing: -0.025em;
   text-align: center;
@@ -184,7 +206,7 @@ input::placeholder {
   align-items: center;
   gap: 10px;
   padding: 12px 20px;
-  border-top: 1px solid #e6e9ed;
+  border-top: 1px solid var(--cs-line-soft);
 }
 
 /* 等宽大写小标签："Sources"、"Websites Filter" */
@@ -194,6 +216,18 @@ input::placeholder {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--cs-muted);
+}
+
+/* 等宽灰色说明文字：状态行、结果序号、地址、My Pages 的数量 */
+.meta-mono {
+  font: 400 13px/20px var(--cs-mono);
+  color: var(--cs-muted);
+}
+
+/* 鼠标悬停时加下划线的链接：图片来源、结果标题、Go back、已收藏网页的标题 */
+.link-underline:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 /* 图片上的标签：右上角 My Pages，右下角图片来源 */
@@ -214,14 +248,14 @@ input::placeholder {
 }
 
 .photo-chip:hover {
-  background: #fff;
+  background: var(--cs-white);
   color: var(--cs-ink);
 }
 
 /* 图片上的焦点：白色实线加深色外圈 */
 .photo-chip:focus-visible,
 .photo-chip a:focus-visible {
-  outline: 2px solid #fff;
+  outline: 2px solid var(--cs-white);
   outline-offset: 2px;
   box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.55);
 }
@@ -250,11 +284,6 @@ input::placeholder {
   color: var(--cs-ink);
   font-weight: 500;
   text-decoration: none;
-}
-
-.credit a:hover {
-  text-decoration: underline;
-  text-underline-offset: 3px;
 }
 
 /* ---------- 主页和结果页共用：搜索框，搜索按钮，搜索引擎，My Pages ---------- */
@@ -299,8 +328,8 @@ input::placeholder {
   padding-right: 40px;
 }
 
-/* 清空按钮：输入内容后才显示（search.jsx 切换 visibility） */
-#search-button-reset {
+/* 清空按钮：search.jsx 只在搜索框有内容时渲染它 */
+.search-clear {
   position: absolute;
   top: 50%;
   right: 8px;
@@ -315,11 +344,10 @@ input::placeholder {
   background: transparent;
   color: var(--cs-muted);
   cursor: pointer;
-  visibility: hidden;
   transition: background-color var(--cs-ease), color var(--cs-ease);
 }
 
-#search-button-reset:hover {
+.search-clear:hover {
   background: var(--cs-surface-2);
   color: var(--cs-ink);
 }
@@ -330,21 +358,25 @@ input::placeholder {
   gap: 8px;
   height: 40px;
   padding: 0 16px;
-  border: 1px solid var(--cs-red);
   border-radius: 0 var(--cs-r-input) var(--cs-r-input) 0;
-  background: var(--cs-red);
-  color: #fff;
   font: 600 14px/20px var(--cs-font);
   cursor: pointer;
   transition: background-color var(--cs-ease), border-color var(--cs-ease);
 }
 
-.btn-search:hover {
+/* 红色按钮（搜索、Remove）：底色、边框和白色文字，以及悬停和按下时的深色 */
+.btn-red {
+  border: 1px solid var(--cs-red);
+  background: var(--cs-red);
+  color: var(--cs-white);
+}
+
+.btn-red:hover {
   background: var(--cs-red-hover);
   border-color: var(--cs-red-hover);
 }
 
-.btn-search:active {
+.btn-red:active {
   background: var(--cs-red-active);
   border-color: var(--cs-red-active);
 }
@@ -405,20 +437,9 @@ input::placeholder {
   cursor: not-allowed;
 }
 
-/* "unavailable" 字样 */
+/* "unavailable" 字样；页头空间有限，那里 search.jsx 给它加上 visually-hidden */
 .source-toggle__note {
   font: 400 12px/18px var(--cs-mono);
-}
-
-/* 页头空间有限：尚未接入的搜索引擎只显示虚线边框和斜杠图标，
-   "unavailable" 字样仍供读屏软件读出，鼠标悬停时按钮的提示也会说明 */
-.app-header .source-toggle__note {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
 }
 
 /* My Pages 链接 */
@@ -447,4 +468,124 @@ input::placeholder {
   background: var(--cs-surface-2);
   border-color: var(--cs-line-strong);
   font-weight: 600;
+}
+
+/* ---------- 结果页和 My Pages 共用：页面，页头，显示地址 ---------- */
+
+.page {
+  min-height: 100vh;
+  background: var(--cs-page);
+  color: var(--cs-ink);
+  font-family: var(--cs-font);
+}
+
+/* 页头固定在顶部（header.jsx） */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--cs-surface);
+  border-bottom: 1px solid var(--cs-line);
+}
+
+/* 页头与页面内容同宽、同左右边距：结果页的标题对齐网站筛选，搜索框对齐结果列表 */
+.app-header__inner {
+  max-width: var(--cs-page-width);
+  height: var(--cs-header-height);
+  margin: 0 auto;
+  padding-inline: var(--cs-gutter);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+/* My Pages 的页头只有标题和 My Pages 链接，分列两端 */
+.app-header__inner--split {
+  justify-content: space-between;
+}
+
+/* 页面标题：项目图标和应用名称，与页头中的搜索框和按钮同高（40px）：
+   图标的上下边与它们的上下边对齐，文字在同一中线上 */
+.app-header__title {
+  flex: 0 0 var(--cs-sidebar-width);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
+  font: 700 24px/40px var(--cs-font);
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  color: var(--cs-ink);
+  text-decoration: none;
+}
+
+.app-header__title:hover {
+  color: var(--cs-ink);
+}
+
+.app-header__logo {
+  flex: none;
+  width: 40px;
+  height: 40px;
+}
+
+/* 搜索框和搜索引擎按钮 */
+.app-header__controls {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.app-header .mypages-link {
+  flex: none;
+}
+
+/* 页头中的按钮与搜索框和搜索按钮同高、同圆角 */
+.app-header .source-toggle,
+.app-header .mypages-link {
+  height: 40px;
+  border-radius: var(--cs-r-input);
+}
+
+/* 显示地址（address.jsx）中的网站名 */
+.address b {
+  font-weight: 400;
+  color: var(--cs-ink);
+}
+
+/* 没有可显示内容时的说明（emptyState.jsx）：图标块，标题，一句话；My Pages 的变体在 favourite.css */
+.empty {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+  padding: 36px 32px;
+  background: var(--cs-surface);
+  border: 1px solid var(--cs-line);
+  border-radius: var(--cs-r-panel);
+}
+
+.empty__icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-bottom: 4px;
+  border-radius: var(--cs-r-input);
+  background: var(--cs-surface-2);
+  color: var(--cs-muted);
+}
+
+.empty__heading {
+  margin: 0;
+  font: 600 18px/26px var(--cs-font);
+}
+
+.empty__body {
+  margin: 0;
+  font-size: 15px;
+  line-height: 24px;
+  color: var(--cs-text-2);
 }

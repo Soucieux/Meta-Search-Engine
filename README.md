@@ -12,8 +12,8 @@ collection of saved results. Everything it keeps stays in the browser.
 
 It searches the **live web** through Tavily, a web search service with a free monthly allowance. The
 Tavily key stays with the local development server, which passes each query on. Google and Bing are
-shown but unavailable: only Google was ever connected, through the ValueSERP search API, and that
-request has been commented out since March 2021.
+shown but unavailable: only Google was ever connected, through the ValueSERP search API; that
+request was commented out in March 2021 and removed on 2026-10-02.
 
 <!-- project-control:section=overview -->
 ## Features
@@ -54,9 +54,8 @@ Checked on 2026-10-02 with Node.js 22.
 - **Build:** Vite serves the app with `npm start` and builds it with `npm run build`.
 - **Search:** every query asks Tavily for 10 live results through the development server and lists
   them in Tavily's order. Without a Tavily key, or once the month's free searches are used up, the
-  results page says why. Google and Bing are unavailable; the 2021 ValueSERP request in
-  `src/searchResults.jsx` stays commented out.
-- **Tests:** `npm test` runs 45 tests: the app's pages, filters, favourites and saved state
+  results page says why. Google and Bing are unavailable.
+- **Tests:** `npm test` runs 53 tests: the app's pages, filters, favourites and saved state
   against a stand-in for Tavily, the live search's answers and refusals, and the snippets with
   their bold search words.
 
@@ -120,27 +119,26 @@ from Tavily with the key in `.env.local`.
 
 | Technology or concept | Use in this project |
 |---|---|
-| React 19 | Class components draw the search page, the results page and My Pages. |
-| React Router 8 | `BrowserRouter` maps `/` to the search page, `/results` to the results page and `/favourite` to My Pages; `src/router.jsx` hands each page the current location and a `navigate` function, since class components cannot call the router's hooks. |
-| Bootstrap 5 | Its stylesheet supplies the base styles and the `visually-hidden` helper; it loads first, so the project's stylesheets draw the pages. |
+| React 19 | Class components draw the home page, the results page and My Pages; function components draw the shared header, the empty states, the addresses and the icons. |
+| React Router 8 | `BrowserRouter` maps `/` to the home page, `/results` to the results page and `/favourite` to My Pages; `src/router.jsx` hands each page the current location and a `navigate` function, since class components cannot call the router's hooks. |
+| Bootstrap 5 | Its reboot stylesheet supplies the base styles and loads first, so the project's stylesheets draw the pages; the `visually-hidden` helper is copied into `search.css`, and the rest of Bootstrap is not loaded. |
 | Bootstrap Icons | Its glyphs mark the buttons and links, inlined as SVG in `src/icons.jsx`; there is no icon package. |
-| CSS | The design's colours, type, radii and focus ring are variables at the top of `search.css`; it, `searchResults.css` and `favourite.css` lay out each page. |
-| IBM Plex Sans and Mono | The interface and the addresses, counts and labels; without them, every font falls back to the system font. |
+| CSS | The design's colours, type, radii, page width and focus ring are variables at the top of `search.css`, which also styles the header the results page and My Pages share (`src/header.jsx`); `searchResults.css` and `favourite.css` lay out each page. |
+| IBM Plex Sans and Mono | The interface and the addresses, counts and labels. The font files ship with the app through the Fontsource packages (Latin subset), so the page loads nothing from Google Fonts; without them, every font falls back to the system font. |
 
 ### Data & Storage
 
 | Technology or concept | Use in this project |
 |---|---|
-| Browser local storage | Through the `local-storage` package, it keeps the current and previous query, the last results, the websites filter's state and the saved pages. |
+| Browser local storage | Through `src/storage.js`, a small module over the browser's `localStorage` that stores each value as JSON, it keeps the current and previous query, the last results and whether live search answered, the websites hidden by the filter, and the saved pages; the module names every key and reads and writes the saved pages. |
 | `.env.local` | Holds this computer's Tavily key, read only by the development and preview servers; it is never committed. |
 
 ### Integrations & Security
 
 | Technology or concept | Use in this project |
 |---|---|
-| ValueSERP API | Supplied Google results during development; the request is commented out, and the key it carried reads `REDACTED`. |
-| Tavily Search API | Supplies the live results. The development and preview servers send each query to Tavily's basic search with the key from `.env.local` and pass only each result's title, address and excerpt to the page. The key never reaches the browser, and the servers answer only the app's own page. |
-| Google Fonts | Serves IBM Plex to the browser when the page loads. |
+| ValueSERP API | Supplied Google results during development in 2021; the request was removed on 2026-10-02, and the key it carried reads `REDACTED` in the history. |
+| Tavily Search API | Supplies the live results, the only hosted service the app talks to. The development and preview servers send each query to Tavily's basic search with the key from `.env.local` and pass only each result's title, address and excerpt to the page. The key never reaches the browser, and the servers answer only the app's own page. |
 
 ### Build & Delivery
 
@@ -157,7 +155,7 @@ from Tavily with the key in `.env.local`.
 |---|---|
 | `index.html` | The page Vite serves and builds, which loads `src/index.jsx`. |
 | `vite.config.js` | The Vite configuration: the React plugin, the live search, the `html/` public folder, port 3000, the `build/` folder and the test environment. |
-| `src/` | The React components, their stylesheets, the icons, the web search and the tests. |
+| `src/` | The React components (`search.jsx` for the home and results pages, `searchResults.jsx`, `favourite.jsx`, the shared `header.jsx` and `emptyState.jsx`), their stylesheets, the icons, the web search, the addresses in `routes.js`, the local storage in `storage.js`, and the tests. |
 | `scripts/` | The servers' live search and its tests. |
 | `html/` | The web app manifest, the favicon and the header logo made from the project icon, and the home-page image, a Bing wallpaper the home page credits. |
 | `.env.local` | This computer's Tavily key; not committed. |
@@ -183,6 +181,7 @@ One record per change; complete details and evidence are below. Older work dates
 
 | Record | Date | Highlights | Details |
 |---|---|---|---|
+| Maintenance | 2026-10-02 | <ul><li><strong>Name:</strong> The app is MetaData Search Engine on the page, in the browser tab and in the web app manifest.</li><li><strong>Links:</strong> Results and saved pages open at their own address, https included; bold search words now work in accented and Chinese text.</li><li><strong>Filters:</strong> Ticking a website or switching Web no longer adds a browser history entry, switching Web on the home page keeps the typed query, the Web switch keeps its setting across a reload, and submitting the same query again searches again.</li><li><strong>Lighter:</strong> Only Bootstrap's base styles load, the IBM Plex fonts ship with the app instead of coming from Google Fonts, and the page's debug logging is gone.</li></ul> | [Full record](#source-simplification) |
 | Maintenance | 2026-10-02 | <ul><li><strong>Header:</strong> The page title and its icon are larger, as tall as the search box and buttons beside them.</li></ul> | [Full record](#header-title) |
 | Maintenance | 2026-10-02 | <ul><li><strong>Search:</strong> Queries now search the live web through Tavily's free search service, ten results at a time.</li><li><strong>Key:</strong> Your Tavily key stays with the local development server; the page never receives it.</li><li><strong>Sources:</strong> Web is the switchable source; Google and Bing show as unavailable.</li></ul> | [Full record](#live-web-search) |
 | Maintenance | 2026-10-02 | <ul><li><strong>Look:</strong> A refreshed interface keeps the three pages and their colours, with IBM Plex type and complete hover, focus and empty states.</li><li><strong>Home:</strong> The Bing photo sits under a soft dark wash, with the search box and sources in one white panel.</li><li><strong>My Pages:</strong> Cards show each page's address and snippet, and Remove takes a page off the list.</li></ul> | [Full record](#interface-refresh) |
@@ -203,6 +202,71 @@ One record per change; complete details and evidence are below. Older work dates
 
 <details>
 <summary>Full records for this table</summary>
+
+<a id="source-simplification"></a>
+
+### Simpler source, truer links — 2026-10-02
+
+- **Name:** the app calls itself MetaData Search Engine everywhere: the home page title, the
+  header, the browser tab and the web app manifest, which used to read "Custom Search",
+  "Search Engine" and "MetaData-Search-Engine". The header's first column, which the websites
+  filter shares so the search box lines up with the results, widened from 260 to 330 pixels to hold
+  the name on one line beside its icon.
+- **Links:** a result's title and a saved page's title are plain links to the page's own address.
+  Until now they dropped the `https:` or `http:` prefix and let the browser reuse the app's own
+  scheme, so from the development server every page opened over plain http. Both links tell a
+  screen reader that they open a new tab.
+- **Search words:** the bold search words in a snippet now include words that start with an
+  accented or non-Latin letter, such as *école* or *北京*; the old word boundary only recognised
+  ASCII letters.
+- **Search box:** the clear button appears whenever the box has text, on the results page too,
+  and the box is a controlled input instead of being read and cleared through the document.
+  Search runs when the form is submitted, so Enter and the Search button share one handler.
+- **Filters:** ticking a website or switching the Web source redraws the page without navigating,
+  so the Back button no longer has to step through every click. Switching Web on the home page
+  keeps the typed query, which it used to clear. The hidden websites are the filter's only stored
+  state; the stored list of tick-box rows, its reload flag and the "new input" flag are gone, and
+  a query typed on the home page is searched when the results page is opened directly, where the
+  missing filter state used to stop the page. Submitting the same query a second time searches
+  again; it used to clear the websites filter and show the old results. The Web switch keeps its
+  setting across a reload; it used to come back on every time the page loaded.
+- **Fonts and stylesheet:** IBM Plex Sans and Mono ship with the app through the Fontsource
+  packages, so the page no longer fetches a stylesheet and fonts from Google Fonts before it can
+  draw; only the Latin subset is bundled, and other scripts fall back to the system font. Only
+  Bootstrap's reboot styles load, with the `visually-hidden` helper copied into `search.css`;
+  nothing else in Bootstrap matched the pages. The header the results page and My Pages share, the
+  page background, the address styling, the empty-state block, the grey monospace text style, the
+  hover underline and the red button colours are each one rule in `search.css`, and the page width,
+  gutter, header height, first-column width and the remaining literal colours and radii are
+  variables there.
+- **Code:** `src/storage.js` is the app's own local-storage module, replacing the `local-storage`
+  package and the `global` shim Vite carried for it: it names every key once, reads and writes
+  values as JSON, and holds the saved-pages reads and writes that two pages shared. `src/routes.js`
+  names the three addresses; `src/header.jsx` draws the shared header and the My Pages link;
+  `src/emptyState.jsx` draws the empty states of the results page and My Pages; the live search's
+  status words live in `src/webSearch.js` for the server and the page alike, its highlighter
+  compiles the search words once per page, and the server passes an untitled result's empty title
+  through for the page to replace with the website. The home page and the results page are two
+  components instead of one that branched on the address, each component's internals are private
+  members, every method has a documentation comment, and the 28 debugging lines the pages printed
+  to the browser console are gone. The commented-out 2021 ValueSERP request and the two helpers
+  only it used are removed; the project history above keeps the account of it.
+- **Files:** `index.html` carries a real description, no longer blocks dragging on the whole page,
+  and names the script that fills it; the web app manifest lists the favicon and logo as icons;
+  `package.json` states the Node.js 22.22 requirement; `.gitignore` ignores Finder's folder-icon
+  file, which the root ignore rules already covered.
+- **Checks:** 53 tests pass, nine of them new: the form submit path, a repeated submit searching
+  again, a query typed before the results page is opened directly, a new search clearing the
+  websites filter, the Web switch kept across a reload and on by default on a first visit, the
+  accented and Chinese search words, a snippet with no search words, and the untitled result named
+  after its website. `npm run build` succeeds, and a build given a made-up
+  Tavily key contains no trace of it. In the desktop app's browser pane (Chromium) at 1,280 and
+  1,440 pixels wide, the home page, the results page with a saved result, My Pages with and without
+  a saved page and the results page's no-key message drew as designed, the header title sat in the
+  40-pixel band beside the search box, the bundled fonts loaded, nothing scrolled sideways and
+  there were no console errors.
+
+[Back to change history](#change-history)
 
 <a id="header-title"></a>
 

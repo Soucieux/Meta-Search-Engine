@@ -3,7 +3,7 @@
  * Tavily 密钥向 Tavily 搜索，只把每个结果的标题、网址和摘录返回给浏览器。
  * 密钥只在服务器端使用，不会出现在网页、回答或日志中。
  */
-import { LIVE_SEARCH_PATH } from "../src/webSearch.js";
+import { LIVE_SEARCH_PATH, LIVE_STATUS } from "../src/webSearch.js";
 
 const TAVILY_SEARCH_URL = "https://api.tavily.com/search";
 // 每次向 Tavily 请求、在结果页显示的结果数
@@ -31,10 +31,10 @@ export function liveSearch(apiKey) {
 }
 
 /**
- * 回答一次在线搜索请求。回答为 JSON：成功时 {status: "ok", results}；否则 status 说明原因：
- * nokey（没有设置密钥）、badkey（Tavily 不接受密钥）、limit（本月的次数已用完）、
- * unavailable（Tavily 没有回答或出错）。这些是结果页要说明的正常情况，HTTP 状态为 200，
- * 浏览器不会把它们记为错误；只有请求本身无效时才回答 400、403 或 405（badrequest、forbidden）。
+ * 回答一次在线搜索请求。回答为 JSON：成功时 {status: "ok", results}；否则 status 说明原因，
+ * 取 src/webSearch.js 中 LIVE_STATUS 的值：nokey、badkey、limit 和 unavailable 是结果页要说明的
+ * 正常情况，HTTP 状态为 200，浏览器不会把它们记为错误；只有请求本身无效时才回答 400、403 或
+ * 405（badrequest、forbidden）。
  * @param {import("node:http").IncomingMessage} request 请求，网址不含 /live/search 前缀
  * @param {import("node:http").ServerResponse} response 回答
  * @param {string | undefined} apiKey Tavily 密钥
@@ -42,19 +42,19 @@ export function liveSearch(apiKey) {
  */
 export async function handleLiveSearch(request, response, apiKey, logger) {
   if (request.method !== "GET") {
-    return send(response, 405, { status: "badrequest" });
+    return send(response, 405, { status: LIVE_STATUS.badrequest });
   }
   // 只回答本页发出的请求，其他网站不能借用密钥
   let site = request.headers["sec-fetch-site"];
   if (site && site !== "same-origin" && site !== "none") {
-    return send(response, 403, { status: "forbidden" });
+    return send(response, 403, { status: LIVE_STATUS.forbidden });
   }
   let query = (new URL(request.url, "http://localhost").searchParams.get("q") || "").trim();
   if (!query) {
-    return send(response, 400, { status: "badrequest" });
+    return send(response, 400, { status: LIVE_STATUS.badrequest });
   }
   if (!apiKey) {
-    return send(response, 200, { status: "nokey" });
+    return send(response, 200, { status: LIVE_STATUS.nokey });
   }
   let tavily;
   try {
@@ -70,7 +70,7 @@ export async function handleLiveSearch(request, response, apiKey, logger) {
     });
   } catch (error) {
     logger.warn(`Live search: could not reach Tavily (${error.name})`);
-    return send(response, 200, { status: "unavailable" });
+    return send(response, 200, { status: LIVE_STATUS.unavailable });
   }
   if (!tavily.ok) {
     logger.warn(`Live search: Tavily answered HTTP ${tavily.status}`);
@@ -81,28 +81,29 @@ export async function handleLiveSearch(request, response, apiKey, logger) {
     body = await tavily.json();
   } catch {
     logger.warn("Live search: Tavily's answer was not JSON");
-    return send(response, 200, { status: "unavailable" });
+    return send(response, 200, { status: LIVE_STATUS.unavailable });
   }
-  return send(response, 200, { status: "ok", results: cleanResults(body.results) });
+  return send(response, 200, { status: LIVE_STATUS.ok, results: cleanResults(body.results) });
 }
 
 /**
  * @param {number} httpStatus Tavily 回答的 HTTP 状态
- * @returns {"badkey" | "limit" | "unavailable"} 告诉浏览器的原因
+ * @returns {string} 告诉浏览器的原因：badkey、limit 或 unavailable
  */
 function statusFor(httpStatus) {
   if (httpStatus === 401) {
-    return "badkey";
+    return LIVE_STATUS.badkey;
   }
   // 432：免费计划或密钥的次数已用完；433：按量付费的上限已到
   if (httpStatus === 432 || httpStatus === 433) {
-    return "limit";
+    return LIVE_STATUS.limit;
   }
-  return "unavailable";
+  return LIVE_STATUS.unavailable;
 }
 
 /**
  * 只保留标题、网址和摘录都有效的结果，去掉摘录中的 Markdown 标记，并把文字中的换行和多余空格合并。
+ * 标题原样传给页面（空标题也是），由页面决定怎么显示。
  * @param {unknown} results Tavily 回答中的 results
  * @returns {{title: string, url: string, content: string}[]} 结果
  */
@@ -118,7 +119,7 @@ function cleanResults(results) {
         isWebAddress(result.url)
     )
     .map(({ title, url, content }) => ({
-      title: oneLine(title) || new URL(url).hostname,
+      title: oneLine(title),
       url,
       content: oneLine(content.replace(MARKDOWN_MARKS, "$1")),
     }));

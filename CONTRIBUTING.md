@@ -24,6 +24,8 @@ that apply in both the canonical workspace and the standalone public repository.
   key: Vite passes every `VITE_` variable to the browser, where the people who use it can read it.
 - Keep `/live/search` answering only the app's own page, and pass the page nothing from Tavily but
   each result's title, address and excerpt.
+- The page itself loads nothing from a third party: the fonts ship with the app, and Bootstrap's
+  base styles come from the package. Do not add a link to a hosted stylesheet, script or font.
 
 ## Checks for a change
 
@@ -31,7 +33,10 @@ that apply in both the canonical workspace and the standalone public repository.
   must finish without errors.
 - Add or update a test in `src/app.test.jsx` when behavior changes. The tests drive the app through
   its router in a simulated browser page, as a user would, against a stand-in for Tavily;
-  `scripts/liveSearch.test.js` covers the live search's answers and refusals.
+  `scripts/liveSearch.test.js` covers the live search's answers and refusals, and
+  `src/webSearch.test.js` the results' fields, snippets and bold search words.
+- Name a local-storage key in `src/storage.js` and read or write it through that module's
+  functions; never write the key string or call `localStorage` in a component.
 - Run `npm start` for interface changes, then check the home page, the results page, and My Pages
   in a browser. Passing tests and a build do not establish visual correctness.
 
