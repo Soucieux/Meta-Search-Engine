@@ -1,99 +1,23 @@
 /* =====================================================================
-   结果页：页面和页头，网站筛选，状态行，搜索结果和空白提示。
-   设计变量和页头里的控件在 search.css。
+   结果页：网站筛选，状态行，搜索结果和空白提示。
+   设计变量、页面、页头和页头里的控件在 search.css。
    ===================================================================== */
 
-/* ---------- 页面和页头 ---------------------------------------------- */
-
-.results-page {
-  min-height: 100vh;
-  background: var(--cs-page);
-  color: var(--cs-ink);
-  font-family: var(--cs-font);
-}
-
-/* 页头固定在顶部，结果页和 My Pages 共用 */
-.app-header {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background: var(--cs-surface);
-  border-bottom: 1px solid var(--cs-line);
-}
-
-/* 页头和页面内容使用同一宽度和同一第一列，标题对齐网站筛选，搜索框对齐结果列表 */
-.app-header__inner,
-.results-layout {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding-inline: 32px;
-  box-sizing: border-box;
-}
-
-.app-header__inner {
-  height: 64px;
-  display: flex;
-  align-items: center;
-  gap: 40px;
-}
-
-/* My Pages 的页头只有标题和 My Pages 链接，分列两端 */
-.app-header__inner--split {
-  justify-content: space-between;
-}
-
-/* 页面标题：项目图标和 "Custom Search"，与页头中的搜索框和按钮同高（40px）：
-   图标的上下边与它们的上下边对齐，文字在同一中线上 */
-.app-header__title {
-  flex: 0 0 260px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  box-sizing: border-box;
-  font: 700 24px/40px var(--cs-font);
-  letter-spacing: -0.02em;
-  color: var(--cs-ink);
-  text-decoration: none;
-}
-
-.app-header__title:hover {
-  color: var(--cs-ink);
-}
-
-.app-header__logo {
-  flex: none;
-  width: 40px;
-  height: 40px;
-}
+/* ---------- 页面 ---------------------------------------------------- */
 
 /* 结果页：标题的左边与 "Websites Filter" 和勾选框对齐 */
 .results-page .app-header__title {
   padding-left: 10px;
 }
 
-/* 搜索框和搜索引擎按钮 */
-.app-header__controls {
-  flex: 1 1 auto;
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.app-header .mypages-link {
-  flex: none;
-}
-
-/* 页头中的按钮与搜索框和搜索按钮同高、同圆角 */
-.app-header .source-toggle,
-.app-header .mypages-link {
-  height: 40px;
-  border-radius: var(--cs-r-input);
-}
-
+/* 与页头同宽、同左右边距（search.css 中的 .app-header__inner） */
 .results-layout {
+  max-width: var(--cs-page-width);
+  margin: 0 auto;
+  padding-inline: var(--cs-gutter);
+  box-sizing: border-box;
   display: grid;
-  grid-template-columns: 260px minmax(0, 880px);
+  grid-template-columns: var(--cs-sidebar-width) minmax(0, 880px);
   column-gap: 40px;
   align-items: start;
   padding-block: 28px 64px;
@@ -103,8 +27,8 @@
 
 .filter {
   position: sticky;
-  /* 页头 64 加上 28 */
-  top: 92px;
+  /* 页头高度加上结果区域的上边距 */
+  top: calc(var(--cs-header-height) + 28px);
 }
 
 .filter .label-mono {
@@ -226,8 +150,6 @@
 .status {
   margin: 0 0 10px;
   padding-inline: 4px;
-  font: 400 13px/20px var(--cs-mono);
-  color: var(--cs-muted);
 }
 
 /* 结果列表下方注明搜索结果的来源 */
@@ -277,8 +199,6 @@
 
 .result__num {
   padding-top: 1px;
-  font: 400 13px/20px var(--cs-mono);
-  color: var(--cs-muted);
 }
 
 .result__body {
@@ -291,8 +211,6 @@
   gap: 10px;
   min-width: 0;
   margin: 0;
-  font: 400 13px/20px var(--cs-mono);
-  color: var(--cs-muted);
 }
 
 .result__url {
@@ -300,12 +218,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-/* 网站名 */
-.result__url b {
-  font-weight: 400;
-  color: var(--cs-ink);
 }
 
 .result__title {
@@ -321,47 +233,10 @@
 
 .result__title a:hover {
   color: var(--cs-pink-hover);
-  text-decoration: underline;
-  text-underline-offset: 3px;
 }
 
 .result__snippet {
   margin: 6px 0 0;
-  font-size: 15px;
-  line-height: 24px;
-  color: var(--cs-text-2);
-}
-
-/* ---------- 空白提示 ------------------------------------------------- */
-
-.empty {
-  display: grid;
-  justify-items: start;
-  gap: 8px;
-  padding: 36px 32px;
-  background: var(--cs-surface);
-  border: 1px solid var(--cs-line);
-  border-radius: var(--cs-r-panel);
-}
-
-.empty__icon {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  margin-bottom: 4px;
-  border-radius: var(--cs-r-input);
-  background: var(--cs-surface-2);
-  color: var(--cs-muted);
-}
-
-.empty h3 {
-  margin: 0;
-  font: 600 18px/26px var(--cs-font);
-}
-
-.empty p {
-  margin: 0;
   font-size: 15px;
   line-height: 24px;
   color: var(--cs-text-2);

@@ -41,7 +41,7 @@ afterEach(() => {
 });
 
 describe("live search", () => {
-  it("asks Tavily with the key and returns each result's title, address and excerpt", async () => {
+  it("asks Tavily with the key and returns each result's title, address and excerpt, the title as is", async () => {
     let answer = await ask("/?q=%20best%20burgers%20", {
       tavily: async () =>
         tavilyAnswer(200, {
@@ -60,7 +60,7 @@ describe("live search", () => {
       status: "ok",
       results: [
         { title: "Best burgers", url: "https://www.example.com/a", content: "Line one line two" },
-        { title: "www.untitled.com", url: "https://www.untitled.com/", content: "No title" },
+        { title: "", url: "https://www.untitled.com/", content: "No title" },
       ],
     });
     let [url, options] = answer.fetch.mock.calls[0];

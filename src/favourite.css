@@ -1,6 +1,6 @@
 /* =====================================================================
    收藏：Favourite 和 Remove 按钮，已收藏的搜索结果，My Pages 页面。
-   设计变量在 search.css。
+   设计变量、页面和页头在 search.css。
    ===================================================================== */
 
 /* ---------- Favourite 和 Remove 按钮 ---------------------------------- */
@@ -34,21 +34,9 @@
   border-color: var(--cs-line-strong);
 }
 
+/* 颜色来自 search.css 的 .btn-red */
 .btn-remove {
-  border: 1px solid var(--cs-red);
-  background: var(--cs-red);
-  color: #fff;
   font-weight: 600;
-}
-
-.btn-remove:hover {
-  background: var(--cs-red-hover);
-  border-color: var(--cs-red-hover);
-}
-
-.btn-remove:active {
-  background: var(--cs-red-active);
-  border-color: var(--cs-red-active);
 }
 
 /* ---------- 已收藏的搜索结果 ------------------------------------------ */
@@ -77,17 +65,11 @@
 
 /* ---------- My Pages ------------------------------------------------- */
 
-.mypages-page {
-  min-height: 100vh;
-  background: var(--cs-page);
-  color: var(--cs-ink);
-  font-family: var(--cs-font);
-}
-
+/* 与页头同宽、同左右边距（search.css 中的 .app-header__inner） */
 .mypages {
-  max-width: 1400px;
+  max-width: var(--cs-page-width);
   margin: 0 auto;
-  padding: 24px 32px 64px;
+  padding: 24px var(--cs-gutter) 64px;
   box-sizing: border-box;
 }
 
@@ -103,8 +85,6 @@
 
 .mypages__back:hover {
   color: var(--cs-link-hover);
-  text-decoration: underline;
-  text-underline-offset: 3px;
 }
 
 .mypages__head {
@@ -123,8 +103,6 @@
 /* 标题旁的数量，例如 "2 saved pages" */
 .mypages__count {
   margin: 0;
-  font: 400 13px/20px var(--cs-mono);
-  color: var(--cs-muted);
 }
 
 /* 1280 到 1920 像素宽时都是三列 */
@@ -166,14 +144,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font: 400 13px/20px var(--cs-mono);
-  color: var(--cs-muted);
-}
-
-/* 网站名 */
-.saved-card__address b {
-  font-weight: 400;
-  color: var(--cs-ink);
 }
 
 .saved-card h2 {
@@ -190,8 +160,6 @@
 
 .saved-card h2 a:hover {
   color: var(--cs-link-hover);
-  text-decoration: underline;
-  text-underline-offset: 3px;
 }
 
 /* 摘要最多显示三行 */
@@ -214,41 +182,29 @@
   padding-top: 16px;
 }
 
-/* 没有已收藏网页时 */
-.saved-empty {
-  display: grid;
+/* 没有已收藏网页时：search.css 中 .empty 的变体，居中，更大的黄色星形图标块 */
+.empty.saved-empty {
   justify-items: center;
   gap: 10px;
   margin-top: 24px;
   padding: 56px 32px;
   text-align: center;
-  background: var(--cs-surface);
-  border: 1px solid var(--cs-line);
-  border-radius: var(--cs-r-panel);
 }
 
-.saved-empty__icon {
-  display: grid;
-  place-items: center;
+.saved-empty .empty__icon {
   width: 52px;
   height: 52px;
-  margin-bottom: 4px;
-  border-radius: 12px;
+  border-radius: var(--cs-r-icon);
   background: var(--cs-saved);
   color: var(--cs-saved-ink);
 }
 
-.saved-empty h2 {
-  margin: 0;
+.saved-empty .empty__heading {
   font: 600 20px/28px var(--cs-font);
 }
 
-.saved-empty p {
-  margin: 0;
+.saved-empty .empty__body {
   max-width: 420px;
-  font-size: 15px;
-  line-height: 24px;
-  color: var(--cs-text-2);
 }
 
 .saved-empty .mypages-link {
