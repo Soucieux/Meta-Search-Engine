@@ -5,23 +5,27 @@
 <!-- project-control:section=overview -->
 ## Overview
 
-Meta Search Engine is a single-page search front end, created with React in winter term 2021. It
-was built to gather results from several search engines into one list: a home page with a search
-box, a results page with a websites filter and a search-engine filter, and **My Pages**, a
-collection of saved results. Everything it keeps stays in the browser.
+Meta Search Engine is a single-page search front end, created with React in winter term 2021.
 
-It searches the **live web** through Tavily, a web search service with a free monthly allowance. The
-Tavily key stays with the local development server, which passes each query on. Google and Bing are
-shown but unavailable: only Google was ever connected, through the ValueSERP search API; that
-request was commented out in March 2021 and removed on 2026-10-02.
+- It was built to gather results from several search engines into one list: a home page with a
+  search box, a results page with a websites filter and a search-engine filter, and **My Pages**, a
+  collection of saved results.
+- Everything it keeps stays in the browser.
+
+It searches the **live web** through Tavily, a web search service with a free monthly allowance.
+
+- The Tavily key stays with the local development server, which passes each query on.
+- Google and Bing are shown but unavailable: only Google was ever connected, through the ValueSERP
+  search API; that request was commented out in March 2021 and removed on 2026-10-02.
 
 <!-- project-control:section=overview -->
 ## Features
 
-The feature list as the project recorded it at Version 3.31 in April 2021. Its two known bugs, and
-two layout bugs found later, were fixed on 2026-10-01. Since 2026-10-02 saved websites have been
-listed first, and the results come from the live web through Tavily, which the search-engine filter
-switches on and off.
+The feature list as the project recorded it at Version 3.31 in April 2021.
+
+- Its two known bugs, and two layout bugs found later, were fixed on 2026-10-01.
+- Since 2026-10-02 saved websites have been listed first, and the results come from the live web
+  through Tavily, which the search-engine filter switches on and off.
 
 ### Completed
 
@@ -130,7 +134,7 @@ from Tavily with the key in `.env.local`.
 
 | Technology or concept | Use in this project |
 |---|---|
-| Browser local storage | Through `src/storage.js`, a small module over the browser's `localStorage` that stores each value as JSON, it keeps the current and previous query, the last results and whether live search answered, the websites hidden by the filter, and the saved pages; the module names every key and reads and writes the saved pages. |
+| Browser local storage | Through `src/storage.js`, a small module over the browser's `localStorage` that stores each value as JSON, it keeps the current and previous query, the last results and whether live search answered, the websites hidden by the filter, and the saved pages;<br>the module names every key and reads and writes the saved pages. |
 | `.env.local` | Holds this computer's Tavily key, read only by the development and preview servers; it is never committed. |
 
 ### Integrations & Security
@@ -138,7 +142,7 @@ from Tavily with the key in `.env.local`.
 | Technology or concept | Use in this project |
 |---|---|
 | ValueSERP API | Supplied Google results during development in 2021; the request was removed on 2026-10-02, and the key it carried reads `REDACTED` in the history. |
-| Tavily Search API | Supplies the live results, the only hosted service the app talks to. The development and preview servers send each query to Tavily's basic search with the key from `.env.local` and pass only each result's title, address and excerpt to the page. The key never reaches the browser, and the servers answer only the app's own page. |
+| Tavily Search API | Supplies the live results, the only hosted service the app talks to.<br>The development and preview servers send each query to Tavily's basic search with the key from `.env.local` and pass only each result's title, address and excerpt to the page.<br>The key never reaches the browser, and the servers answer only the app's own page. |
 
 ### Build & Delivery
 
@@ -181,6 +185,7 @@ One record per change; complete details and evidence are below. Older work dates
 
 | Record | Date | Highlights | Details |
 |---|---|---|---|
+| Documentation | 2026-10-05 | <ul><li><strong>Readability:</strong> Long paragraphs, bullets and table cells are now short leads with sub-points, one fact each; no detail was removed.</li></ul> | [Full record](#readme-structure) |
 | Maintenance | 2026-10-02 | <ul><li><strong>Name:</strong> The app is MetaData Search Engine on the page, in the browser tab and in the web app manifest.</li><li><strong>Links:</strong> Results and saved pages open at their own address, https included; bold search words now work in accented and Chinese text.</li><li><strong>Filters:</strong> Ticking a website or switching Web no longer adds a browser history entry, switching Web on the home page keeps the typed query, the Web switch keeps its setting across a reload, and submitting the same query again searches again.</li><li><strong>Lighter:</strong> Only Bootstrap's base styles load, the IBM Plex fonts ship with the app instead of coming from Google Fonts, and the page's debug logging is gone.</li></ul> | [Full record](#source-simplification) |
 | Maintenance | 2026-10-02 | <ul><li><strong>Header:</strong> The page title and its icon are larger, as tall as the search box and buttons beside them.</li></ul> | [Full record](#header-title) |
 | Maintenance | 2026-10-02 | <ul><li><strong>Search:</strong> Queries now search the live web through Tavily's free search service, ten results at a time.</li><li><strong>Key:</strong> Your Tavily key stays with the local development server; the page never receives it.</li><li><strong>Sources:</strong> Web is the switchable source; Google and Bing show as unavailable.</li></ul> | [Full record](#live-web-search) |
@@ -203,68 +208,102 @@ One record per change; complete details and evidence are below. Older work dates
 <details>
 <summary>Full records for this table</summary>
 
+<a id="readme-structure"></a>
+
+### README laid out as short points — 2026-10-05
+
+- **Why:** many records and some guidance ran as bullets or paragraphs of 50 to 100 words, which hid
+  the separate facts inside them.
+- **Layout:** every paragraph, bullet and table cell over 50 words is now a short lead with
+  sub-points, one fact each. The wording was moved, not rewritten.
+- **Unchanged:** every section, heading, link, anchor, table row, diagram, number and identifier.
+- **Evidence:** compared with the previous version, no word is removed, and the headings, anchors,
+  links, code spans, numbers and fenced samples are identical. The README layout, link and history
+  checks pass.
+- **Scope:** Documentation only; no source or dependency changed.
+
+[Back to change history](#change-history)
+
 <a id="source-simplification"></a>
 
 ### Simpler source, truer links — 2026-10-02
 
-- **Name:** the app calls itself MetaData Search Engine everywhere: the home page title, the
-  header, the browser tab and the web app manifest, which used to read "Custom Search",
-  "Search Engine" and "MetaData-Search-Engine". The header's first column, which the websites
-  filter shares so the search box lines up with the results, widened from 260 to 330 pixels to hold
-  the name on one line beside its icon.
-- **Links:** a result's title and a saved page's title are plain links to the page's own address.
-  Until now they dropped the `https:` or `http:` prefix and let the browser reuse the app's own
-  scheme, so from the development server every page opened over plain http. Both links tell a
-  screen reader that they open a new tab.
+- **Name:**
+  - the app calls itself MetaData Search Engine everywhere: the home page title, the header, the
+    browser tab and the web app manifest, which used to read "Custom Search", "Search Engine" and
+    "MetaData-Search-Engine".
+  - The header's first column, which the websites filter shares so the search box lines up with the
+    results, widened from 260 to 330 pixels to hold the name on one line beside its icon.
+- **Links:**
+  - a result's title and a saved page's title are plain links to the page's own address.
+  - Until now they dropped the `https:` or `http:` prefix and let the browser reuse the app's own
+    scheme, so from the development server every page opened over plain http.
+  - Both links tell a screen reader that they open a new tab.
 - **Search words:** the bold search words in a snippet now include words that start with an
   accented or non-Latin letter, such as *école* or *北京*; the old word boundary only recognised
   ASCII letters.
 - **Search box:** the clear button appears whenever the box has text, on the results page too,
   and the box is a controlled input instead of being read and cleared through the document.
   Search runs when the form is submitted, so Enter and the Search button share one handler.
-- **Filters:** ticking a website or switching the Web source redraws the page without navigating,
-  so the Back button no longer has to step through every click. Switching Web on the home page
-  keeps the typed query, which it used to clear. The hidden websites are the filter's only stored
-  state; the stored list of tick-box rows, its reload flag and the "new input" flag are gone, and
-  a query typed on the home page is searched when the results page is opened directly, where the
-  missing filter state used to stop the page. Submitting the same query a second time searches
-  again; it used to clear the websites filter and show the old results. The Web switch keeps its
-  setting across a reload; it used to come back on every time the page loaded.
-- **Fonts and stylesheet:** IBM Plex Sans and Mono ship with the app through the Fontsource
-  packages, so the page no longer fetches a stylesheet and fonts from Google Fonts before it can
-  draw; only the Latin subset is bundled, and other scripts fall back to the system font. Only
-  Bootstrap's reboot styles load, with the `visually-hidden` helper copied into `search.css`;
-  nothing else in Bootstrap matched the pages. The header the results page and My Pages share, the
-  page background, the address styling, the empty-state block, the grey monospace text style, the
-  hover underline and the red button colours are each one rule in `search.css`, and the page width,
-  gutter, header height, first-column width and the remaining literal colours and radii are
-  variables there.
-- **Code:** `src/storage.js` is the app's own local-storage module, replacing the `local-storage`
-  package and the `global` shim Vite carried for it: it names every key once, reads and writes
-  values as JSON, and holds the saved-pages reads and writes that two pages shared. `src/routes.js`
-  names the three addresses; `src/header.jsx` draws the shared header and the My Pages link;
-  `src/emptyState.jsx` draws the empty states of the results page and My Pages; the live search's
-  status words live in `src/webSearch.js` for the server and the page alike, its highlighter
-  compiles the search words once per page, and the server passes an untitled result's empty title
-  through for the page to replace with the website. The home page and the results page are two
-  components instead of one that branched on the address, each component's internals are private
-  members, every method has a documentation comment, and the 28 debugging lines the pages printed
-  to the browser console are gone. The commented-out 2021 ValueSERP request and the two helpers
-  only it used are removed; the project history above keeps the account of it.
+- **Filters:**
+  - ticking a website or switching the Web source redraws the page without navigating, so the Back
+    button no longer has to step through every click.
+  - Switching Web on the home page keeps the typed query, which it used to clear.
+  - The hidden websites are the filter's only stored state;
+    - the stored list of tick-box rows, its reload flag and the "new input" flag are gone, and a
+      query typed on the home page is searched when the results page is opened directly, where the
+      missing filter state used to stop the page.
+  - Submitting the same query a second time searches again; it used to clear the websites filter and
+    show the old results.
+  - The Web switch keeps its setting across a reload; it used to come back on every time the page
+    loaded.
+- **Fonts and stylesheet:**
+  - IBM Plex Sans and Mono ship with the app through the Fontsource packages, so the page no longer
+    fetches a stylesheet and fonts from Google Fonts before it can draw; only the Latin subset is
+    bundled, and other scripts fall back to the system font.
+  - Only Bootstrap's reboot styles load, with the `visually-hidden` helper copied into `search.css`;
+    nothing else in Bootstrap matched the pages.
+  - The header the results page and My Pages share, the page background, the address styling, the
+    empty-state block, the grey monospace text style, the hover underline and the red button colours
+    are each one rule in `search.css`,
+  - and the page width, gutter, header height, first-column width and the remaining literal colours
+    and radii are variables there.
+- **Code:**
+  - `src/storage.js` is the app's own local-storage module, replacing the `local-storage` package
+    and the `global` shim Vite carried for it: it names every key once, reads and writes values as
+    JSON, and holds the saved-pages reads and writes that two pages shared.
+  - `src/routes.js` names the three addresses;
+    - `src/header.jsx` draws the shared header and the My Pages link;
+    - `src/emptyState.jsx` draws the empty states of the results page and My Pages;
+    - the live search's status words live in `src/webSearch.js` for the server and the page alike,
+      its highlighter compiles the search words once per page, and the server passes an untitled
+      result's empty title through for the page to replace with the website.
+  - The home page and the results page are two components instead of one that branched on the
+    address, each component's internals are private members, every method has a documentation
+    comment, and the 28 debugging lines the pages printed to the browser console are gone.
+  - The commented-out 2021 ValueSERP request and the two helpers only it used are removed; the
+    project history above keeps the account of it.
 - **Files:** `index.html` carries a real description, no longer blocks dragging on the whole page,
   and names the script that fills it; the web app manifest lists the favicon and logo as icons;
   `package.json` states the Node.js 22.22 requirement; `.gitignore` ignores Finder's folder-icon
   file, which the root ignore rules already covered.
-- **Checks:** 53 tests pass, nine of them new: the form submit path, a repeated submit searching
-  again, a query typed before the results page is opened directly, a new search clearing the
-  websites filter, the Web switch kept across a reload and on by default on a first visit, the
-  accented and Chinese search words, a snippet with no search words, and the untitled result named
-  after its website. `npm run build` succeeds, and a build given a made-up
-  Tavily key contains no trace of it. In the desktop app's browser pane (Chromium) at 1,280 and
-  1,440 pixels wide, the home page, the results page with a saved result, My Pages with and without
-  a saved page and the results page's no-key message drew as designed, the header title sat in the
-  40-pixel band beside the search box, the bundled fonts loaded, nothing scrolled sideways and
-  there were no console errors.
+- **Checks:**
+  - 53 tests pass, nine of them new:
+    - the form submit path,
+    - a repeated submit searching again,
+    - a query typed before the results page is opened directly,
+    - a new search clearing the websites filter,
+    - the Web switch kept across a reload and on by default on a first visit,
+    - the accented and Chinese search words,
+    - a snippet with no search words,
+    - and the untitled result named after its website.
+  - `npm run build` succeeds, and a build given a made-up Tavily key contains no trace of it.
+  - In the desktop app's browser pane (Chromium) at 1,280 and 1,440 pixels wide,
+    - the home page, the results page with a saved result, My Pages with and without a saved page
+      and the results page's no-key message drew as designed,
+    - the header title sat in the 40-pixel band beside the search box,
+    - the bundled fonts loaded,
+    - nothing scrolled sideways and there were no console errors.
 
 [Back to change history](#change-history)
 
@@ -285,24 +324,30 @@ One record per change; complete details and evidence are below. Older work dates
 
 ### Live web search — 2026-10-02
 
-- **Search:** each query goes from the page to the development server's `/live/search` address,
-  which asks Tavily's basic search for 10 live results with the key in `.env.local` and passes back
-  each result's title, address and excerpt, without the Markdown marks Tavily sometimes leaves in
-  an excerpt. The results page lists them in Tavily's order with each page's address, title and a
-  snippet that bolds the search words; the websites filter, Favourite, saved results first and My
-  Pages work on them as before, and a line under the results names Tavily. The six McDonald's
-  sample results are gone.
-- **Key and limits:** the key stays on the development or preview server; the page never receives
-  it, and the server answers only requests from the app's own page. Without a key, with a key
-  Tavily refuses, once the month's free searches are used up, or when Tavily does not answer, the
-  results page says which and what to do.
+- **Search:**
+  - each query goes from the page to the development server's `/live/search` address, which asks
+    Tavily's basic search for 10 live results with the key in `.env.local` and passes back each
+    result's title, address and excerpt, without the Markdown marks Tavily sometimes leaves in an
+    excerpt.
+  - The results page lists them in Tavily's order with each page's address, title and a snippet that
+    bolds the search words; the websites filter, Favourite, saved results first and My Pages work on
+    them as before, and a line under the results names Tavily.
+  - The six McDonald's sample results are gone.
+- **Key and limits:**
+  - the key stays on the development or preview server; the page never receives it, and the server
+    answers only requests from the app's own page.
+  - Without a key, with a key Tavily refuses, once the month's free searches are used up, or when
+    Tavily does not answer, the results page says which and what to do.
 - **Sources:** Web is the source the toggle switches; Google and Bing show as unavailable.
-- **Checks:** 45 tests pass, and `npm run build` builds 105 modules with no trace of the
-  key, which the build was given. On the development server, a search with no key showed how to add
-  one, a made-up key came back from Tavily as refused, and a request marked as coming from another
-  website was turned away. With a real key, a search for “best pizza in ottawa” listed Tavily's 9
-  live results in their order in headless Chromium at 1,280 and 1,440 pixels wide, with no sideways
-  scrolling and no console errors. `.env.local` is ignored by Git and has never been committed.
+- **Checks:**
+  - 45 tests pass, and `npm run build` builds 105 modules with no trace of the key, which the build
+    was given.
+  - On the development server, a search with no key showed how to add one, a made-up key came back
+    from Tavily as refused, and a request marked as coming from another website was turned away.
+  - With a real key, a search for “best pizza in ottawa” listed Tavily's 9 live results in their
+    order in headless Chromium at 1,280 and 1,440 pixels wide, with no sideways scrolling and no
+    console errors.
+  - `.env.local` is ignored by Git and has never been committed.
 
 [Back to change history](#change-history)
 
@@ -310,28 +355,36 @@ One record per change; complete details and evidence are below. Older work dates
 
 ### Interface refresh — 2026-10-02
 
-- **Look:** the three pages keep their layout and colours: the red Search and Remove buttons, the
-  sage Google button, pink result titles, pale-yellow saved results and blue links on My Pages. IBM
-  Plex Sans and Mono replace the system font, and text meets WCAG AA contrast; the result titles
-  are a deeper pink for it.
-- **Home:** the Bing photo fills the page under a dark radial wash, so the white title reads at
-  4.5:1 or better over the brightest part of the photo behind it. The search box and the Google
-  and Bing buttons sit in one white panel, and My Pages and the photo credit are labelled chips.
-- **Results:** the header stays at the top while the page scrolls. Its title carries the project
-  icon and lines up with the websites filter below it, its search box lines up with the results,
-  and its buttons share one height. Each site in the websites filter is one row with its tick box, its number of
-  results and a bar, in place of a tick box beside a separate button. A status line counts the
-  results shown and the sites hidden, results are numbered in one panel, and each result's
-  Favourite or Remove button sits in its own column. A saved result also carries a Saved tag.
+- **Look:**
+  - the three pages keep their layout and colours: the red Search and Remove buttons, the sage
+    Google button, pink result titles, pale-yellow saved results and blue links on My Pages.
+  - IBM Plex Sans and Mono replace the system font, and text meets WCAG AA contrast; the result
+    titles are a deeper pink for it.
+- **Home:**
+  - the Bing photo fills the page under a dark radial wash, so the white title reads at 4.5:1 or
+    better over the brightest part of the photo behind it.
+  - The search box and the Google and Bing buttons sit in one white panel, and My Pages and the
+    photo credit are labelled chips.
+- **Results:**
+  - the header stays at the top while the page scrolls.
+  - Its title carries the project icon and lines up with the websites filter below it, its search
+    box lines up with the results, and its buttons share one height.
+  - Each site in the websites filter is one row with its tick box, its number of results and a bar,
+    in place of a tick box beside a separate button.
+  - A status line counts the results shown and the sites hidden, results are numbered in one panel,
+    and each result's Favourite or Remove button sits in its own column.
+  - A saved result also carries a Saved tag.
 - **States:** Bing reads unavailable instead of looking like a working button. Hiding every site,
   turning Google off and an empty My Pages each have their own message, and every control shows a
   blue ring when reached with the keyboard.
 - **My Pages:** cards show each page's address, title and snippet, and Remove takes a page off the
   list; until now pages could be removed only from the results page.
-- **Google button:** on the home page it now switches in place. It used to open the results page,
-  which returned straight to the home page without a query and made the page flash. A search made
-  with Google switched off now keeps the Google results hidden; since 2021 a new search had shown
-  them anyway.
+- **Google button:**
+  - on the home page it now switches in place.
+  - It used to open the results page, which returned straight to the home page without a query and
+    made the page flash.
+  - A search made with Google switched off now keeps the Google results hidden; since 2021 a new
+    search had shown them anyway.
 - **Kept:** the clear button in the search box, which empties the box and the saved query.
 - **Code:** the icons are Bootstrap Icons 1.13.1 glyphs, inlined in `src/icons.jsx`;
   `src/address.jsx` sets each address's site in bold. The Google and Bing image icons left `html/`,
@@ -353,19 +406,24 @@ One record per change; complete details and evidence are below. Older work dates
   longer passes `match` and `history` to page components, and class components cannot call its
   hooks, so `src/router.jsx` hands each page the current `location` and a `navigate` function. The
   results page returns to the home page through `Navigate`.
-- **Styling:** Bootstrap 5 dropped the `close` and `card-columns` styles, pads cards and list items
-  only inside `.card` and `.list-group`, underlines links, and resets card heights. The project's
-  stylesheets now carry the Bootstrap 4 values the pages relied on, so they look as they did. The
-  small address under each result title takes Bootstrap 5's slightly darker grey.
+- **Styling:**
+  - Bootstrap 5 dropped the `close` and `card-columns` styles, pads cards and list items only inside
+    `.card` and `.list-group`, underlines links, and resets card heights.
+  - The project's stylesheets now carry the Bootstrap 4 values the pages relied on, so they look as
+    they did.
+  - The small address under each result title takes Bootstrap 5's slightly darker grey.
 - **Node.js:** React Router 8 needs Node.js 22.22 or newer, up from 20.19 or 22.12.
-- **Dependencies:** `jquery` and `popper.js`, installed only for Bootstrap 4, are gone; Bootstrap 5
-  brings `@popperjs/core`, which the app does not use. An install adds 99 packages, 9 of them for
-  the app itself, and `npm audit` reports no vulnerabilities. The built script grew from 170 to
-  276 kB and the stylesheet from 149 to 236 kB.
-- **Checks:** the 14 tests pass with only their router import changed, and `npm run build` builds
-  102 modules. In headless Chromium at 1,440 by 900 pixels, the home page, the results page, newly
-  saved results, My Pages and a filtered list matched screenshots taken before the upgrade apart
-  from that grey and font smoothing, with no console errors or warnings.
+- **Dependencies:**
+  - `jquery` and `popper.js`, installed only for Bootstrap 4, are gone; Bootstrap 5 brings
+    `@popperjs/core`, which the app does not use.
+  - An install adds 99 packages, 9 of them for the app itself, and `npm audit` reports no
+    vulnerabilities.
+  - The built script grew from 170 to 276 kB and the stylesheet from 149 to 236 kB.
+- **Checks:**
+  - the 14 tests pass with only their router import changed, and `npm run build` builds 102 modules.
+  - In headless Chromium at 1,440 by 900 pixels, the home page, the results page, newly saved
+    results, My Pages and a filtered list matched screenshots taken before the upgrade apart from
+    that grey and font smoothing, with no console errors or warnings.
 
 [Back to change history](#change-history)
 
@@ -391,10 +449,11 @@ One record per change; complete details and evidence are below. Older work dates
 
 ### Automated tests — 2026-10-02
 
-- **Tests:** `npm test` runs Vitest with React Testing Library in a simulated browser page from
-  jsdom. `src/app.test.jsx` opens the app through its router and checks a search from the button
-  and from Enter, the result links, the return home without a query, the clear button, both
-  filters, saving and removing favourites, My Pages, and what a reload keeps.
+- **Tests:**
+  - `npm test` runs Vitest with React Testing Library in a simulated browser page from jsdom.
+  - `src/app.test.jsx` opens the app through its router and checks a search from the button and from
+    Enter, the result links, the return home without a query, the clear button, both filters, saving
+    and removing favourites, My Pages, and what a reload keeps.
 - **Isolation:** the app's modules set up local storage and the filter state when they load, so
   each test reloads them and starts like a freshly opened page.
 - **Checks:** all 12 tests passed against the app as it stood, on React 17, and `npm run build`
@@ -418,10 +477,12 @@ One record per change; complete details and evidence are below. Older work dates
   `package.json`, as did `jquery` and `popper.js`, which npm still installs because Bootstrap 4
   needs them. The app now needs React, React DOM, React Router, React Router DOM, Bootstrap and
   `local-storage`.
-- **Checks:** in headless Chromium at 1,280, 1,440 and 1,920 pixels wide, the Bing button and the
-  My Pages icon stayed in the window with room between them, no tick box overlapped a site name,
-  and no window scrolled sideways. Search, the clear button, favourites, My Pages and both filters
-  behaved as before, without page errors, and `npm run build` built 46 modules.
+- **Checks:**
+  - in headless Chromium at 1,280, 1,440 and 1,920 pixels wide, the Bing button and the My Pages
+    icon stayed in the window with room between them, no tick box overlapped a site name, and no
+    window scrolled sideways.
+  - Search, the clear button, favourites, My Pages and both filters behaved as before, without page
+    errors, and `npm run build` built 46 modules.
 
 [Back to change history](#change-history)
 
@@ -431,34 +492,41 @@ One record per change; complete details and evidence are below. Older work dates
 
 - **Why:** neither version of the app ran on current Node.js. The tip stopped at a module that
   `react-dev-utils` 12 no longer has, and Version 3.31 at a PostCSS package-export error.
-- **Build:** Vite 8 and its React plugin replace the ejected Create React App 4 setup. `config/` and
-  `scripts/` are gone; `index.html` moved from `html/` to the project folder and loads
-  `src/index.jsx`; `vite.config.js` keeps `html/` as the public folder, port 3000 and the `build/`
-  folder. Vite maps Node's `global` to the browser's `globalThis` for the `local-storage` package,
-  as webpack used to.
+- **Build:**
+  - Vite 8 and its React plugin replace the ejected Create React App 4 setup.
+  - `config/` and `scripts/` are gone; `index.html` moved from `html/` to the project folder and
+    loads `src/index.jsx`; `vite.config.js` keeps `html/` as the public folder, port 3000 and the
+    `build/` folder.
+  - Vite maps Node's `global` to the browser's `globalThis` for the `local-storage` package, as
+    webpack used to.
 - **Scripts:** `npm start`, `npm run build` and the new `npm run preview`. `npm test` left with the
   2021 Jest setup, which had no tests.
-- **Dependencies:** the build, lint and test tooling left `package.json`, and `vite` and
-  `@vitejs/plugin-react` are its only development dependencies. An install adds 124 packages
-  instead of about 920, and `package-lock.json`, deleted in 2022, pins them again. GitHub's seven open security alerts, six for `webpack-dev-server` and one
-  for `@babel/core`, were all in removed packages. The app's own packages are unchanged; nothing
-  imports `jquery`, `popper.js`, `bootstrap-icons`, `web-vitals` or the testing libraries, which
-  stay listed.
+- **Dependencies:**
+  - the build, lint and test tooling left `package.json`, and `vite` and `@vitejs/plugin-react` are
+    its only development dependencies.
+  - An install adds 124 packages instead of about 920, and `package-lock.json`, deleted in 2022,
+    pins them again.
+  - GitHub's seven open security alerts, six for `webpack-dev-server` and one for `@babel/core`,
+    were all in removed packages.
+  - The app's own packages are unchanged; nothing imports `jquery`, `popper.js`, `bootstrap-icons`,
+    `web-vitals` or the testing libraries, which stay listed.
 - **Search:** the development line that set the previous query to `123` is gone. A new query loads
   the six bundled sample results, so every query shows them, including a new search from the
   results page.
 - **Clear button:** it empties the search box. It used to reset the form, which put the previous
   query back.
-- **Favourite buttons:** each result's button reads the saved pages, so a saved result shows Remove
-  after a return from My Pages or a reload, and choosing it again removes the page instead of saving
-  it twice. Saved pages are matched by link, and choosing a button no longer redraws the whole
-  results page.
-- **Checks:** `npm run build` builds 46 modules. On the development server in headless Chromium,
-  every query showed six results; the clear button emptied the box; favourites survived a return
-  from My Pages and a reload without duplicates; unticking a website hid its two results and
-  turning Google off showed the no-results message; no page errors. `npm run preview` served the
-  project icon's favicon to the page that links it. Two layout bugs found on the way were added to
-  the known bugs.
+- **Favourite buttons:**
+  - each result's button reads the saved pages, so a saved result shows Remove after a return from
+    My Pages or a reload, and choosing it again removes the page instead of saving it twice.
+  - Saved pages are matched by link, and choosing a button no longer redraws the whole results page.
+- **Checks:**
+  - `npm run build` builds 46 modules.
+  - On the development server in headless Chromium, every query showed six results; the clear button
+    emptied the box; favourites survived a return from My Pages and a reload without duplicates;
+    unticking a website hid its two results and turning Google off showed the no-results message; no
+    page errors.
+  - `npm run preview` served the project icon's favicon to the page that links it.
+  - Two layout bugs found on the way were added to the known bugs.
 
 [Back to change history](#change-history)
 
@@ -466,18 +534,21 @@ One record per change; complete details and evidence are below. Older work dates
 
 ### Project icon — 2026-10-01
 
-- **Icon:** `Resources/MetaSearchEngineIcon.png` is the 1,024-pixel master: three coloured sources
-  flow into one magnifier showing a merged results list, on a light blue tile clipped to the rounded
-  square macOS draws for app icons, 824 of 1024 pixels, with a soft shadow that keeps its edge on a
-  white background. It sits outside `html/`, so the build does not serve it.
+- **Icon:**
+  - `Resources/MetaSearchEngineIcon.png` is the 1,024-pixel master: three coloured sources flow into
+    one magnifier showing a merged results list, on a light blue tile clipped to the rounded square
+    macOS draws for app icons, 824 of 1024 pixels, with a soft shadow that keeps its edge on a white
+    background.
+  - It sits outside `html/`, so the build does not serve it.
 - **Favicon:** `html/favicon.ico`, which `index.html` already loads, was React's default logo from
   the Create React App template. It is now an icon file holding the same artwork at 16, 32, 48, 64,
   128 and 256 pixels.
 - **Finder:** the project folder's icon was set from the same master.
-- **Checks:** the master is 1,024 by 1,024 pixels with a transparent margin around its 824-pixel
-  tile; the favicon's 16, 32 and 64-pixel images were inspected; and the folder icon as macOS
-  reports it shows the new artwork. The build stopped at the time, so the favicon was not yet seen
-  in a served page.
+- **Checks:**
+  - the master is 1,024 by 1,024 pixels with a transparent margin around its 824-pixel tile; the
+    favicon's 16, 32 and 64-pixel images were inspected; and the folder icon as macOS reports it
+    shows the new artwork.
+  - The build stopped at the time, so the favicon was not yet seen in a served page.
 
 [Back to change history](#change-history)
 
