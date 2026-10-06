@@ -168,6 +168,7 @@ from Tavily with the key in `.env.local`.
 | `Resources/` | The 1,024-pixel project icon master, kept outside `html/` so the build does not serve it. |
 | `CONTRIBUTING.md` | Contribution and numbering rules for the public mirror. |
 | `CHANGELOG.md` | The complete change history. |
+| `CHANGELOG.svg` | The history strip drawn from the changelog. |
 
 <!-- project-control:section=ignore -->
 ## Contributing
@@ -176,6 +177,8 @@ For source changes, follow the [Meta Search Engine contribution guide](CONTRIBUT
 
 <!-- project-control:section=history -->
 ## Change history
+
+![Changelog history, 2020 – 2026: 25 entries; busiest October 2026 (19); quiet Nov 2025 – Sep 2026; no releases yet.](CHANGELOG.svg)
 
 **Change-history numbering:** This project uses dated history and does not assign project-level
 version or build numbers. Follow the [version and build policy](CONTRIBUTING.md#version-and-build-policy).
@@ -189,6 +192,7 @@ One record per change; complete details and evidence are in [CHANGELOG.md](CHANG
 
 | Record | Date | Highlights | Details |
 |---|---|---|---|
+| Documentation | 2026-10-06 | <ul><li><strong>Changelog:</strong> The README's Change history opens with a history strip, <code>CHANGELOG.svg</code>, drawn from the changelog: the entries of every period as shaded cells, release months marked, and the span, total and version range beside them.</li></ul> | [Full record](CHANGELOG.md#history-strip) |
 | Documentation | 2026-10-06 | <ul><li><strong>Layout:</strong> The line of section links under the title now holds three quick links, Quick start, Architecture and Change history, in place of one for every section; the outline of the whole README is the one GitHub, Obsidian and Project Control provide.</li></ul> | [Full record](CHANGELOG.md#three-quick-links) |
 | Documentation | 2026-10-06 | <ul><li><strong>Audit:</strong> The structure table lists the contributor guide and the changelog, the two root documents it lacked.</li></ul> | [Full record](CHANGELOG.md#readme-source-audit) |
 | Documentation | 2026-10-06 | <ul><li><strong>History:</strong> The complete change history now lives in <code>CHANGELOG.md</code>, one entry per change with its summary, what changed, what was checked and how it was delivered; the README table keeps the newest ten rows and opens each entry from its Details cell.</li></ul> | [Full record](CHANGELOG.md#changelog) |
@@ -198,7 +202,6 @@ One record per change; complete details and evidence are in [CHANGELOG.md](CHANG
 | Maintenance | 2026-10-02 | <ul><li><strong>Name:</strong> The app is MetaData Search Engine on the page, in the browser tab and in the web app manifest.</li><li><strong>Links:</strong> Results and saved pages open at their own address, https included; bold search words now work in accented and Chinese text.</li><li><strong>Filters:</strong> Ticking a website or switching Web no longer adds a browser history entry, switching Web on the home page keeps the typed query, the Web switch keeps its setting across a reload, and submitting the same query again searches again.</li><li><strong>Lighter:</strong> Only Bootstrap's base styles load, the IBM Plex fonts ship with the app instead of coming from Google Fonts, and the page's debug logging is gone.</li></ul> | [Full record](CHANGELOG.md#source-simplification) |
 | Maintenance | 2026-10-02 | <ul><li><strong>Header:</strong> The page title and its icon are larger, as tall as the search box and buttons beside them.</li></ul> | [Full record](CHANGELOG.md#header-title) |
 | Maintenance | 2026-10-02 | <ul><li><strong>Search:</strong> Queries now search the live web through Tavily's free search service, ten results at a time.</li><li><strong>Key:</strong> Your Tavily key stays with the local development server; the page never receives it.</li><li><strong>Sources:</strong> Web is the switchable source; Google and Bing show as unavailable.</li></ul> | [Full record](CHANGELOG.md#live-web-search) |
-| Maintenance | 2026-10-02 | <ul><li><strong>Look:</strong> A refreshed interface keeps the three pages and their colours, with IBM Plex type and complete hover, focus and empty states.</li><li><strong>Home:</strong> The Bing photo sits under a soft dark wash, with the search box and sources in one white panel.</li><li><strong>My Pages:</strong> Cards show each page's address and snippet, and Remove takes a page off the list.</li></ul> | [Full record](CHANGELOG.md#interface-refresh) |
 ---
 
 <!-- project-control:section=ignore -->
