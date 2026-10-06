@@ -2,6 +2,18 @@
 
 Every change to Meta Search Engine, newest first, in one shape: the summary from the history table, then what changed, what was checked and how it was delivered. The README's Change history table lists the newest 10 and links here.
 
+<a id="readme-source-audit"></a>
+
+## README checked against the source — 2026-10-06
+
+- **Audit:** The structure table lists the contributor guide and the changelog, the two root documents it lacked.
+
+### Changed
+
+- **Why:** a check of the README against the folder found every source path listed and the two root documents missing.
+- **Structure:** `CONTRIBUTING.md` and `CHANGELOG.md` join the table; everything else was found accurate.
+- **Scope:** Documentation only.
+
 <a id="changelog"></a>
 
 ## Documentation — 2026-10-06
