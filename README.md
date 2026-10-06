@@ -1,6 +1,6 @@
 # Meta Search Engine
 
-![Interface](https://img.shields.io/badge/Interface-React%2019-61dafb) ![Routing](https://img.shields.io/badge/Routing-React%20Router%208-ca4245) ![Styling](https://img.shields.io/badge/Styling-Bootstrap%205-7952b3) ![Language](https://img.shields.io/badge/Language-JavaScript-f7df1e) ![Status](https://img.shields.io/badge/Status-2021%20prototype-9f9f9f)
+![Platform](https://img.shields.io/badge/Platform-Browser-blue) ![React](https://img.shields.io/badge/React-19-orange) ![History](https://img.shields.io/badge/History-dated-9f9f9f) ![Routing](https://img.shields.io/badge/Routing-React%20Router%208-ca4245) ![Styling](https://img.shields.io/badge/Styling-Bootstrap%205-7952b3) ![Status](https://img.shields.io/badge/Status-2021%20prototype-9f9f9f)
 
 [Overview](#overview) · [Capabilities](#capabilities) · [Quick start](#quick-start) · [Workflow](#workflow) · [Architecture](#architecture) · [Project structure](#project-structure) · [Contributing](#contributing) · [Change history](#change-history)
 
@@ -187,6 +187,7 @@ One record per change; complete details and evidence are below. Older work dates
 
 | Record | Date | Highlights | Details |
 |---|---|---|---|
+| Documentation | 2026-10-05 | <ul><li><strong>Alignment:</strong> The badge row now opens with the platform and names the history mode; the JavaScript badge went, as the Architecture table names the language.</li></ul> | [Full record](#readme-alignment) |
 | Documentation | 2026-10-05 | <ul><li><strong>Structure:</strong> Sections follow the order and names every project README now shares, under a contents line; sections were renamed and moved, and no wording was removed.</li></ul> | [Full record](#readme-skeleton) |
 | Documentation | 2026-10-05 | <ul><li><strong>Readability:</strong> Long paragraphs, bullets and table cells are now short leads with sub-points, one fact each; no detail was removed.</li></ul> | [Full record](#readme-structure) |
 | Maintenance | 2026-10-02 | <ul><li><strong>Name:</strong> The app is MetaData Search Engine on the page, in the browser tab and in the web app manifest.</li><li><strong>Links:</strong> Results and saved pages open at their own address, https included; bold search words now work in accented and Chinese text.</li><li><strong>Filters:</strong> Ticking a website or switching Web no longer adds a browser history entry, switching Web on the home page keeps the typed query, the Web switch keeps its setting across a reload, and submitting the same query again searches again.</li><li><strong>Lighter:</strong> Only Bootstrap's base styles load, the IBM Plex fonts ship with the app instead of coming from Google Fonts, and the page's debug logging is gone.</li></ul> | [Full record](#source-simplification) |
@@ -210,6 +211,17 @@ One record per change; complete details and evidence are below. Older work dates
 
 <details>
 <summary>Full records for this table</summary>
+
+<a id="readme-alignment"></a>
+
+### README aligned with the other projects — 2026-10-05
+
+- **Why:** every project README shares one structure; this one still lacked part of it.
+- **Badges:** Platform, React, History, Routing, Styling and Status; the Language badge went, as the Architecture table names JavaScript.
+- **Unchanged:** every sentence inside the sections that stayed; links to a moved part were updated.
+- **Scope:** Documentation only.
+
+[Back to change history](#change-history)
 
 <a id="readme-skeleton"></a>
 
