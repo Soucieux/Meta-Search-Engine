@@ -2,7 +2,7 @@
 
 ![Platform](https://img.shields.io/badge/Platform-Browser-blue) ![React](https://img.shields.io/badge/React-19-orange) ![History](https://img.shields.io/badge/History-dated-9f9f9f) ![Routing](https://img.shields.io/badge/Routing-React%20Router%208-ca4245) ![Styling](https://img.shields.io/badge/Styling-Bootstrap%205-7952b3) ![Status](https://img.shields.io/badge/Status-2021%20prototype-9f9f9f)
 
-[Overview](#overview) · [Capabilities](#capabilities) · [Quick start](#quick-start) · [Workflow](#workflow) · [Architecture](#architecture) · [Project structure](#project-structure) · [Contributing](#contributing) · [Change history](#change-history)
+[Quick start](#quick-start) · [Architecture](#architecture) · [Change history](#change-history)
 
 <!-- project-control:section=overview -->
 ## Overview
@@ -189,6 +189,7 @@ One record per change; complete details and evidence are in [CHANGELOG.md](CHANG
 
 | Record | Date | Highlights | Details |
 |---|---|---|---|
+| Documentation | 2026-10-06 | <ul><li><strong>Layout:</strong> The line of section links under the title now holds three quick links, Quick start, Architecture and Change history, in place of one for every section; the outline of the whole README is the one GitHub, Obsidian and Project Control provide.</li></ul> | [Full record](CHANGELOG.md#three-quick-links) |
 | Documentation | 2026-10-06 | <ul><li><strong>Audit:</strong> The structure table lists the contributor guide and the changelog, the two root documents it lacked.</li></ul> | [Full record](CHANGELOG.md#readme-source-audit) |
 | Documentation | 2026-10-06 | <ul><li><strong>History:</strong> The complete change history now lives in <code>CHANGELOG.md</code>, one entry per change with its summary, what changed, what was checked and how it was delivered; the README table keeps the newest ten rows and opens each entry from its Details cell.</li></ul> | [Full record](CHANGELOG.md#changelog) |
 | Documentation | 2026-10-05 | <ul><li><strong>Alignment:</strong> The badge row now opens with the platform and names the history mode; the JavaScript badge went, as the Architecture table names the language.</li></ul> | [Full record](CHANGELOG.md#readme-alignment) |
@@ -198,7 +199,6 @@ One record per change; complete details and evidence are in [CHANGELOG.md](CHANG
 | Maintenance | 2026-10-02 | <ul><li><strong>Header:</strong> The page title and its icon are larger, as tall as the search box and buttons beside them.</li></ul> | [Full record](CHANGELOG.md#header-title) |
 | Maintenance | 2026-10-02 | <ul><li><strong>Search:</strong> Queries now search the live web through Tavily's free search service, ten results at a time.</li><li><strong>Key:</strong> Your Tavily key stays with the local development server; the page never receives it.</li><li><strong>Sources:</strong> Web is the switchable source; Google and Bing show as unavailable.</li></ul> | [Full record](CHANGELOG.md#live-web-search) |
 | Maintenance | 2026-10-02 | <ul><li><strong>Look:</strong> A refreshed interface keeps the three pages and their colours, with IBM Plex type and complete hover, focus and empty states.</li><li><strong>Home:</strong> The Bing photo sits under a soft dark wash, with the search box and sources in one white panel.</li><li><strong>My Pages:</strong> Cards show each page's address and snippet, and Remove takes a page off the list.</li></ul> | [Full record](CHANGELOG.md#interface-refresh) |
-| Maintenance | 2026-10-02 | <ul><li><strong>Frameworks:</strong> React 19, React Router 8 and Bootstrap 5 replace React 17, React Router 5 and Bootstrap 4, and the pages look as they did.</li><li><strong>Node.js:</strong> The app needs Node.js 22.22 or newer.</li><li><strong>Dependencies:</strong> <code>react-router-dom</code>, <code>jquery</code> and <code>popper.js</code> are no longer installed.</li></ul> | [Full record](CHANGELOG.md#framework-upgrade) |
 ---
 
 <!-- project-control:section=ignore -->
