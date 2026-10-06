@@ -166,6 +166,8 @@ from Tavily with the key in `.env.local`.
 | `html/` | The web app manifest, the favicon and the header logo made from the project icon, and the home-page image, a Bing wallpaper the home page credits. |
 | `.env.local` | This computer's Tavily key; not committed. |
 | `Resources/` | The 1,024-pixel project icon master, kept outside `html/` so the build does not serve it. |
+| `CONTRIBUTING.md` | Contribution and numbering rules for the public mirror. |
+| `CHANGELOG.md` | The complete change history. |
 
 <!-- project-control:section=ignore -->
 ## Contributing
@@ -187,6 +189,7 @@ One record per change; complete details and evidence are in [CHANGELOG.md](CHANG
 
 | Record | Date | Highlights | Details |
 |---|---|---|---|
+| Documentation | 2026-10-06 | <ul><li><strong>Audit:</strong> The structure table lists the contributor guide and the changelog, the two root documents it lacked.</li></ul> | [Full record](CHANGELOG.md#readme-source-audit) |
 | Documentation | 2026-10-06 | <ul><li><strong>History:</strong> The complete change history now lives in <code>CHANGELOG.md</code>, one entry per change with its summary, what changed, what was checked and how it was delivered; the README table keeps the newest ten rows and opens each entry from its Details cell.</li></ul> | [Full record](CHANGELOG.md#changelog) |
 | Documentation | 2026-10-05 | <ul><li><strong>Alignment:</strong> The badge row now opens with the platform and names the history mode; the JavaScript badge went, as the Architecture table names the language.</li></ul> | [Full record](CHANGELOG.md#readme-alignment) |
 | Documentation | 2026-10-05 | <ul><li><strong>Structure:</strong> Sections follow the order and names every project README now shares, under a contents line; sections were renamed and moved, and no wording was removed.</li></ul> | [Full record](CHANGELOG.md#readme-skeleton) |
@@ -196,7 +199,6 @@ One record per change; complete details and evidence are in [CHANGELOG.md](CHANG
 | Maintenance | 2026-10-02 | <ul><li><strong>Search:</strong> Queries now search the live web through Tavily's free search service, ten results at a time.</li><li><strong>Key:</strong> Your Tavily key stays with the local development server; the page never receives it.</li><li><strong>Sources:</strong> Web is the switchable source; Google and Bing show as unavailable.</li></ul> | [Full record](CHANGELOG.md#live-web-search) |
 | Maintenance | 2026-10-02 | <ul><li><strong>Look:</strong> A refreshed interface keeps the three pages and their colours, with IBM Plex type and complete hover, focus and empty states.</li><li><strong>Home:</strong> The Bing photo sits under a soft dark wash, with the search box and sources in one white panel.</li><li><strong>My Pages:</strong> Cards show each page's address and snippet, and Remove takes a page off the list.</li></ul> | [Full record](CHANGELOG.md#interface-refresh) |
 | Maintenance | 2026-10-02 | <ul><li><strong>Frameworks:</strong> React 19, React Router 8 and Bootstrap 5 replace React 17, React Router 5 and Bootstrap 4, and the pages look as they did.</li><li><strong>Node.js:</strong> The app needs Node.js 22.22 or newer.</li><li><strong>Dependencies:</strong> <code>react-router-dom</code>, <code>jquery</code> and <code>popper.js</code> are no longer installed.</li></ul> | [Full record](CHANGELOG.md#framework-upgrade) |
-| Maintenance | 2026-10-02 | <ul><li><strong>Saved results:</strong> The results page lists saved results first, on a pale yellow background, one of the 2021 features not yet built.</li></ul> | [Full record](CHANGELOG.md#saved-results-first) |
 ---
 
 <!-- project-control:section=ignore -->
