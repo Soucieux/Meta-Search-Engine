@@ -2,6 +2,8 @@
 
 ![Interface](https://img.shields.io/badge/Interface-React%2019-61dafb) ![Routing](https://img.shields.io/badge/Routing-React%20Router%208-ca4245) ![Styling](https://img.shields.io/badge/Styling-Bootstrap%205-7952b3) ![Language](https://img.shields.io/badge/Language-JavaScript-f7df1e) ![Status](https://img.shields.io/badge/Status-2021%20prototype-9f9f9f)
 
+[Overview](#overview) · [Capabilities](#capabilities) · [Quick start](#quick-start) · [Workflow](#workflow) · [Architecture](#architecture) · [Project structure](#project-structure) · [Contributing](#contributing) · [Change history](#change-history)
+
 <!-- project-control:section=overview -->
 ## Overview
 
@@ -19,7 +21,7 @@ It searches the **live web** through Tavily, a web search service with a free mo
   search API; that request was commented out in March 2021 and removed on 2026-10-02.
 
 <!-- project-control:section=overview -->
-## Features
+## Capabilities
 
 The feature list as the project recorded it at Version 3.31 in April 2021.
 
@@ -51,7 +53,7 @@ None known.
 - Customized searching on google domain,location,gl,hl
 
 <!-- project-control:section=overview -->
-## Current state
+### Current state
 
 Checked on 2026-10-02 with Node.js 22.
 
@@ -153,7 +155,7 @@ from Tavily with the key in `.env.local`.
 | Vitest | Runs the tests in `src/` and `scripts/` for `npm test`; in a simulated browser page from jsdom, React Testing Library drives the app through its router against a stand-in for Tavily. |
 | Scripts | `scripts/liveSearch.js` is the servers' live search, which asks Tavily. |
 
-## Project map
+## Project structure
 
 | Path | Contents |
 |---|---|
@@ -185,6 +187,7 @@ One record per change; complete details and evidence are below. Older work dates
 
 | Record | Date | Highlights | Details |
 |---|---|---|---|
+| Documentation | 2026-10-05 | <ul><li><strong>Structure:</strong> Sections follow the order and names every project README now shares, under a contents line; sections were renamed and moved, and no wording was removed.</li></ul> | [Full record](#readme-skeleton) |
 | Documentation | 2026-10-05 | <ul><li><strong>Readability:</strong> Long paragraphs, bullets and table cells are now short leads with sub-points, one fact each; no detail was removed.</li></ul> | [Full record](#readme-structure) |
 | Maintenance | 2026-10-02 | <ul><li><strong>Name:</strong> The app is MetaData Search Engine on the page, in the browser tab and in the web app manifest.</li><li><strong>Links:</strong> Results and saved pages open at their own address, https included; bold search words now work in accented and Chinese text.</li><li><strong>Filters:</strong> Ticking a website or switching Web no longer adds a browser history entry, switching Web on the home page keeps the typed query, the Web switch keeps its setting across a reload, and submitting the same query again searches again.</li><li><strong>Lighter:</strong> Only Bootstrap's base styles load, the IBM Plex fonts ship with the app instead of coming from Google Fonts, and the page's debug logging is gone.</li></ul> | [Full record](#source-simplification) |
 | Maintenance | 2026-10-02 | <ul><li><strong>Header:</strong> The page title and its icon are larger, as tall as the search box and buttons beside them.</li></ul> | [Full record](#header-title) |
@@ -207,6 +210,22 @@ One record per change; complete details and evidence are below. Older work dates
 
 <details>
 <summary>Full records for this table</summary>
+
+<a id="readme-skeleton"></a>
+
+### README sections in the shared order — 2026-10-05
+
+- **Why:** project READMEs named and ordered the same kinds of section differently, so setup, workflow and
+  architecture sat in a different place in each.
+- **Order:** the sections now run Overview, Capabilities, Quick start, Workflow, Architecture, Project structure, Contributing, Change history.
+- **Renamed:** Features is now Capabilities, and Project map is Project structure.
+- **Moved:** Current state now sits under Capabilities.
+- **Opening:** a contents line under the title links every section.
+- **Unchanged:** every sentence, table, diagram and Project Control marker inside the sections; whole sections
+  moved, and links to a renamed section were updated.
+- **Scope:** Documentation only.
+
+[Back to change history](#change-history)
 
 <a id="readme-structure"></a>
 
