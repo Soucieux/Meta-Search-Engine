@@ -28,38 +28,14 @@ It searches the **live web** through Tavily, a web search service with a free mo
 - **Saved websites:** Mark a result as a favourite, keep it in this browser, see it listed first and highlighted, and open or remove it from My Pages.
 - **Where it stands:** A 2021 prototype whose two known bugs and two layout bugs were fixed on 2026-10-01, with live results since 2026-10-02; pagination, the Bing filter and Google domain settings were never built.
 
-## Quick start
-
-Requires Node.js 22.22 or newer, and npm. Live search needs a free API key from
-[Tavily](https://tavily.com). Run every command from this folder.
-
-```bash
-npm install
-npm start
-```
-
-1. First create `.env.local` in this folder with the line `TAVILY_API_KEY=` followed by your Tavily
-   key. Only the development server reads it, and the page never receives it; the server restarts
-   by itself when `.env.local` changes.
-2. `npm start` serves the app at http://localhost:3000; add `-- --port <number>` to use another port.
-
-Each search uses one of Tavily's free monthly searches, 1,000 on the free plan in October 2026.
-Without a key, the results page says how to add one.
-
-- `npm run build` writes a production build to `build/`. Live search needs a server that holds the
-  key, so a build searches only when `npm run preview` serves it.
-- `npm run preview` serves that build at http://localhost:3000, with live search.
-- `npm test` runs the tests once.
-
-## Usage
+<!-- project-control:section=ignore -->
+### In detail
 
 The feature list as the project recorded it at Version 3.31 in April 2021.
 
 - Its two known bugs, and two layout bugs found later, were fixed on 2026-10-01.
 - Since 2026-10-02 saved websites have been listed first, and the results come from the live web
   through Tavily, which the search-engine filter switches on and off.
-
-### The 2021 feature list
 
 #### Completed
 
@@ -84,7 +60,7 @@ None known.
 
 - Customized searching on google domain,location,gl,hl
 
-### Current state
+#### Current state
 
 Checked on 2026-10-02 with Node.js 22.
 
@@ -95,6 +71,29 @@ Checked on 2026-10-02 with Node.js 22.
 - **Tests:** `npm test` runs 53 tests: the app's pages, filters, favourites and saved state
   against a stand-in for Tavily, the live search's answers and refusals, and the snippets with
   their bold search words.
+
+## Quick start
+
+Requires Node.js 22.22 or newer, and npm. Live search needs a free API key from
+[Tavily](https://tavily.com). Run every command from this folder.
+
+```bash
+npm install
+npm start
+```
+
+1. First create `.env.local` in this folder with the line `TAVILY_API_KEY=` followed by your Tavily
+   key. Only the development server reads it, and the page never receives it; the server restarts
+   by itself when `.env.local` changes.
+2. `npm start` serves the app at http://localhost:3000; add `-- --port <number>` to use another port.
+
+Each search uses one of Tavily's free monthly searches, 1,000 on the free plan in October 2026.
+Without a key, the results page says how to add one.
+
+- `npm run build` writes a production build to `build/`. Live search needs a server that holds the
+  key, so a build searches only when `npm run preview` serves it.
+- `npm run preview` serves that build at http://localhost:3000, with live search.
+- `npm test` runs the tests once.
 
 <!-- project-control:section=workflows -->
 ## Workflow
@@ -186,7 +185,7 @@ For source changes, follow the [Meta Search Engine contribution guide](CONTRIBUT
 <!-- project-control:section=history -->
 ## Change history
 
-![Changelog history, 2020 – 2026: 26 entries; busiest October 2026 (20); quiet Nov 2025 – Sep 2026; no releases yet.](CHANGELOG.svg)
+![Changelog history, 2020 – 2026: 27 entries; busiest October 2026 (21); quiet Nov 2025 – Sep 2026; no releases yet.](CHANGELOG.svg)
 
 **Change-history numbering:** This project uses dated history and does not assign project-level
 version or build numbers. Follow the [version and build policy](CONTRIBUTING.md#version-and-build-policy).
@@ -200,6 +199,7 @@ One record per change; complete details and evidence are in [CHANGELOG.md](CHANG
 
 | Record | Date | Highlights | Details |
 |---|---|---|---|
+| Documentation | 2026-10-07 | <ul><li><strong>Documentation:</strong> The rules behind the Capabilities map moved from Usage into Capabilities itself, under one In detail subsection with a heading per map item; Project Control still shows the map alone.</li></ul> | [Full record](CHANGELOG.md#capabilities-in-one-section) |
 | Documentation | 2026-10-07 | <ul><li><strong>Documentation:</strong> Capabilities is a map of four labelled lines; the 2021 feature list with its status subsections and the current-state notes moved under Usage.</li></ul> | [Full record](CHANGELOG.md#capabilities-as-a-map) |
 | Documentation | 2026-10-06 | <ul><li><strong>Changelog:</strong> The README's Change history opens with a history strip, <code>CHANGELOG.svg</code>, drawn from the changelog: the entries of every period as shaded cells, release months marked, and the span, total and version range beside them.</li></ul> | [Full record](CHANGELOG.md#history-strip) |
 | Documentation | 2026-10-06 | <ul><li><strong>Layout:</strong> The line of section links under the title now holds three quick links, Quick start, Architecture and Change history, in place of one for every section; the outline of the whole README is the one GitHub, Obsidian and Project Control provide.</li></ul> | [Full record](CHANGELOG.md#three-quick-links) |
@@ -209,7 +209,6 @@ One record per change; complete details and evidence are in [CHANGELOG.md](CHANG
 | Documentation | 2026-10-05 | <ul><li><strong>Structure:</strong> Sections follow the order and names every project README now shares, under a contents line; sections were renamed and moved, and no wording was removed.</li></ul> | [Full record](CHANGELOG.md#readme-skeleton) |
 | Documentation | 2026-10-05 | <ul><li><strong>Readability:</strong> Long paragraphs, bullets and table cells are now short leads with sub-points, one fact each; no detail was removed.</li></ul> | [Full record](CHANGELOG.md#readme-structure) |
 | Maintenance | 2026-10-02 | <ul><li><strong>Name:</strong> The app is MetaData Search Engine on the page, in the browser tab and in the web app manifest.</li><li><strong>Links:</strong> Results and saved pages open at their own address, https included; bold search words now work in accented and Chinese text.</li><li><strong>Filters:</strong> Ticking a website or switching Web no longer adds a browser history entry, switching Web on the home page keeps the typed query, the Web switch keeps its setting across a reload, and submitting the same query again searches again.</li><li><strong>Lighter:</strong> Only Bootstrap's base styles load, the IBM Plex fonts ship with the app instead of coming from Google Fonts, and the page's debug logging is gone.</li></ul> | [Full record](CHANGELOG.md#source-simplification) |
-| Maintenance | 2026-10-02 | <ul><li><strong>Header:</strong> The page title and its icon are larger, as tall as the search box and buttons beside them.</li></ul> | [Full record](CHANGELOG.md#header-title) |
 ---
 
 <!-- project-control:section=ignore -->
