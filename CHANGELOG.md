@@ -2,6 +2,19 @@
 
 Every change to Meta Search Engine, newest first, in one shape: the summary from the history table, then what changed, what was checked and how it was delivered. The README's Change history table lists the newest 10 and links here.
 
+<a id="capabilities-as-a-map"></a>
+
+## Capabilities as a map — 2026-10-07
+
+- **Documentation:** Capabilities is a map of four labelled lines; the 2021 feature list with its status subsections and the current-state notes moved under Usage.
+
+### Changed
+
+- **Why:** the repository now asks every README's Capabilities to be a short map of what the user can do, with the rules behind it under Usage, so a newcomer reads the map first.
+- **Capabilities:** Search, Filters, Saved websites and Where it stands, one sentence each.
+- **Usage:** the feature list as the project recorded it at Version 3.31, with its Completed, In progress, Known bugs and Not yet implemented lists, and the Current state checked on 2026-10-02, all moved as they were.
+- **Scope:** Documentation only.
+
 <a id="history-strip"></a>
 
 ## History strip — 2026-10-06
