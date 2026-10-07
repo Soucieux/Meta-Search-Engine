@@ -2,6 +2,18 @@
 
 Every change to Meta Search Engine, newest first, in one shape: the summary from the history table, then what changed, what was checked and how it was delivered. The README's Change history table lists the newest 10 and links here.
 
+<a id="in-detail-named-as-the-map"></a>
+
+## In detail named as the map — 2026-10-07
+
+- **Documentation:** Every In detail heading names a map item: the 2021 feature list and the current state regrouped under Search, Filters, Saved websites and Where it stands, every item kept.
+
+### Changed
+
+- **Why:** the repository rule now says each heading under In detail is named exactly as a map item, so a reader finds a map item's rules under its own name.
+- **In detail:** the Completed, In progress, Known bugs, Not yet implemented and Current state lists became labelled lines under the four map items, each item of the 2021 list and each current-state note in place; the lead sentence names the checked date.
+- **Scope:** Documentation only.
+
 <a id="capabilities-in-one-section"></a>
 
 ## Capabilities in one section — 2026-10-07

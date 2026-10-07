@@ -31,46 +31,30 @@ It searches the **live web** through Tavily, a web search service with a free mo
 <!-- project-control:section=ignore -->
 ### In detail
 
-The feature list as the project recorded it at Version 3.31 in April 2021.
+The feature list as the project recorded it at Version 3.31 in April 2021, by what each part covers today, and the state checked on 2026-10-02 with Node.js 22.
 
-- Its two known bugs, and two layout bugs found later, were fixed on 2026-10-01.
-- Since 2026-10-02 saved websites have been listed first, and the results come from the live web
-  through Tavily, which the search-engine filter switches on and off.
+#### Search
 
-#### Completed
-
-- Search bar
-- Search results
-- Websites filter
-- Save favourite websites
-- Search engine filter (Google)
-- Saved websites collection
-- Saved websites presented first with colored background
-
-#### In progress
-
-- Pagination
-- Search engine filter (Bing)
-
-#### Known bugs
-
-None known.
-
-#### Not yet implemented
-
-- Customized searching on google domain,location,gl,hl
-
-#### Current state
-
-Checked on 2026-10-02 with Node.js 22.
-
+- **Completed in 2021:** Search bar; Search results; Search engine filter (Google).
+- **Search:** every query asks Tavily for 10 live results through the development server and lists them in Tavily's order. Without a Tavily key, or once the month's free searches are used up, the results page says why. Google and Bing are unavailable.
 - **Build:** Vite serves the app with `npm start` and builds it with `npm run build`.
-- **Search:** every query asks Tavily for 10 live results through the development server and lists
-  them in Tavily's order. Without a Tavily key, or once the month's free searches are used up, the
-  results page says why. Google and Bing are unavailable.
-- **Tests:** `npm test` runs 53 tests: the app's pages, filters, favourites and saved state
-  against a stand-in for Tavily, the live search's answers and refusals, and the snippets with
-  their bold search words.
+
+#### Filters
+
+- **Completed in 2021:** Websites filter.
+- **Since 2026-10-02:** the results come from the live web through Tavily, which the search-engine filter switches on and off.
+
+#### Saved websites
+
+- **Completed in 2021:** Save favourite websites; Saved websites collection; Saved websites presented first with colored background.
+- **Since 2026-10-02:** saved websites have been listed first.
+
+#### Where it stands
+
+- **In progress in 2021:** Pagination; Search engine filter (Bing).
+- **Known bugs:** None known. Its two known bugs, and two layout bugs found later, were fixed on 2026-10-01.
+- **Not yet implemented:** Customized searching on google domain,location,gl,hl.
+- **Tests:** `npm test` runs 53 tests: the app's pages, filters, favourites and saved state against a stand-in for Tavily, the live search's answers and refusals, and the snippets with their bold search words.
 
 ## Quick start
 
@@ -185,7 +169,7 @@ For source changes, follow the [Meta Search Engine contribution guide](CONTRIBUT
 <!-- project-control:section=history -->
 ## Change history
 
-![Changelog history, 2020 – 2026: 27 entries; busiest October 2026 (21); quiet Nov 2025 – Sep 2026; no releases yet.](CHANGELOG.svg)
+![Changelog history, 2020 – 2026: 28 entries; busiest October 2026 (22); quiet Nov 2025 – Sep 2026; no releases yet.](CHANGELOG.svg)
 
 **Change-history numbering:** This project uses dated history and does not assign project-level
 version or build numbers. Follow the [version and build policy](CONTRIBUTING.md#version-and-build-policy).
@@ -199,6 +183,7 @@ One record per change; complete details and evidence are in [CHANGELOG.md](CHANG
 
 | Record | Date | Highlights | Details |
 |---|---|---|---|
+| Documentation | 2026-10-07 | <ul><li><strong>Documentation:</strong> Every In detail heading names a map item: the 2021 feature list and the current state regrouped under Search, Filters, Saved websites and Where it stands, every item kept.</li></ul> | [Full record](CHANGELOG.md#in-detail-named-as-the-map) |
 | Documentation | 2026-10-07 | <ul><li><strong>Documentation:</strong> The rules behind the Capabilities map moved from Usage into Capabilities itself, under one In detail subsection with a heading per map item; Project Control still shows the map alone.</li></ul> | [Full record](CHANGELOG.md#capabilities-in-one-section) |
 | Documentation | 2026-10-07 | <ul><li><strong>Documentation:</strong> Capabilities is a map of four labelled lines; the 2021 feature list with its status subsections and the current-state notes moved under Usage.</li></ul> | [Full record](CHANGELOG.md#capabilities-as-a-map) |
 | Documentation | 2026-10-06 | <ul><li><strong>Changelog:</strong> The README's Change history opens with a history strip, <code>CHANGELOG.svg</code>, drawn from the changelog: the entries of every period as shaded cells, release months marked, and the span, total and version range beside them.</li></ul> | [Full record](CHANGELOG.md#history-strip) |
@@ -208,7 +193,6 @@ One record per change; complete details and evidence are in [CHANGELOG.md](CHANG
 | Documentation | 2026-10-05 | <ul><li><strong>Alignment:</strong> The badge row now opens with the platform and names the history mode; the JavaScript badge went, as the Architecture table names the language.</li></ul> | [Full record](CHANGELOG.md#readme-alignment) |
 | Documentation | 2026-10-05 | <ul><li><strong>Structure:</strong> Sections follow the order and names every project README now shares, under a contents line; sections were renamed and moved, and no wording was removed.</li></ul> | [Full record](CHANGELOG.md#readme-skeleton) |
 | Documentation | 2026-10-05 | <ul><li><strong>Readability:</strong> Long paragraphs, bullets and table cells are now short leads with sub-points, one fact each; no detail was removed.</li></ul> | [Full record](CHANGELOG.md#readme-structure) |
-| Maintenance | 2026-10-02 | <ul><li><strong>Name:</strong> The app is MetaData Search Engine on the page, in the browser tab and in the web app manifest.</li><li><strong>Links:</strong> Results and saved pages open at their own address, https included; bold search words now work in accented and Chinese text.</li><li><strong>Filters:</strong> Ticking a website or switching Web no longer adds a browser history entry, switching Web on the home page keeps the typed query, the Web switch keeps its setting across a reload, and submitting the same query again searches again.</li><li><strong>Lighter:</strong> Only Bootstrap's base styles load, the IBM Plex fonts ship with the app instead of coming from Google Fonts, and the page's debug logging is gone.</li></ul> | [Full record](CHANGELOG.md#source-simplification) |
 ---
 
 <!-- project-control:section=ignore -->
