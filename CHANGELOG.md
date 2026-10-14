@@ -572,8 +572,8 @@ Every change to Meta Search Engine, newest first, in one shape: the summary from
 
 ### Delivered
 
-- **Status:** delivered uncommitted on 2026-10-01, then committed the same day as `a5bb3d1` (the
-  import with its history), `54f6df9` and `1cc222a`.
+- **Status:** delivered uncommitted on 2026-10-01, then committed the same day as `fda52c1` (the
+  import with its history), `505ce40` and `84eae8f`.
 
 <a id="semver-update"></a>
 
