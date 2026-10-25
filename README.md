@@ -169,7 +169,7 @@ For source changes, follow the [Meta Search Engine contribution guide](CONTRIBUT
 <!-- project-control:section=history -->
 ## Change history
 
-![Changelog history, 2020 – 2026: 28 entries; busiest October 2026 (22); quiet Nov 2025 – Sep 2026; no releases yet.](CHANGELOG.svg)
+![Changelog history, 2020 – 2026: 29 entries; busiest October 2026 (23); quiet Nov 2025 – Sep 2026; no releases yet.](CHANGELOG.svg)
 
 **Change-history numbering:** This project uses dated history and does not assign project-level
 version or build numbers. Follow the [version and build policy](CONTRIBUTING.md#version-and-build-policy).
@@ -183,6 +183,7 @@ One record per change; complete details and evidence are in [CHANGELOG.md](CHANG
 
 | Record | Date | Highlights | Details |
 |---|---|---|---|
+| Maintenance | 2026-10-25 | <ul><li><strong>Security:</strong> Cleared the six Vite advisories GitHub reported, one high, and the three high undici advisories <code>npm audit</code> added.</li><li><strong>Versions:</strong> Vite 8.3.5 and undici 8.12.3; nothing is added or removed.</li><li><strong>Exposure:</strong> Vite's development and preview servers are how the app runs, so its advisories applied to the running app; undici serves only the tests' simulated page.</li><li><strong>Tests:</strong> The 53 tests and the production build pass.</li></ul> | [Full record](CHANGELOG.md#vite-8-3-advisories-cleared) |
 | Documentation | 2026-10-07 | <ul><li><strong>Documentation:</strong> Every In detail heading names a map item: the 2021 feature list and the current state regrouped under Search, Filters, Saved websites and Where it stands, every item kept.</li></ul> | [Full record](CHANGELOG.md#in-detail-named-as-the-map) |
 | Documentation | 2026-10-07 | <ul><li><strong>Documentation:</strong> The rules behind the Capabilities map moved from Usage into Capabilities itself, under one In detail subsection with a heading per map item; Project Control still shows the map alone.</li></ul> | [Full record](CHANGELOG.md#capabilities-in-one-section) |
 | Documentation | 2026-10-07 | <ul><li><strong>Documentation:</strong> Capabilities is a map of four labelled lines; the 2021 feature list with its status subsections and the current-state notes moved under Usage.</li></ul> | [Full record](CHANGELOG.md#capabilities-as-a-map) |
@@ -192,7 +193,6 @@ One record per change; complete details and evidence are in [CHANGELOG.md](CHANG
 | Documentation | 2026-10-06 | <ul><li><strong>History:</strong> The complete change history now lives in <code>CHANGELOG.md</code>, one entry per change with its summary, what changed, what was checked and how it was delivered; the README table keeps the newest ten rows and opens each entry from its Details cell.</li></ul> | [Full record](CHANGELOG.md#changelog) |
 | Documentation | 2026-10-05 | <ul><li><strong>Alignment:</strong> The badge row now opens with the platform and names the history mode; the JavaScript badge went, as the Architecture table names the language.</li></ul> | [Full record](CHANGELOG.md#readme-alignment) |
 | Documentation | 2026-10-05 | <ul><li><strong>Structure:</strong> Sections follow the order and names every project README now shares, under a contents line; sections were renamed and moved, and no wording was removed.</li></ul> | [Full record](CHANGELOG.md#readme-skeleton) |
-| Documentation | 2026-10-05 | <ul><li><strong>Readability:</strong> Long paragraphs, bullets and table cells are now short leads with sub-points, one fact each; no detail was removed.</li></ul> | [Full record](CHANGELOG.md#readme-structure) |
 ---
 
 <!-- project-control:section=ignore -->

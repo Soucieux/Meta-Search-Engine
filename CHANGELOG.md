@@ -2,6 +2,49 @@
 
 Every change to Meta Search Engine, newest first, in one shape: the summary from the history table, then what changed, what was checked and how it was delivered. The README's Change history table lists the newest 10 and links here.
 
+<a id="vite-8-3-advisories-cleared"></a>
+
+## Vite and undici advisories cleared — 2026-10-25
+
+- **Security:** Cleared the six Vite advisories GitHub reported, one high, and the three high undici advisories `npm audit` added.
+- **Versions:** Vite 8.3.5 and undici 8.12.3; nothing is added or removed.
+- **Exposure:** Vite's development and preview servers are how the app runs, so its advisories applied to the running app; undici serves only the tests' simulated page.
+- **Tests:** The 53 tests and the production build pass.
+
+### Changed
+
+- **What was reported:**
+  - Vite 8.3.2 carried six advisories on 2026-10-25: three in the editor launcher it opens from
+    the error overlay, one of them high (GHSA-587h-7wmj-h5pm, GHSA-698v-4r3x-3vcv,
+    GHSA-r825-w8mm-5pxw).
+  - Two let the development server read files outside `server.fs.allow` (GHSA-rq7h-c2jc-7f22,
+    GHSA-vfpm-58rq-9qcg), and a low one allowed cross-origin script execution through custom
+    middleware (GHSA-9jrq-w75r-8gcw).
+  - `npm audit` also found three high ones in undici 8.11.2, which jsdom uses: unbounded memory
+    in its EventSource parser, a Subresource Integrity bypass, and a crash on excessive content
+    encodings (GHSA-4qv8-2p9j-2685, GHSA-f72v-6w45-q472, GHSA-xjj6-f33q-929c).
+- **Exposure:**
+  - The live search is custom middleware of the kind the low advisory names; it already answers
+    only the app's own page.
+  - The editor-launcher findings need Windows or a specific editor, and nothing in the app opens
+    a WebAssembly module.
+- **Fix:**
+  - `package.json` asks for `vite` ^8.3.5, the release the lockfile now pins, and undici moves to
+    8.12.3 within the range jsdom declares.
+  - 21 locked versions move, most of them the platform builds of Vite's bundler.
+- **Unchanged:** the live search, the key's place in `.env.local`, the page, and its stored data.
+
+### Checked
+
+- **Evidence:**
+  - `npm audit` reports no vulnerabilities.
+  - `npm test` passes all 53 tests, and `npm run build` builds 110 modules on Vite 8.3.5.
+  - A build given a made-up `TAVILY_API_KEY` contains no trace of it.
+
+### Delivered
+
+- **Status:** committed together with this record on 2026-10-25.
+
 <a id="in-detail-named-as-the-map"></a>
 
 ## In detail named as the map — 2026-10-07
